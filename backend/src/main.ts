@@ -11,7 +11,6 @@ async function bootstrap() {
   // middlewares
   app.enableCors({
     origin: ["http://localhost:3000", "https://my-tube-pi-fawn.vercel.app"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   });
   app.setGlobalPrefix("/api/v1");
