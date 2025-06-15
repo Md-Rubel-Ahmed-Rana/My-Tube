@@ -16,8 +16,10 @@ import { registerSchema } from "@/schemas/register.schema";
 import { useUserRegisterMutation } from "@/features/auth";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import PasswordInputField from "../common/PasswordInputField";
+import { useRouter } from "next/router";
 
 const RegisterForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -33,6 +35,7 @@ const RegisterForm = () => {
       error: "Failed to register",
       success: "User registered successfully",
     });
+    router.push("/account/login");
   };
 
   return (
