@@ -35,18 +35,20 @@ const NavDropdown = () => {
           </>
         ) : (
           <>
-            <Link href={"/account/login"}>
+            <Link className="w-full" href={"/account/login"}>
               <DropdownMenuItem className="cursor-pointer">
                 Login
               </DropdownMenuItem>
             </Link>
-            <Link href={"/account/create"}>
+            <Link className="w-full" href={"/account/create"}>
               <DropdownMenuItem className="cursor-pointer">
                 Register
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem>Upload Video</DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="w-full block lg:hidden">
+              Upload Video
+            </DropdownMenuItem>
+            <DropdownMenuItem className="block lg:hidden">
               <ModeToggle />
             </DropdownMenuItem>
           </>
