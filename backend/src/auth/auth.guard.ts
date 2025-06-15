@@ -2,6 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -10,6 +11,7 @@ import { Request, Response } from "express";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
   private cookieName = "my_tube_access_token";
   constructor(
     private readonly jwtService: JwtService,
@@ -33,10 +35,9 @@ export class AuthGuard implements CanActivate {
       request["user"] = payload;
     } catch (error: any) {
       if (error.name === "TokenExpiredError") {
-        console.error(`JWT Expired. Error: ${error?.message}`);
-        console.log("JWT expired:", error);
+        this.logger.error(`JWT Expired. Error: ${error?.message}`);
       } else {
-        console.error(`JWT error. Error: ${error?.message}`);
+        this.logger.error(`JWT error. Error: ${error?.message}`);
       }
       this.logout(response);
       throw new UnauthorizedException();
@@ -51,7 +52,7 @@ export class AuthGuard implements CanActivate {
   private extractTokenFromCookie(request: Request): string | undefined {
     const bearerToken = request.cookies[this.cookieName] as string;
     if (!bearerToken) {
-      console.warn(`Bearer token was not found`);
+      this.logger.warn(`Bearer token was not found`);
       throw new UnauthorizedException();
     }
     const token = bearerToken ? bearerToken?.split(" ")[1] : undefined;
