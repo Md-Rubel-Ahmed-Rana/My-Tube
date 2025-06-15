@@ -15,8 +15,10 @@ import { loginSchema } from "@/schemas/login.schema";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUserLoginMutation } from "@/features/auth";
 import PasswordInputField from "../common/PasswordInputField";
+import { useRouter } from "next/router";
 
 const LoginForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,6 +32,7 @@ const LoginForm = () => {
       error: "Failed to login",
       success: "User logged in successfully",
     });
+    router.push("/dashboard");
   };
 
   return (
