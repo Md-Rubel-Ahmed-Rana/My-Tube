@@ -27,7 +27,7 @@ const NavDropdown = () => {
         align="end"
         className="flex flex-col justify-center items-center"
       >
-        {!user?.id ? (
+        {user?.id ? (
           <>
             <DropdownMenuItem className="w-full">Profile</DropdownMenuItem>
             <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
