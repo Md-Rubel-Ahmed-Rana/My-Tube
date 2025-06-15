@@ -39,7 +39,7 @@ export class AuthController {
     res.cookie("my_tube_access_token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
