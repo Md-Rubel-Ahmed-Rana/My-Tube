@@ -32,6 +32,9 @@ const LoginForm = () => {
         onSubmit={form.handleSubmit(handleLogin)}
         className="space-y-8 px-3 py-5 rounded-lg border w-full"
       >
+        <div className="text-center text-lg">
+          <h1>Welcome Back!</h1>
+        </div>
         <FormField
           control={form.control}
           name="email"

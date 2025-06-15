@@ -34,6 +34,9 @@ const RegisterForm = () => {
         onSubmit={form.handleSubmit(handleRegister)}
         className="space-y-8 px-3 py-5 rounded-lg border w-full"
       >
+        <div className="text-center text-lg">
+          <h1>Create your account</h1>
+        </div>
         <FormField
           control={form.control}
           name="name"
