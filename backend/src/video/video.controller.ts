@@ -68,6 +68,12 @@ export class VideoController {
   update(@Param("id") id: Types.ObjectId, @Body() body: UpdateVideoDto) {
     return this.videoService.update(id, body);
   }
+
+  @Patch(":id/views")
+  incrementViews(@Param("id") id: Types.ObjectId) {
+    return this.videoService.incrementViews(id);
+  }
+
   @Delete(":id")
   remove(@Param("id") id: Types.ObjectId) {
     return this.videoService.remove(id);

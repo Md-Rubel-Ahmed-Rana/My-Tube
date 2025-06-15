@@ -172,4 +172,14 @@ export class VideoService {
       data: null,
     };
   }
+
+  async incrementViews(id: Types.ObjectId) {
+    await this.videoModel.findByIdAndUpdate(id, { $inc: { views: 1 } });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video views incremented successfully",
+      data: null,
+    };
+  }
 }
