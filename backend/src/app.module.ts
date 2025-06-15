@@ -4,6 +4,7 @@ import { AppService } from "./app.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { VideoModule } from "./video/video.module";
 import { MongooseModule } from "@nestjs/mongoose";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MongooseModule } from "@nestjs/mongoose";
       }),
     }),
     VideoModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
