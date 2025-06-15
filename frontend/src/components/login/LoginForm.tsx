@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/schemas/login.schema";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUserLoginMutation } from "@/features/auth";
+import PasswordInputField from "../common/PasswordInputField";
 
 const LoginForm = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -55,20 +56,8 @@ const LoginForm = () => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          disabled={isLoading}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <PasswordInputField form={form} isLoading={isLoading} />
+
         <div className="w-full text-center ">
           <Button disabled={isLoading} className="w-full" type="submit">
             {isLoading ? "Logging..." : "Login"}
