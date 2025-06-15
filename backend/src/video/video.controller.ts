@@ -65,6 +65,7 @@ export class VideoController {
   }
 
   @Patch(":id")
+  @UseGuards(AuthGuard)
   update(@Param("id") id: Types.ObjectId, @Body() body: UpdateVideoDto) {
     return this.videoService.update(id, body);
   }
@@ -72,6 +73,24 @@ export class VideoController {
   @Patch(":id/views")
   incrementViews(@Param("id") id: Types.ObjectId) {
     return this.videoService.incrementViews(id);
+  }
+
+  @Patch(":id/like")
+  @UseGuards(AuthGuard)
+  likeVideo(
+    @Param("id") id: Types.ObjectId,
+    @Req() req: { user: { id: Types.ObjectId } }
+  ) {
+    return this.videoService.likeVideo(id, req?.user?.id);
+  }
+
+  @Patch(":id/dislike")
+  @UseGuards(AuthGuard)
+  dislikeVideo(
+    @Param("id") id: Types.ObjectId,
+    @Req() req: { user: { id: Types.ObjectId } }
+  ) {
+    return this.videoService.dislikeVideo(id, req.user.id);
   }
 
   @Delete(":id")

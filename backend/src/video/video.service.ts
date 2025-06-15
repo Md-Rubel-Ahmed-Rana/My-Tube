@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
@@ -179,6 +184,78 @@ export class VideoService {
       statusCode: HttpStatus.OK,
       success: true,
       message: "Video views incremented successfully",
+      data: null,
+    };
+  }
+
+  async likeVideo(id: Types.ObjectId, liker: Types.ObjectId) {
+    const video = await this.videoModel.findById(id);
+    if (!video) throw new NotFoundException("Video not found");
+
+    const likerIdStr = liker.toString();
+
+    const hasLiked = video.likes.some(
+      (userId) => userId.toString() === likerIdStr
+    );
+    const hasDisliked = video.dislikes.some(
+      (userId) => userId.toString() === likerIdStr
+    );
+
+    if (hasLiked) {
+      video.likes = video.likes.filter(
+        (userId) => userId.toString() !== likerIdStr
+      );
+    } else {
+      video.likes.push(liker);
+      if (hasDisliked) {
+        video.dislikes = video.dislikes.filter(
+          (userId) => userId.toString() !== likerIdStr
+        );
+      }
+    }
+
+    await video.save();
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: hasLiked ? "Like removed" : "Video liked",
+      data: null,
+    };
+  }
+
+  async dislikeVideo(id: Types.ObjectId, liker: Types.ObjectId) {
+    const video = await this.videoModel.findById(id);
+    if (!video) throw new NotFoundException("Video not found");
+
+    const likerIdStr = liker.toString();
+
+    const hasDisliked = video.dislikes.some(
+      (userId) => userId.toString() === likerIdStr
+    );
+    const hasLiked = video.likes.some(
+      (userId) => userId.toString() === likerIdStr
+    );
+
+    if (hasDisliked) {
+      video.dislikes = video.dislikes.filter(
+        (userId) => userId.toString() !== likerIdStr
+      );
+    } else {
+      video.dislikes.push(liker);
+      if (hasLiked) {
+        video.likes = video.likes.filter(
+          (userId) => userId.toString() !== likerIdStr
+        );
+      }
+    }
+
+    await video.save();
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: hasDisliked ? "Dislike removed" : "Video disliked",
       data: null,
     };
   }
