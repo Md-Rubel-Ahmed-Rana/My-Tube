@@ -7,6 +7,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Video } from "./video.schema";
 import { Model, Types } from "mongoose";
 import { parseField } from "src/utils/parseField";
+import { UpdateVideoDto } from "./dto/update-video.dto";
 
 @Injectable()
 export class VideoService {
@@ -94,7 +95,6 @@ export class VideoService {
   ) {
     const query: any = {};
 
-    // Search
     if (searchText) {
       query.$or = [
         { title: { $regex: searchText, $options: "i" } },
@@ -103,7 +103,6 @@ export class VideoService {
       ];
     }
 
-    // Filters (convert string to ObjectId or number if needed)
     if (filters) {
       for (const [key, value] of Object.entries(filters)) {
         if (key === "owner") {
@@ -116,7 +115,6 @@ export class VideoService {
       }
     }
 
-    // Pagination
     const skip = (page - 1) * limit;
 
     const [videos, total] = await Promise.all([
@@ -124,7 +122,8 @@ export class VideoService {
         .find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .populate("owner", "-password"),
       this.videoModel.countDocuments(query),
     ]);
 
@@ -138,6 +137,39 @@ export class VideoService {
         limit,
         videos,
       },
+    };
+  }
+
+  async findOne(id: Types.ObjectId) {
+    const video = await this.videoModel
+      .findById(id)
+      .populate("owner", "-password");
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video retrieved successfully",
+      data: video,
+    };
+  }
+
+  async update(id: Types.ObjectId, updatedData: UpdateVideoDto) {
+    await this.videoModel.findByIdAndUpdate(id, { ...updatedData });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video updated successfully",
+      data: null,
+    };
+  }
+
+  async remove(id: Types.ObjectId) {
+    await this.videoModel.findByIdAndDelete(id);
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video deleted successfully",
+      data: null,
     };
   }
 }

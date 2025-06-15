@@ -1,3 +1,4 @@
+import { Params } from "./../../node_modules/@types/passport-google-oauth2/node_modules/@types/express-serve-static-core/index.d";
 import {
   Controller,
   Post,
@@ -9,11 +10,16 @@ import {
   Req,
   Get,
   Query,
+  Param,
+  Patch,
+  Delete,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { AuthGuard } from "src/auth/auth.guard";
 import { QueryVideoDto } from "./dto/query-video.dto";
+import { Types } from "mongoose";
+import { UpdateVideoDto } from "./dto/update-video.dto";
 
 @Controller("video")
 export class VideoController {
@@ -22,7 +28,6 @@ export class VideoController {
   @Get()
   findAll(@Query() query: QueryVideoDto) {
     const { searchText, page, limit, ...filters } = query;
-
     return this.videoService.findAll(
       searchText,
       filters,
@@ -52,5 +57,19 @@ export class VideoController {
   @UseGuards(AuthGuard)
   getOwnerVideos(@Req() req: { user: { id: string } }) {
     return this.videoService.getOwnerVideos(req?.user?.id);
+  }
+
+  @Get(":id")
+  findOne(@Param("id") id: Types.ObjectId) {
+    return this.videoService.findOne(id);
+  }
+
+  @Patch(":id")
+  update(@Param("id") id: Types.ObjectId, @Body() body: UpdateVideoDto) {
+    return this.videoService.update(id, body);
+  }
+  @Delete(":id")
+  remove(@Param("id") id: Types.ObjectId) {
+    return this.videoService.remove(id);
   }
 }
