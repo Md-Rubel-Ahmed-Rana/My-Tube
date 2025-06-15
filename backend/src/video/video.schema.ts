@@ -34,19 +34,10 @@ export class Video extends Document {
   tags: string[];
 
   @Prop({ default: null })
-  duration: number; // in seconds
+  duration: number;
 
   @Prop({ default: null })
-  format: string;
-
-  @Prop({ default: null })
-  resolution: string;
-
-  @Prop({ default: null })
-  frameRate: number;
-
-  @Prop({ default: null })
-  size: number; // in bytes
+  size: number;
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
