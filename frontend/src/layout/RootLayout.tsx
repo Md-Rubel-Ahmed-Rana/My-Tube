@@ -16,8 +16,6 @@ const RootLayout = ({ children }: Props) => {
           flex: 1,
           maxWidth: "1440px",
           width: "100%",
-          margin: "0 auto",
-          padding: "1rem",
         }}
       >
         {children}
