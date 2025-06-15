@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,9 +8,13 @@ import {
 import { User } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import { useGetLoggedInUserQuery } from "@/features/auth";
+import { IUser } from "@/types/user.type";
+import LogoutButton from "./LogoutButton";
 
 const NavDropdown = () => {
-  const user: any = {};
+  const { data } = useGetLoggedInUserQuery({});
+  const user = data?.data as IUser;
 
   return (
     <DropdownMenu>
@@ -24,12 +27,13 @@ const NavDropdown = () => {
         align="end"
         className="flex flex-col justify-center items-center"
       >
-        {user?.id ? (
+        {!user?.id ? (
           <>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>My Videos</DropdownMenuItem>
-            <DropdownMenuItem>Upload Video</DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="w-full">Profile</DropdownMenuItem>
+            <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
+            <DropdownMenuItem className="w-full">Upload Video</DropdownMenuItem>
+            <LogoutButton />
+            <DropdownMenuItem className="w-full block lg:hidden">
               <ModeToggle />
             </DropdownMenuItem>
           </>
