@@ -7,6 +7,7 @@ import {
   Get,
   UseGuards,
   Req,
+  Delete,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
@@ -46,6 +47,17 @@ export class AuthController {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User logged in successfully!",
+      data: null,
+    });
+  }
+
+  @Delete("/logout")
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("my_tube_access_token");
+    res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "User logged out successfully!",
       data: null,
     });
   }
