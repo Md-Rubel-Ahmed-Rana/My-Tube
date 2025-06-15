@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "./ModeToggle";
 
 const NavDropdown = () => {
   const user: any = {};
@@ -19,11 +20,18 @@ const NavDropdown = () => {
           <User className="h-5 w-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="flex flex-col justify-center items-center"
+      >
         {user?.id ? (
           <>
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>My Videos</DropdownMenuItem>
+            <DropdownMenuItem>Upload Video</DropdownMenuItem>
+            <DropdownMenuItem>
+              <ModeToggle />
+            </DropdownMenuItem>
           </>
         ) : (
           <>
@@ -37,6 +45,10 @@ const NavDropdown = () => {
                 Register
               </DropdownMenuItem>
             </Link>
+            <DropdownMenuItem>Upload Video</DropdownMenuItem>
+            <DropdownMenuItem>
+              <ModeToggle />
+            </DropdownMenuItem>
           </>
         )}
       </DropdownMenuContent>
