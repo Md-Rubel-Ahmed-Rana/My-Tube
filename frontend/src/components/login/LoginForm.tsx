@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/schemas/login.schema";
+import { handleApiMutation } from "@/utils/handleApiMutation";
+import { useUserLoginMutation } from "@/features/auth";
+import PasswordInputField from "../common/PasswordInputField";
 
 const LoginForm = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -21,9 +24,12 @@ const LoginForm = () => {
       password: "",
     },
   });
-
-  const handleLogin = (values: z.infer<typeof loginSchema>) => {
-    console.log(values);
+  const [login, { isLoading }] = useUserLoginMutation();
+  const handleLogin = async (values: z.infer<typeof loginSchema>) => {
+    await handleApiMutation(login, values, 200, {
+      error: "Failed to login",
+      success: "User logged in successfully",
+    });
   };
 
   return (
@@ -37,6 +43,7 @@ const LoginForm = () => {
         </div>
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="email"
           render={({ field }) => (
             <FormItem>
@@ -49,22 +56,11 @@ const LoginForm = () => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="••••••••" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <PasswordInputField form={form} isLoading={isLoading} />
+
         <div className="w-full text-center ">
-          <Button className="w-full" type="submit">
-            Login
+          <Button disabled={isLoading} className="w-full" type="submit">
+            {isLoading ? "Logging..." : "Login"}
           </Button>
         </div>
       </form>
