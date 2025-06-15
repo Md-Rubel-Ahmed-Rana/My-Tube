@@ -1,8 +1,9 @@
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, User } from "lucide-react";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { ModeToggle } from "./ModeToggle";
+import NavDropdown from "./NavDropdown";
+import SearchVideoForm from "./SearchVideoForm";
 
 const Navbar = () => {
   return (
@@ -16,25 +17,24 @@ const Navbar = () => {
             height={32}
             className="rounded-full"
           />
-          <span className="font-semibold text-xl">MyTube</span>
+          <span className="font-semibold text-md lg:text-xl">MyTube</span>
         </div>
 
-        <div className="flex-1 max-w-xl mx-4 relative">
-          <Input placeholder="Search videos..." className="pl-10 pr-4 py-2" />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-        </div>
+        <SearchVideoForm />
 
         <div className="flex items-center gap-4">
-          <ModeToggle />
+          <div className=" hidden lg:block">
+            <ModeToggle />
+          </div>
 
-          <Button variant="ghost" className="ring-1">
-            <Plus className="h-5 w-5" />
-            <span>Create</span>
-          </Button>
+          <div className=" hidden lg:block">
+            <Button variant="ghost" className="border">
+              <Plus className="h-5 w-5" />
+              <span>Upload</span>
+            </Button>
+          </div>
 
-          <Button className="rounded-full ring-1" variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
+          <NavDropdown />
         </div>
       </div>
     </div>
