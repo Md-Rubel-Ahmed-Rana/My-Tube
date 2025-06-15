@@ -23,7 +23,6 @@ export class UserService {
   }
 
   async findById(id: Types.ObjectId) {
-    await this.isExist("id", id);
     const user = await this.userModel.findById(id, "-password");
     return {
       statusCode: HttpStatus.OK,

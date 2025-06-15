@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import * as morgan from "morgan";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +12,7 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix("/api/v1");
   app.use(morgan("dev"));
+  app.use(cookieParser());
 
   await app.listen(port);
   console.log(`My Tube Server is running on http://localhost:${port}`);

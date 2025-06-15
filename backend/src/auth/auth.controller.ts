@@ -1,11 +1,28 @@
-import { Controller, Post, Body, Res, HttpStatus } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpStatus,
+  Get,
+  UseGuards,
+  Req,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { Response } from "express";
+import { AuthGuard } from "./auth.guard";
+import { Types } from "mongoose";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  async auth(@Req() req: { user: { id: Types.ObjectId } }) {
+    return await this.authService.auth(req?.user?.id);
+  }
 
   @Post("/register")
   register(@Body() createUserDto: CreateUserDto) {

@@ -4,6 +4,7 @@ import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
+import { Types } from "mongoose";
 
 @Injectable()
 export class AuthService {
@@ -12,9 +13,11 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService
   ) {}
+
   async register(createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
+
   async login(credentials: {
     email: string;
     password: string;
@@ -35,6 +38,10 @@ export class AuthService {
       { secret: this.configService.get<string>("JWT_SECRET") }
     );
 
-    return token;
+    return `Bearer ${token}`;
+  }
+
+  async auth(id: Types.ObjectId) {
+    return await this.userService.findById(id);
   }
 }
