@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
 export class Video extends Document {
   @Prop({ required: true })
   title: string;
@@ -34,19 +34,10 @@ export class Video extends Document {
   tags: string[];
 
   @Prop({ default: null })
-  duration: number; // in seconds
+  duration: number;
 
   @Prop({ default: null })
-  format: string;
-
-  @Prop({ default: null })
-  resolution: string;
-
-  @Prop({ default: null })
-  frameRate: number;
-
-  @Prop({ default: null })
-  size: number; // in bytes
+  size: number;
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
