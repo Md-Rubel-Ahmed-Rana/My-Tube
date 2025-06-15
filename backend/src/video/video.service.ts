@@ -13,12 +13,14 @@ import { Video } from "./video.schema";
 import { Model, Types } from "mongoose";
 import { parseField } from "src/utils/parseField";
 import { UpdateVideoDto } from "./dto/update-video.dto";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class VideoService {
   constructor(
     private config: ConfigService,
-    @InjectModel(Video.name) private videoModel: Model<Video>
+    @InjectModel(Video.name) private videoModel: Model<Video>,
+    private eventEmitter: EventEmitter2
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -169,7 +171,15 @@ export class VideoService {
   }
 
   async remove(id: Types.ObjectId) {
+    const video = await this.videoModel.findById(id);
+
+    if (!video) {
+      throw new HttpException("Video was not found!", HttpStatus.NOT_FOUND);
+    }
+
     await this.videoModel.findByIdAndDelete(id);
+
+    this.eventEmitter.emit("video.deleted", video?.publicId);
     return {
       statusCode: HttpStatus.OK,
       success: true,
