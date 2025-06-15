@@ -73,4 +73,71 @@ export class VideoService {
   async newVideo(createNewVideoDto: CreateVideoDto) {
     return this.videoModel.create(createNewVideoDto);
   }
+
+  async getOwnerVideos(owner: string) {
+    const videos = await this.videoModel
+      .find({ owner })
+      .sort({ createdAt: -1 });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All the videos of owner retrieved successfully",
+      data: videos,
+    };
+  }
+
+  async findAll(
+    searchText: string,
+    filters: Record<string, string>,
+    limit = 10,
+    page = 1
+  ) {
+    const query: any = {};
+
+    // Search
+    if (searchText) {
+      query.$or = [
+        { title: { $regex: searchText, $options: "i" } },
+        { description: { $regex: searchText, $options: "i" } },
+        { tags: { $in: [new RegExp(searchText, "i")] } },
+      ];
+    }
+
+    // Filters (convert string to ObjectId or number if needed)
+    if (filters) {
+      for (const [key, value] of Object.entries(filters)) {
+        if (key === "owner") {
+          query.owner = new Types.ObjectId(value);
+        } else if (key === "duration" || key === "size" || key === "views") {
+          query[key] = Number(value);
+        } else {
+          query[key] = value;
+        }
+      }
+    }
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    const [videos, total] = await Promise.all([
+      this.videoModel
+        .find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      this.videoModel.countDocuments(query),
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Videos retrieved successfully",
+      data: {
+        total,
+        page,
+        limit,
+        videos,
+      },
+    };
+  }
 }
