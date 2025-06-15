@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { registerSchema } from "@/schemas/register.schema";
+import { useUserRegisterMutation } from "@/features/auth";
+import { handleApiMutation } from "@/utils/handleApiMutation";
 
 const RegisterForm = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -23,9 +25,13 @@ const RegisterForm = () => {
       password: "",
     },
   });
+  const [register, { isLoading }] = useUserRegisterMutation();
 
-  const handleRegister = (values: z.infer<typeof registerSchema>) => {
-    console.log(values);
+  const handleRegister = async (values: z.infer<typeof registerSchema>) => {
+    await handleApiMutation(register, values, 201, {
+      error: "Failed to register",
+      success: "User registered successfully",
+    });
   };
 
   return (
@@ -39,6 +45,7 @@ const RegisterForm = () => {
         </div>
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="name"
           render={({ field }) => (
             <FormItem>
@@ -54,6 +61,7 @@ const RegisterForm = () => {
 
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="email"
           render={({ field }) => (
             <FormItem>
@@ -69,6 +77,7 @@ const RegisterForm = () => {
 
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="password"
           render={({ field }) => (
             <FormItem>
@@ -84,7 +93,9 @@ const RegisterForm = () => {
           )}
         />
         <div className="w-full text-center">
-          <Button type="submit">Create account</Button>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? "Creating..." : "Create account"}
+          </Button>
         </div>
       </form>
     </Form>
