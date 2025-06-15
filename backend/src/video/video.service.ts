@@ -2,10 +2,18 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { v2 as cloudinary } from "cloudinary";
 import { Readable } from "stream";
+import { CreateVideoDto } from "./dto/create-video.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Video } from "./video.schema";
+import { Model, Types } from "mongoose";
+import { parseField } from "src/utils/parseField";
 
 @Injectable()
 export class VideoService {
-  constructor(private config: ConfigService) {
+  constructor(
+    private config: ConfigService,
+    @InjectModel(Video.name) private videoModel: Model<Video>
+  ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
       api_key: this.config.get("CLOUDINARY_API_KEY"),
@@ -13,7 +21,7 @@ export class VideoService {
     });
   }
 
-  async uploadVideo(file: Express.Multer.File) {
+  async uploadVideo(file: Express.Multer.File, body: CreateVideoDto) {
     if (!file) {
       throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
     }
@@ -25,34 +33,44 @@ export class VideoService {
           chunk_size: 6000000,
           folder: "my-tube/videos",
         },
-        (error, result) => {
+        async (error, result) => {
           if (error) return reject(error);
 
-          const metadata = {
-            public_id: result.public_id,
-            url: result.secure_url,
+          const newVideoData: CreateVideoDto = {
+            publicId: result.public_id,
+            videoUrl: result.secure_url,
+            thumbnailUrl: cloudinary.url(result.public_id, {
+              resource_type: "video",
+              format: "jpg",
+              secure: true,
+            }),
             duration: result.duration,
-            format: result.format,
-            width: result.width,
-            height: result.height,
-            bytes: result.bytes,
-            created_at: result.created_at,
-            tags: result.tags,
-            original_filename: result.original_filename,
-            bitrate: result.bits,
-            frame_rate: result.frame_rate,
+            size: result.bytes,
+            tags: parseField(body?.tags),
+            title: body.title,
+            description: body.description,
+            dislikes: [],
+            likes: [],
+            views: 0,
+            owner: new Types.ObjectId(body.owner),
           };
+
+          await this.newVideo(newVideoData);
 
           return resolve({
             statusCode: HttpStatus.OK,
             success: true,
             message: "Your video uploaded successfully",
-            data: metadata,
+            data: null,
           });
         }
       );
       const readable = Readable.from(file.buffer);
       readable.pipe(uploadStream);
     });
+  }
+
+  async newVideo(createNewVideoDto: CreateVideoDto) {
+    return this.videoModel.create(createNewVideoDto);
   }
 }
