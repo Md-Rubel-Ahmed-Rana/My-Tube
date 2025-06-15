@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 export function ModeToggle() {
   const { setTheme, theme } = useTheme();
 
+  const handleToggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-    >
+    <Button variant="ghost" size="icon" onClick={handleToggleTheme}>
       {theme === "light" ? (
         <Moon className="h-5 w-5" />
       ) : (
