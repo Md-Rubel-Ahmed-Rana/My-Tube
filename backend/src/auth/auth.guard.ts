@@ -1,0 +1,60 @@
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { Request, Response } from "express";
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  private cookieName = "my_tube_access_token";
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
+    const token = this.extractTokenFromCookie(request);
+
+    if (!token) {
+      this.logout(response);
+      throw new UnauthorizedException();
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>("JWT_SECRET"),
+      });
+
+      request["user"] = payload;
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError") {
+        console.error(`JWT Expired. Error: ${error?.message}`);
+        console.log("JWT expired:", error);
+      } else {
+        console.error(`JWT error. Error: ${error?.message}`);
+      }
+      this.logout(response);
+      throw new UnauthorizedException();
+    }
+    return true;
+  }
+
+  private logout(response: Response): void {
+    response.clearCookie(this.cookieName);
+  }
+
+  private extractTokenFromCookie(request: Request): string | undefined {
+    const bearerToken = request.cookies[this.cookieName] as string;
+    if (!bearerToken) {
+      console.warn(`Bearer token was not found`);
+      throw new UnauthorizedException();
+    }
+    const token = bearerToken ? bearerToken?.split(" ")[1] : undefined;
+    return token;
+  }
+}
