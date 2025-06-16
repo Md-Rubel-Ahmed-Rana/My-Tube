@@ -7,6 +7,7 @@ import moment from "moment";
 import { formatBytes } from "@/utils/formatBytes";
 import { formatDuration } from "@/utils/formatDuration";
 import Link from "next/link";
+import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
 
 type Props = {
   video: IVideo;
@@ -15,9 +16,9 @@ type Props = {
 const MyVideoCard = ({ video }: Props) => {
   return (
     <Link
-      href={`/video/watch/${video?.publicId}/${video?.id}?title=${
-        video?.title
-      }&description=${video?.description || "unknown"}`}
+      href={`/video/watch/${formatVideoPublicId(video?.publicId)}/${
+        video?.id
+      }?title=${video?.title}&description=${video?.description || "unknown"}`}
     >
       <Card className=" bg-gray-100 dark:bg-gray-800 flex flex-col md:flex-row gap-4 p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
         <div className="relative w-full md:w-64 h-36 md:h-40 rounded-lg overflow-hidden">

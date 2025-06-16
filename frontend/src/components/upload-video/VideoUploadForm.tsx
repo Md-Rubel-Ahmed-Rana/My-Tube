@@ -36,22 +36,31 @@ const VideoUploadForm = () => {
   const handleSubmit = async (values: z.infer<typeof uploadVideoSchema>) => {
     const formData = new FormData();
     formData.append("title", values.title);
+    formData.append("description", values.description);
     formData.append("video", values.video as File);
     values.tags.forEach((tag) => formData.append("tags[]", tag));
 
-    await handleApiMutation(uploadVideo, formData, 201, {
-      success: "Video uploaded successfully",
-      error: "Video upload failed",
-    });
-
-    router.push("/dashboard");
+    await handleApiMutation(
+      uploadVideo,
+      formData,
+      201,
+      {
+        success: "Video uploaded successfully",
+        error: "Video upload failed",
+      },
+      {
+        isRedirect: true,
+        path: "/dashboard",
+        router,
+      }
+    );
   };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6 p-6 border rounded-lg w-full max-w-lg mx-auto"
+        className="space-y-6 p-6 border rounded-lg w-full"
       >
         <h2 className="text-center text-2xl font-semibold">
           Upload Your Video

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextRouter } from "next/router";
 import { toast } from "sonner";
 
 export const handleApiMutation = async <TPayload>(
@@ -8,6 +9,11 @@ export const handleApiMutation = async <TPayload>(
   customMessages: {
     error?: string;
     success?: string;
+  } = {},
+  redirect: {
+    isRedirect?: boolean;
+    path?: string;
+    router?: NextRouter;
   } = {}
 ) => {
   try {
@@ -17,6 +23,9 @@ export const handleApiMutation = async <TPayload>(
       toast.success(
         res?.data?.message || customMessages.success || "Operation succeeded"
       );
+      if (redirect?.isRedirect) {
+        redirect?.router?.push(redirect?.path || "/");
+      }
     } else {
       toast.error(
         res?.error?.data.message || customMessages.error || "Operation failed"

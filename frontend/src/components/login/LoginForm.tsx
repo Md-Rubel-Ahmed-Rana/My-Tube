@@ -28,11 +28,20 @@ const LoginForm = () => {
   });
   const [login, { isLoading }] = useUserLoginMutation();
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
-    await handleApiMutation(login, values, 200, {
-      error: "Failed to login",
-      success: "User logged in successfully",
-    });
-    router.push("/dashboard");
+    await handleApiMutation(
+      login,
+      values,
+      200,
+      {
+        error: "Failed to login",
+        success: "User logged in successfully",
+      },
+      {
+        isRedirect: true,
+        path: "/dashboard",
+        router,
+      }
+    );
   };
 
   return (
