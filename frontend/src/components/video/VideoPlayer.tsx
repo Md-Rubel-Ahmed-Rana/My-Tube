@@ -33,6 +33,7 @@ const VideoPlayer = ({ video }: Props) => {
           className="rounded-md p-0 overflow-hidden lg:h-[80vh] h-auto"
           autoPlay={true}
           onPlay={handlePlay}
+          playsInline={true}
         >
           <MediaProvider>
             <Poster
