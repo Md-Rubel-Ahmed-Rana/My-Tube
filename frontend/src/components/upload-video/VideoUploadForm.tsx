@@ -20,6 +20,7 @@ import { useUploadVideoMutation } from "@/features/videos";
 import VideoPreviewCard from "./VideoPreviewCard";
 import { useNavigationBlocker } from "@/hooks/useNavigationBlocker";
 import { useBeforeUnload } from "@/hooks/useBeforeUnload";
+import { validateVideoSize } from "@/utils/validateVideoSize";
 
 const VideoUploadForm = () => {
   const router = useRouter();
@@ -140,7 +141,7 @@ const VideoUploadForm = () => {
           name="video"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Video File</FormLabel>
+              <FormLabel>Video (Max: 100MB)</FormLabel>
               <FormControl>
                 <Input
                   disabled={isLoading}
@@ -150,8 +151,15 @@ const VideoUploadForm = () => {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      field.onChange(file);
-                      setSelectedFile(file);
+                      const isValid = validateVideoSize(file);
+                      if (isValid) {
+                        field.onChange(file);
+                        setSelectedFile(file);
+                      } else {
+                        e.target.value = "";
+                        setSelectedFile(null);
+                        field.onChange(null);
+                      }
                     }
                   }}
                 />
