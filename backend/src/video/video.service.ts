@@ -66,7 +66,7 @@ export class VideoService {
           await this.newVideo(newVideoData);
 
           return resolve({
-            statusCode: HttpStatus.OK,
+            statusCode: HttpStatus.CREATED,
             success: true,
             message: "Your video uploaded successfully",
             data: null,
