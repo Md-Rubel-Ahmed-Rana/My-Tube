@@ -17,20 +17,20 @@ const VideoPlayer = ({ video }: Props) => {
 
   const handlePlay = () => {
     if (!hasCountedRef.current) {
-      incrementView({ id: video.id });
+      incrementView({ id: video?.id });
       hasCountedRef.current = true;
     }
   };
 
   return (
-    <Card className="w-full bg-gray-100 dark:bg-gray-800 border">
-      <CardContent className="p-0">
+    <Card className="w-full p-0 rounded-md bg-gray-100 dark:bg-gray-800 border">
+      <CardContent className="p-0 rounded-md">
         <MediaPlayer
           title={video.title}
           src={video.videoUrl}
           controls={true}
           aspectRatio="16/9"
-          className="rounded-t-2xl overflow-hidden h-[80vh]"
+          className="rounded-md p-0 overflow-hidden lg:h-[80vh] h-auto"
           autoPlay={true}
           onPlay={handlePlay}
         >

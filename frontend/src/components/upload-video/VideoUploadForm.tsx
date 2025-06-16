@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -28,6 +29,7 @@ const VideoUploadForm = () => {
       title: "",
       tags: [],
       video: undefined,
+      description: "",
     },
   });
 
@@ -57,6 +59,7 @@ const VideoUploadForm = () => {
 
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="title"
           render={({ field }) => (
             <FormItem>
@@ -71,12 +74,32 @@ const VideoUploadForm = () => {
 
         <FormField
           control={form.control}
+          disabled={isLoading}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Video Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your video description here"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          disabled={isLoading}
           name="tags"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tags (comma-separated)</FormLabel>
               <FormControl>
                 <Input
+                  disabled={isLoading}
                   placeholder="e.g. music, tutorial"
                   onChange={(e) =>
                     field.onChange(
@@ -95,12 +118,15 @@ const VideoUploadForm = () => {
 
         <FormField
           control={form.control}
+          disabled={isLoading}
           name="video"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Video File</FormLabel>
               <FormControl>
                 <Input
+                  disabled={isLoading}
+                  className="cursor-pointer"
                   type="file"
                   accept="video/*"
                   onChange={(e) => {
