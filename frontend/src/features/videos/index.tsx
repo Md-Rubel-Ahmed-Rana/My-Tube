@@ -10,6 +10,13 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    incrementVideoViews: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `video/${id}/views`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["video"],
+    }),
     getVideosByOwner: build.query({
       query: () => ({
         url: "video/owner",
@@ -36,4 +43,5 @@ export const {
   useGetVideosByOwnerQuery,
   useGetVideosQuery,
   useGetSingleVideoQuery,
+  useIncrementVideoViewsMutation,
 } = videoApi;
