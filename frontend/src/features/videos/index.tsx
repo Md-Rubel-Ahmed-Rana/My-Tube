@@ -16,7 +16,17 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getVideos: build.query({
+      query: () => ({
+        url: "video",
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
-export const { useUploadVideoMutation, useGetVideosByOwnerQuery } = videoApi;
+export const {
+  useUploadVideoMutation,
+  useGetVideosByOwnerQuery,
+  useGetVideosQuery,
+} = videoApi;
