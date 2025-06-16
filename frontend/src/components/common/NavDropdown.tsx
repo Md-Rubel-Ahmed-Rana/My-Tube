@@ -31,7 +31,11 @@ const NavDropdown = () => {
           <>
             <DropdownMenuItem className="w-full">Profile</DropdownMenuItem>
             <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
-            <DropdownMenuItem className="w-full">Upload Video</DropdownMenuItem>
+            <Link href={"/video/upload"} className="w-full mb-2">
+              <DropdownMenuItem className="w-full">
+                Upload Video
+              </DropdownMenuItem>
+            </Link>
             <LogoutButton />
             <DropdownMenuItem className="w-full block lg:hidden">
               <ModeToggle />
@@ -49,9 +53,11 @@ const NavDropdown = () => {
                 Register
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="w-full block lg:hidden">
-              Upload Video
-            </DropdownMenuItem>
+            <Link href={"/video/upload"} className="w-full mb-2">
+              <DropdownMenuItem className="w-full block lg:hidden">
+                Upload Video
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="block lg:hidden">
               <ModeToggle />
             </DropdownMenuItem>

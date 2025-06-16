@@ -31,10 +31,12 @@ const Navbar = () => {
           </div>
 
           <div className=" hidden lg:block">
-            <Button variant="ghost" className="border">
-              <Plus className="h-5 w-5" />
-              <span>Upload</span>
-            </Button>
+            <Link href={"/video/upload"}>
+              <Button variant="ghost" className="border">
+                <Plus className="h-5 w-5" />
+                <span>Upload</span>
+              </Button>
+            </Link>
           </div>
 
           <NavDropdown />
