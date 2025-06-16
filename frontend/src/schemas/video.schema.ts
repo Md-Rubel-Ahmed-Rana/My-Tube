@@ -5,7 +5,7 @@ export const uploadVideoSchema = z.object({
 
   description: z
     .string()
-    .min(100, { message: "Description must be at least 100 characters long." })
+    .min(10, { message: "Description must be at least 10 characters long." })
     .max(1000, {
       message: "Description must be at most 1000 characters long.",
     }),
