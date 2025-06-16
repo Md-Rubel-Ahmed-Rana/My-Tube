@@ -30,7 +30,9 @@ const NavDropdown = () => {
         {user?.id ? (
           <>
             <DropdownMenuItem className="w-full">Profile</DropdownMenuItem>
-            <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
+            <Link href={"/dashboard"} className="w-full mb-2">
+              <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
+            </Link>
             <Link href={"/video/upload"} className="w-full mb-2">
               <DropdownMenuItem className="w-full">
                 Upload Video

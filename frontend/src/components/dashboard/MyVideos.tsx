@@ -1,0 +1,43 @@
+import { IVideo } from "@/types/video.type";
+import MyVideoCard from "./MyVideoCard";
+import NoDataFound from "../common/NoDataFound";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { Plus } from "lucide-react";
+
+type Props = {
+  videos: IVideo[];
+};
+
+const MyVideos = ({ videos = [] }: Props) => {
+  return (
+    <>
+      {videos?.length <= 0 ? (
+        <NoDataFound message="No videos found!">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-lg font-semibold">
+              You haven&apos;t uploaded any video yet.
+            </h3>
+            <p className="text-muted-foreground">
+              To upload your favorite video click below button
+            </p>
+            <Link href={"/video/upload"}>
+              <Button variant="ghost" className="border">
+                <Plus className="h-5 w-5" />
+                <span>Upload</span>
+              </Button>
+            </Link>
+          </div>
+        </NoDataFound>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {videos.map((video) => (
+            <MyVideoCard video={video} key={video?.id} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
+export default MyVideos;
