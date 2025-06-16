@@ -5,6 +5,7 @@ import { formatDuration } from "@/utils/formatDuration";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, ThumbsUp, Clock } from "lucide-react";
 import moment from "moment";
+import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
 
 type Props = {
   video: IVideo;
@@ -13,9 +14,9 @@ type Props = {
 const VideoCard = ({ video }: Props) => {
   return (
     <Link
-      href={`/video/watch/${video?.publicId}/${video?.id}?title=${
-        video?.title
-      }&description=${video?.description || "unknown"}`}
+      href={`/video/watch/${formatVideoPublicId(video?.publicId)}/${
+        video?.id
+      }?title=${video?.title}&description=${video?.description || "unknown"}`}
     >
       <Card className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-lg overflow-hidden">
         <div className="relative w-full h-52">

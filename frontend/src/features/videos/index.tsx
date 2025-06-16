@@ -10,6 +10,13 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    incrementVideoViews: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `video/${id}/views`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["video"],
+    }),
     getVideosByOwner: build.query({
       query: () => ({
         url: "video/owner",
@@ -22,6 +29,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getSingleVideo: build.query({
+      query: ({ id }: { id: string }) => ({
+        url: `video/${id}`,
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
@@ -29,4 +42,6 @@ export const {
   useUploadVideoMutation,
   useGetVideosByOwnerQuery,
   useGetVideosQuery,
+  useGetSingleVideoQuery,
+  useIncrementVideoViewsMutation,
 } = videoApi;
