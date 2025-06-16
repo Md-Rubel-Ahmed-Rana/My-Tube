@@ -84,7 +84,7 @@ export class VideoService {
 
   async getOwnerVideos(owner: string) {
     const videos = await this.videoModel
-      .find({ owner })
+      .find({ owner: new Types.ObjectId(owner) })
       .sort({ createdAt: -1 });
     return {
       statusCode: HttpStatus.OK,
