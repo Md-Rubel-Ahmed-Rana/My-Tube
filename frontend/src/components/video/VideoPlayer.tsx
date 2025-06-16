@@ -4,12 +4,24 @@ import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import { IVideo } from "@/types/video.type";
 import { Card, CardContent } from "@/components/ui/card";
+import { useIncrementVideoViewsMutation } from "@/features/videos";
+import { useRef } from "react";
 
 type Props = {
   video: IVideo;
 };
 
 const VideoPlayer = ({ video }: Props) => {
+  const [incrementView] = useIncrementVideoViewsMutation();
+  const hasCountedRef = useRef(false);
+
+  const handlePlay = () => {
+    if (!hasCountedRef.current) {
+      incrementView({ id: video.id });
+      hasCountedRef.current = true;
+    }
+  };
+
   return (
     <Card className="w-full bg-gray-100 dark:bg-gray-800 border">
       <CardContent className="p-0">
@@ -20,6 +32,7 @@ const VideoPlayer = ({ video }: Props) => {
           aspectRatio="16/9"
           className="rounded-t-2xl overflow-hidden h-[80vh]"
           autoPlay={true}
+          onPlay={handlePlay}
         >
           <MediaProvider>
             <Poster
