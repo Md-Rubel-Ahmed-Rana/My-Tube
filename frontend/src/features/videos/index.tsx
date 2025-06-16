@@ -18,6 +18,13 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    deleteVideo: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `video/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["video"],
+    }),
     updateVideo: build.mutation({
       query: ({
         id,
@@ -60,4 +67,5 @@ export const {
   useGetSingleVideoQuery,
   useIncrementVideoViewsMutation,
   useUpdateVideoMutation,
+  useDeleteVideoMutation,
 } = videoApi;

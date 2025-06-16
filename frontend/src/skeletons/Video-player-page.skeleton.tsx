@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const VideoPlayerPageSkeleton = () => {
   return (
     <div className="flex flex-col space-y-3 rounded-md p-2">
-      <Skeleton className="h-[40vh] lg:h-[70vh] w-full rounded-md bg-gray-400 dark:bg-gray-700" />
+      <Skeleton className="h-[30vh] lg:h-[70vh] w-full rounded-md bg-gray-400 dark:bg-gray-700" />
       <div className="space-y-2">
         <Skeleton className="h-4 w-[95%] bg-gray-400 dark:bg-gray-700" />
       </div>
