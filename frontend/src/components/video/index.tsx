@@ -13,11 +13,11 @@ const Video = () => {
   return (
     <>
       {isLoading ? (
-        <div className="text-center">
+        <div className="text-center mt-5">
           <h3>Video loading...</h3>
         </div>
       ) : (
-        <div>
+        <div className="p-2 lg:p-4">
           {video && <VideoPlayer video={video} />}
           <div className="p-4 space-y-2">
             <h2 className="text-xl font-semibold">{video.title}</h2>

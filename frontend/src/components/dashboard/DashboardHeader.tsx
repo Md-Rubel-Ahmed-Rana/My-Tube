@@ -52,7 +52,10 @@ const DashboardHeader = ({ totalVideos }: Props) => {
                 >
                   Total Videos: {totalVideos}
                 </Badge>
-                <Badge variant="secondary">
+                <Badge
+                  className="bg-gray-200 dark:bg-gray-700"
+                  variant="secondary"
+                >
                   Joined: {new Date(user?.createdAt).toLocaleDateString()}
                 </Badge>
               </div>
