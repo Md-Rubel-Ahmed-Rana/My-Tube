@@ -1,3 +1,4 @@
+import { IEditVideo } from "@/types/video.type";
 import apiSlice from "../api";
 
 const videoApi = apiSlice.injectEndpoints({
@@ -14,6 +15,20 @@ const videoApi = apiSlice.injectEndpoints({
       query: ({ id }: { id: string }) => ({
         url: `video/${id}/views`,
         method: "PATCH",
+      }),
+      invalidatesTags: ["video"],
+    }),
+    updateVideo: build.mutation({
+      query: ({
+        id,
+        updatedData,
+      }: {
+        id: string;
+        updatedData: IEditVideo;
+      }) => ({
+        url: `video/${id}`,
+        method: "PATCH",
+        body: updatedData,
       }),
       invalidatesTags: ["video"],
     }),
@@ -44,4 +59,5 @@ export const {
   useGetVideosQuery,
   useGetSingleVideoQuery,
   useIncrementVideoViewsMutation,
+  useUpdateVideoMutation,
 } = videoApi;
