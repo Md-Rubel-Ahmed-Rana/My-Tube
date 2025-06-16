@@ -31,11 +31,20 @@ const RegisterForm = () => {
   const [register, { isLoading }] = useUserRegisterMutation();
 
   const handleRegister = async (values: z.infer<typeof registerSchema>) => {
-    await handleApiMutation(register, values, 201, {
-      error: "Failed to register",
-      success: "User registered successfully",
-    });
-    router.push("/account/login");
+    await handleApiMutation(
+      register,
+      values,
+      201,
+      {
+        error: "Failed to register",
+        success: "User registered successfully",
+      },
+      {
+        isRedirect: true,
+        path: "/account/login",
+        router,
+      }
+    );
   };
 
   return (
