@@ -17,6 +17,7 @@ import { uploadVideoSchema } from "@/schemas/video.schema";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useState } from "react";
 import { useUploadVideoMutation } from "@/features/videos";
+import VideoPreviewCard from "./VideoPreviewCard";
 
 const VideoUploadForm = () => {
   const router = useRouter();
@@ -152,9 +153,7 @@ const VideoUploadForm = () => {
           )}
         />
 
-        {selectedFile && (
-          <p className="text-sm text-gray-500">Selected: {selectedFile.name}</p>
-        )}
+        {selectedFile && <VideoPreviewCard video={selectedFile} />}
 
         <div className="pt-4">
           <Button type="submit" className="w-full" disabled={isLoading}>
