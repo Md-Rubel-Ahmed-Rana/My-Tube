@@ -30,7 +30,7 @@ const VideoPlayer = ({ video }: Props) => {
           src={video.videoUrl}
           controls={true}
           aspectRatio="16/9"
-          className="rounded-md p-0 overflow-hidden lg:h-[80vh] h-auto"
+          className="rounded-lg p-0 overflow-hidden lg:h-[80vh] h-auto"
           autoPlay={true}
           onPlay={handlePlay}
           playsInline={true}
