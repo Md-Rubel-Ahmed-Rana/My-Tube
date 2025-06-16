@@ -29,12 +29,16 @@ const NavDropdown = () => {
       >
         {user?.id ? (
           <>
-            <DropdownMenuItem className="w-full">Profile</DropdownMenuItem>
-            <Link href={"/dashboard"} className="w-full mb-2">
-              <DropdownMenuItem className="w-full">My Videos</DropdownMenuItem>
+            <DropdownMenuItem className="w-full cursor-pointer">
+              Profile
+            </DropdownMenuItem>
+            <Link href={"/dashboard"} className="w-full mb-2 cursor-pointer">
+              <DropdownMenuItem className="w-full cursor-pointer">
+                My Videos
+              </DropdownMenuItem>
             </Link>
-            <Link href={"/video/upload"} className="w-full mb-2">
-              <DropdownMenuItem className="w-full">
+            <Link href={"/video/upload"} className="w-full mb-2 cursor-pointer">
+              <DropdownMenuItem className="w-full cursor-pointer">
                 Upload Video
               </DropdownMenuItem>
             </Link>
