@@ -16,3 +16,9 @@ export type IVideo = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type IEditVideo = {
+  title: string;
+  description: string;
+  tags: string[];
+};
