@@ -8,6 +8,7 @@ import { formatBytes } from "@/utils/formatBytes";
 import { formatDuration } from "@/utils/formatDuration";
 import Link from "next/link";
 import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
+import NyVideoActions from "./NyVideoActions";
 
 type Props = {
   video: IVideo;
@@ -32,9 +33,14 @@ const MyVideoCard = ({ video }: Props) => {
 
         <CardContent className="flex-1 flex flex-col justify-between p-0">
           <div>
-            <CardTitle className="text-xl font-semibold">
-              {video.title}
-            </CardTitle>
+            <div className="flex justify-between gap-1">
+              <CardTitle className="text-xl font-semibold">
+                {video.title}
+              </CardTitle>
+              <div>
+                <NyVideoActions video={video} />
+              </div>
+            </div>
             <p className="text-sm text-muted-foreground">
               Uploaded {moment(new Date(video.createdAt)).fromNow()}
             </p>
