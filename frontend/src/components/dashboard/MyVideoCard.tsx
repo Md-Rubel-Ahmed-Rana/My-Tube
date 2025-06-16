@@ -8,7 +8,7 @@ import { formatBytes } from "@/utils/formatBytes";
 import { formatDuration } from "@/utils/formatDuration";
 import Link from "next/link";
 import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
-import NyVideoActions from "./NyVideoActions";
+import MyVideoActions from "./MyVideoActions";
 
 type Props = {
   video: IVideo;
@@ -38,7 +38,7 @@ const MyVideoCard = ({ video }: Props) => {
                 {video.title}
               </CardTitle>
               <div>
-                <NyVideoActions video={video} />
+                <MyVideoActions video={video} />
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
