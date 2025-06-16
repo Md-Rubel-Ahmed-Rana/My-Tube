@@ -9,7 +9,7 @@ import Link from "next/link";
 const Navbar = () => {
   return (
     <div className="w-full shadow-sm border-b bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="px-4 py-3 flex items-center justify-between">
         <Link href={"/"}>
           <div className="flex items-center gap-2">
             <Image

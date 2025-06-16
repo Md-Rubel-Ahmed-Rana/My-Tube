@@ -10,7 +10,13 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    getVideosByOwner: build.query({
+      query: () => ({
+        url: "video/owner",
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
-export const { useUploadVideoMutation } = videoApi;
+export const { useUploadVideoMutation, useGetVideosByOwnerQuery } = videoApi;
