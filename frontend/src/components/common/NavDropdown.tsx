@@ -26,7 +26,7 @@ const NavDropdown = () => {
           {isLoading ? (
             <Spinner />
           ) : user?.id ? (
-            <Avatar className="h-10 w-10 cursor-pointer">
+            <Avatar className="h-8 lg:h-10 w-8 lg:w-10 cursor-pointer">
               <AvatarImage src={user?.photo} alt="profile image" />
               <AvatarFallback>
                 {formatNameForImageFallback(user?.name)}
@@ -81,11 +81,6 @@ const NavDropdown = () => {
             <Link className="w-full" href={"/account/create"}>
               <DropdownMenuItem className="cursor-pointer">
                 Register
-              </DropdownMenuItem>
-            </Link>
-            <Link href={"/video/upload"} className="w-full mb-2">
-              <DropdownMenuItem className="w-full block lg:hidden">
-                Upload Video
               </DropdownMenuItem>
             </Link>
             <DropdownMenuItem className="block lg:hidden">

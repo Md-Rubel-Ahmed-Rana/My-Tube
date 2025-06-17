@@ -57,6 +57,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    searchVideos: build.query({
+      query: ({ searchText }: { searchText: string }) => ({
+        url: `video/search?searchText=${searchText}`,
+      }),
+      providesTags: ["video"],
+    }),
     updateThumbnail: build.mutation({
       query: ({ id, formData }: { id: string; formData: FormData }) => ({
         method: "PATCH",
@@ -77,4 +83,5 @@ export const {
   useUpdateVideoMutation,
   useDeleteVideoMutation,
   useUpdateThumbnailMutation,
+  useSearchVideosQuery,
 } = videoApi;
