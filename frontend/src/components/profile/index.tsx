@@ -8,11 +8,13 @@ import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import { Camera, Pencil } from "lucide-react";
 import { useState } from "react";
 import NameUpdateForm from "./NameUpdateForm";
+import UpdateProfileImageModal from "./UpdateProfileImageModal";
 
 const Profile = () => {
   const { data, isLoading } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
   const [isNameChange, setIsNameChange] = useState(false);
+  const [isPhotoChange, setIsPhotoChange] = useState(false);
 
   return (
     <div className="max-w-2xl  mx-auto mt-5 px-2 lg:px-4">
@@ -27,15 +29,25 @@ const Profile = () => {
                   <AvatarImage
                     src={user?.photo}
                     className="ring-1"
-                    alt={user.name}
+                    alt={user?.name}
                   />
                   <AvatarFallback className="border bg-gray-300 dark:bg-gray-700">
-                    {formatNameForImageFallback(user.name)}
+                    {formatNameForImageFallback(user?.name || "")}
                   </AvatarFallback>
                 </>
               )}
             </Avatar>
-            <Camera className="absolute top-0 right-0 cursor-pointer" />
+            <Camera
+              onClick={() => setIsPhotoChange(true)}
+              className="absolute top-0 right-0 cursor-pointer"
+            />
+            {isPhotoChange && (
+              <UpdateProfileImageModal
+                id={user?.id}
+                open={isPhotoChange}
+                setOpen={setIsPhotoChange}
+              />
+            )}
           </div>
           <div className="w-full">
             {isLoading ? (
@@ -82,7 +94,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="w-full lg:w-1/2 h-3 mt-2 bg-gray-300 dark:bg-gray-700" />
             ) : (
-              <p>{user.email}</p>
+              <p>{user?.email}</p>
             )}
           </div>
 
@@ -102,7 +114,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="w-full lg:w-1/2 h-3 mt-2 bg-gray-300 dark:bg-gray-700" />
             ) : (
-              <p>{new Date(user.createdAt).toLocaleDateString()}</p>
+              <p>{new Date(user?.createdAt).toLocaleDateString()}</p>
             )}
           </div>
 
@@ -111,7 +123,7 @@ const Profile = () => {
             {isLoading ? (
               <Skeleton className="w-full lg:w-1/2 h-3 mt-2 bg-gray-300 dark:bg-gray-700" />
             ) : (
-              <p>{new Date(user.updatedAt).toLocaleDateString()}</p>
+              <p>{new Date(user?.updatedAt).toLocaleDateString()}</p>
             )}
           </div>
         </CardContent>
