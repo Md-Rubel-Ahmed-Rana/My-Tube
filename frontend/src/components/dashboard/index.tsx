@@ -2,7 +2,7 @@ import { useGetVideosByOwnerQuery } from "@/features/videos";
 import DashboardHeader from "./DashboardHeader";
 import MyVideos from "./MyVideos";
 import { IVideo } from "@/types/video.type";
-import VideoLoadingSkeleton from "@/skeletons/Video-loading.skeleton";
+import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 
 const Dashboard = () => {
   const { data, isLoading } = useGetVideosByOwnerQuery({});

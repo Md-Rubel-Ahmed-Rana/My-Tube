@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import VideoPlayer from "./VideoPlayer";
 import moment from "moment";
 import { formatDuration } from "@/utils/formatDuration";
-import VideoPlayerPageSkeleton from "@/skeletons/Video-player-page.skeleton";
+import VideoPlayerPageSkeleton from "@/skeletons/VideoPlayLoading.skeleton";
 import ChannelCard from "./ChannelCard";
 import RelatedVideos from "../related-videos";
 
