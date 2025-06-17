@@ -10,7 +10,16 @@ const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
+    updateProfileImage: builder.mutation({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
+        method: "PATCH",
+        url: `user/${id}/photo`,
+        body: formData,
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
-export const { useUpdateUserNameMutation } = userApi;
+export const { useUpdateUserNameMutation, useUpdateProfileImageMutation } =
+  userApi;
