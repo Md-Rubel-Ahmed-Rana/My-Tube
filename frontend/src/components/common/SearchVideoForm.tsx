@@ -1,11 +1,18 @@
 import { Input } from "@/components/ui/input";
+import { useClearSearchOnRouteChange } from "@/hooks/useClearSearchOnRouteChange";
 import { Search } from "lucide-react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const SearchVideoForm = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const clearSearch = useCallback(() => {
+    setSearchQuery("");
+  }, []);
+
+  useClearSearchOnRouteChange(clearSearch);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
