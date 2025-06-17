@@ -35,6 +35,12 @@ export class VideoController {
     );
   }
 
+  @Get("search")
+  searchVideo(@Query() query: QueryVideoDto) {
+    const { searchText } = query;
+    return this.videoService.searchVideo(searchText);
+  }
+
   @Post("upload")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("video"))
