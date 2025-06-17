@@ -8,12 +8,15 @@ import * as bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import { ConfigService } from "@nestjs/config";
 import { Readable } from "stream";
+import { extractPublicId } from "src/utils/extractPublicId";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class UserService {
   constructor(
     private config: ConfigService,
-    @InjectModel(User.name) private userModel: Model<User>
+    @InjectModel(User.name) private userModel: Model<User>,
+    private eventEmitter: EventEmitter2
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -98,9 +101,24 @@ export class UserService {
           if (error) return reject(error);
 
           try {
+            const user = await this.userModel.findById(id);
+            if (!user) {
+              throw new HttpException(
+                "User was not found!",
+                HttpStatus.NOT_FOUND
+              );
+            }
             await this.userModel.findByIdAndUpdate(id, {
               $set: { photo: result?.secure_url },
             });
+
+            if (user?.photo) {
+              const publicId = extractPublicId(user.photo);
+
+              if (publicId) {
+                this.eventEmitter.emit("user-photo.deleted", publicId);
+              }
+            }
 
             resolve({
               statusCode: HttpStatus.OK,
