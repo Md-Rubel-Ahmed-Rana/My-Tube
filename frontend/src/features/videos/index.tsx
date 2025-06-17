@@ -57,6 +57,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getRelatedVideos: build.query({
+      query: ({ currentVideoId }: { currentVideoId: string }) => ({
+        url: `video/${currentVideoId}/related-videos`,
+      }),
+      providesTags: ["video"],
+    }),
     searchVideos: build.query({
       query: ({ searchText }: { searchText: string }) => ({
         url: `video/search?searchText=${searchText}`,
@@ -84,4 +90,5 @@ export const {
   useDeleteVideoMutation,
   useUpdateThumbnailMutation,
   useSearchVideosQuery,
+  useGetRelatedVideosQuery,
 } = videoApi;

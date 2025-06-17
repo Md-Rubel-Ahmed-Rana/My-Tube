@@ -7,6 +7,7 @@ import moment from "moment";
 import { formatDuration } from "@/utils/formatDuration";
 import VideoPlayerPageSkeleton from "@/skeletons/Video-player-page.skeleton";
 import ChannelCard from "./ChannelCard";
+import RelatedVideos from "../related-videos";
 
 const Video = () => {
   const { query } = useRouter();
@@ -14,11 +15,13 @@ const Video = () => {
   const { data, isLoading } = useGetSingleVideoQuery({ id });
   const video = data?.data as IVideo;
   return (
-    <div className="p-2 lg:p-4">
+    <div className="p-2 lg:p-4 flex justify-between gap-3 lg:gap-5">
       {isLoading ? (
-        <VideoPlayerPageSkeleton />
+        <div className="lg:w-[65%] w-auto">
+          <VideoPlayerPageSkeleton />
+        </div>
       ) : (
-        <div>
+        <div className="lg:w-[65%] w-auto">
           {video && <VideoPlayer video={video} />}
           <div className="space-y-2 mt-2">
             <h2 className="text-xl font-semibold">{video?.title}</h2>
@@ -43,6 +46,9 @@ const Video = () => {
           </div>
         </div>
       )}
+      <div className="w-[30%] hidden lg:block">
+        <RelatedVideos />
+      </div>
     </div>
   );
 };
