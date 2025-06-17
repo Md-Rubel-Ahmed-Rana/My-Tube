@@ -69,9 +69,9 @@ const MyVideoCard = ({ video }: Props) => {
             </div>
           </div>
 
-          {video.tags.length > 0 && (
+          {video?.tags?.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {video.tags.slice(0, 3).map((tag) => (
+              {video.tags.map((tag) => (
                 <Badge key={tag} variant="outline">
                   #{tag}
                 </Badge>
