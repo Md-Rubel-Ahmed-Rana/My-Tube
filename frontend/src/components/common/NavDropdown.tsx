@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -5,24 +6,40 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import LogoutButton from "./LogoutButton";
+import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
+import { Menu } from "lucide-react";
+import Spinner from "./Spinner";
 
 const NavDropdown = () => {
-  const { data } = useGetLoggedInUserQuery({});
+  const { data, isLoading } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="rounded-full border" variant="ghost" size="icon">
-          <User className="h-5 w-5" />
-        </Button>
+        <div>
+          {isLoading ? (
+            <Spinner />
+          ) : user?.id ? (
+            <Avatar className="h-10 w-10 cursor-pointer">
+              <AvatarImage src={user?.photo} alt="profile image" />
+              <AvatarFallback>
+                {formatNameForImageFallback(user?.name)}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <Button>
+              <Menu />
+            </Button>
+          )}
+        </div>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
         align="end"
         className="flex flex-col justify-center items-center"
