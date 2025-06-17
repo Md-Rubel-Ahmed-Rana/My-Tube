@@ -10,6 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import { Readable } from "stream";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { generateUsername } from "src/utils/generateUsername";
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     await this.userAlreadyExist(createUserDto.email);
     createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
+    createUserDto.username = generateUsername(createUserDto?.email);
     await this.userModel.create(createUserDto);
     return {
       statusCode: HttpStatus.CREATED,
