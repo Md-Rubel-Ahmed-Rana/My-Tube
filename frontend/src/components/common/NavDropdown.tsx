@@ -29,9 +29,16 @@ const NavDropdown = () => {
       >
         {user?.id ? (
           <>
-            <DropdownMenuItem className="w-full cursor-pointer">
-              Profile
-            </DropdownMenuItem>
+            <Link
+              href={`/profile/${
+                user?.username || user?.name?.split(" ")?.join("-")
+              }?name=${user?.name}`}
+              className="w-full mb-2 cursor-pointer"
+            >
+              <DropdownMenuItem className="w-full cursor-pointer">
+                Profile
+              </DropdownMenuItem>
+            </Link>
             <Link href={"/dashboard"} className="w-full mb-2 cursor-pointer">
               <DropdownMenuItem className="w-full cursor-pointer">
                 My Videos

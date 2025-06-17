@@ -1,9 +1,10 @@
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 
 type Props = {
   totalVideos: number;
@@ -12,13 +13,6 @@ type Props = {
 const DashboardHeader = ({ totalVideos }: Props) => {
   const { data, isLoading } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
-
-  const getInitials = (name: string) =>
-    name
-      ?.split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
 
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
@@ -31,7 +25,10 @@ const DashboardHeader = ({ totalVideos }: Props) => {
           <Skeleton className="h-16 w-16 rounded-full" />
         ) : (
           <Avatar className="h-16 w-16">
-            <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+            <AvatarImage src={user?.photo} alt="profile image" />
+            <AvatarFallback>
+              {formatNameForImageFallback(user?.name)}
+            </AvatarFallback>
           </Avatar>
         )}
 
@@ -44,7 +41,9 @@ const DashboardHeader = ({ totalVideos }: Props) => {
           ) : (
             <>
               <h2 className="text-lg font-medium">{user?.name}</h2>
-              <p className="text-muted-foreground">{user?.email}</p>
+              <p className="text-muted-foreground">
+                {user?.username || "unknown username"}
+              </p>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center sm:justify-start">
                 <Badge
                   className="text-gray-800 dark:text-gray-200"
