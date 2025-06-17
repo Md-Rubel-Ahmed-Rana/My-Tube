@@ -9,6 +9,7 @@ import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
 import VideoDeleteModal from "./VideoDeleteModal";
 import { useState } from "react";
+import VideoThumbnailUpdateModal from "./VideoThumbnailUpdateModal";
 
 type Props = {
   video: IVideo;
@@ -16,6 +17,7 @@ type Props = {
 
 const MyVideoActions = ({ video }: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [isThumbnailChange, setIsThumbnailChange] = useState(false);
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -40,6 +42,15 @@ const MyVideoActions = ({ video }: Props) => {
           <DropdownMenuItem
             onClick={(e) => {
               e.stopPropagation();
+              setIsThumbnailChange(true);
+            }}
+            className="w-full cursor-pointer"
+          >
+            Change thumbnail
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
               setOpenDeleteModal(true);
             }}
             className="w-full cursor-pointer"
@@ -54,6 +65,14 @@ const MyVideoActions = ({ video }: Props) => {
         open={openDeleteModal}
         onOpenChange={setOpenDeleteModal}
       />
+
+      {isThumbnailChange && (
+        <VideoThumbnailUpdateModal
+          id={video?.id}
+          open={isThumbnailChange}
+          setOpen={setIsThumbnailChange}
+        />
+      )}
     </div>
   );
 };
