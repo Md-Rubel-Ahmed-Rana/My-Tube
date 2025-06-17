@@ -17,11 +17,11 @@ const Video = () => {
   return (
     <div className="p-2 lg:p-4 flex justify-between gap-3 lg:gap-5">
       {isLoading ? (
-        <div className="lg:w-[65%] w-auto">
+        <div className="lg:w-[65%] w-full">
           <VideoPlayerPageSkeleton />
         </div>
       ) : (
-        <div className="lg:w-[65%] w-auto">
+        <div className="lg:w-[65%] w-full">
           {video && <VideoPlayer video={video} />}
           <div className="space-y-2 mt-2">
             <h2 className="text-xl font-semibold">{video?.title}</h2>
