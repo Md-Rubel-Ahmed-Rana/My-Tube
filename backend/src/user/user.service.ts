@@ -5,10 +5,22 @@ import { InjectModel } from "@nestjs/mongoose";
 import { User } from "./user.schema";
 import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
+import { ConfigService } from "@nestjs/config";
+import { Readable } from "stream";
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    private config: ConfigService,
+    @InjectModel(User.name) private userModel: Model<User>
+  ) {
+    cloudinary.config({
+      cloud_name: this.config.get("CLOUDINARY_NAME"),
+      api_key: this.config.get("CLOUDINARY_API_KEY"),
+      api_secret: this.config.get("CLOUDINARY_API_SECRET"),
+    });
+  }
 
   async create(createUserDto: CreateUserDto) {
     await this.userAlreadyExist(createUserDto.email);
@@ -69,5 +81,46 @@ export class UserService {
     } else {
       return;
     }
+  }
+
+  async updateProfilePhoto(id: Types.ObjectId, file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+          folder: "my-tube/profile-photos",
+        },
+        async (error, result) => {
+          if (error) return reject(error);
+
+          try {
+            await this.userModel.findByIdAndUpdate(id, {
+              $set: { photo: result?.secure_url },
+            });
+
+            resolve({
+              statusCode: HttpStatus.OK,
+              success: true,
+              message: "Your profile photo updated successfully",
+              data: null,
+            });
+          } catch (dbError) {
+            reject(
+              new HttpException(
+                "Failed to update user photo",
+                HttpStatus.INTERNAL_SERVER_ERROR
+              )
+            );
+          }
+        }
+      );
+
+      const readableStream = Readable.from(file.buffer);
+      readableStream.pipe(uploadStream);
+    });
   }
 }
