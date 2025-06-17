@@ -1,4 +1,3 @@
-import { Params } from "./../../node_modules/@types/passport-google-oauth2/node_modules/@types/express-serve-static-core/index.d";
 import {
   Controller,
   Post,

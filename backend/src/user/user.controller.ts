@@ -1,8 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  UseInterceptors,
+  Req,
+  UploadedFile,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Types } from "mongoose";
+import { AuthGuard } from "src/auth/auth.guard";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("user")
 export class UserController {
@@ -24,5 +37,14 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto
   ) {
     return this.userService.update(id, updateUserDto);
+  }
+  @Patch(":id/photo")
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor("photo"))
+  updateProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: { user: { id: Types.ObjectId } }
+  ) {
+    return this.userService.updateProfilePhoto(req.user?.id, file);
   }
 }
