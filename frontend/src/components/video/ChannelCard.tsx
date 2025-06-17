@@ -10,7 +10,7 @@ const ChannelCard = ({ channel }: Props) => {
   return (
     <div className="border rounded-lg p-2">
       <div className="flex items-center gap-4 pb-2">
-        <Avatar className="w-14 h-14">
+        <Avatar className="w-10 lg:w-14 h-10 lg:h-14">
           <AvatarImage src={channel?.photo} alt={channel?.name} />
           <AvatarFallback>
             {channel?.name
