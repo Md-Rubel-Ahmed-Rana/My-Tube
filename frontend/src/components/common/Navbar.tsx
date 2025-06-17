@@ -24,7 +24,9 @@ const Navbar = () => {
               height={32}
               className="rounded-full"
             />
-            <span className="font-semibold text-md lg:text-xl">MyTube</span>
+            <span className="font-semibold hidden lg:block text-xl">
+              MyTube
+            </span>
           </div>
         </Link>
 
