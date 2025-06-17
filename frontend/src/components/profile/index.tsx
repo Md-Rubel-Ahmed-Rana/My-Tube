@@ -5,34 +5,38 @@ import { Label } from "@/components/ui/label";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
+import { Camera, Pencil } from "lucide-react";
+import { useState } from "react";
+import NameUpdateForm from "./NameUpdateForm";
 
 const Profile = () => {
   const { data, isLoading } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
-
-  if (isLoading || !user)
-    return <div className="text-center py-10">Loading...</div>;
+  const [isNameChange, setIsNameChange] = useState(false);
 
   return (
     <div className="max-w-2xl  mx-auto mt-5 px-2 lg:px-4">
       <Card className="bg-gray-100 dark:bg-gray-800 p-2 lg:p-4">
         <CardHeader className="flex flex-col items-center text-center gap-4">
-          <Avatar className="h-24 w-24">
-            {isLoading ? (
-              <Skeleton className="w-24 h-24 border rounded-full bg-gray-300 dark:bg-gray-700" />
-            ) : (
-              <>
-                <AvatarImage
-                  src={user?.photo}
-                  className="ring-1"
-                  alt={user.name}
-                />
-                <AvatarFallback className="border bg-gray-300 dark:bg-gray-700">
-                  {formatNameForImageFallback(user.name)}
-                </AvatarFallback>
-              </>
-            )}
-          </Avatar>
+          <div className="relative">
+            <Avatar className="h-24 w-24 ">
+              {isLoading ? (
+                <Skeleton className="w-24 h-24 border rounded-full bg-gray-300 dark:bg-gray-700" />
+              ) : (
+                <>
+                  <AvatarImage
+                    src={user?.photo}
+                    className="ring-1"
+                    alt={user.name}
+                  />
+                  <AvatarFallback className="border bg-gray-300 dark:bg-gray-700">
+                    {formatNameForImageFallback(user.name)}
+                  </AvatarFallback>
+                </>
+              )}
+            </Avatar>
+            <Camera className="absolute top-0 right-0 cursor-pointer" />
+          </div>
           <div className="w-full">
             {isLoading ? (
               <div className="w-full flex flex-col justify-center items-center gap-2">
@@ -41,10 +45,30 @@ const Profile = () => {
               </div>
             ) : (
               <>
-                <CardTitle className="text-2xl">{user?.name}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  @{user?.username || "unknown username"}
-                </p>
+                {isNameChange ? (
+                  <NameUpdateForm
+                    id={user?.id}
+                    name={user?.name}
+                    setOpen={setIsNameChange}
+                    username={user?.username}
+                  />
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 justify-center">
+                      <CardTitle className="text-lg lg:text-2xl">
+                        {user?.name}
+                      </CardTitle>
+                      <Pencil
+                        size={16}
+                        onClick={() => setIsNameChange(true)}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      @{user?.username || "unknown username"}
+                    </p>
+                  </>
+                )}
               </>
             )}
           </div>
