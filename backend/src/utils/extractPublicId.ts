@@ -9,7 +9,14 @@ export const extractPublicId = (url: string): string | null => {
       return null;
     }
 
-    const publicIdWithExtension = parts.slice(uploadIndex + 1).join("/");
+    const afterUpload = parts.slice(uploadIndex + 1);
+
+    const versionRegex = /^v\d+$/;
+    const relevantParts = versionRegex.test(afterUpload[0])
+      ? afterUpload.slice(1)
+      : afterUpload;
+
+    const publicIdWithExtension = relevantParts.join("/");
     const lastDotIndex = publicIdWithExtension.lastIndexOf(".");
 
     if (lastDotIndex === -1) {

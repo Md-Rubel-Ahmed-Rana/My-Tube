@@ -2,6 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { OnEvent } from "@nestjs/event-emitter";
 import { v2 as cloudinary } from "cloudinary";
+import { cloudinaryFileDelete } from "src/utils/cloudinaryFileDelete";
 
 @Injectable()
 export class ThumbnailDelete {
@@ -21,23 +22,12 @@ export class ThumbnailDelete {
       `Attempting to delete thumbnail with publicId: ${publicId}`
     );
 
-    try {
-      const result = await cloudinary.uploader.destroy(publicId, {
-        resource_type: "video",
-      });
-
-      if (result.result === "ok") {
-        this.logger.log(`Successfully deleted thumbnail: ${publicId}`);
-      } else {
-        this.logger.warn(
-          `Failed to delete thumbnail: ${publicId}, Cloudinary response: ${result.result}`
-        );
-      }
-    } catch (error) {
-      this.logger.error(
-        `Error deleting thumbnail with publicId: ${publicId}`,
-        error.stack
-      );
-    }
+    cloudinaryFileDelete(
+      cloudinary,
+      publicId,
+      this.logger,
+      "image",
+      "thumbnail"
+    );
   }
 }
