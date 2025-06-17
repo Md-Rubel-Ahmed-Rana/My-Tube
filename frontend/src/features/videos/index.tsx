@@ -57,6 +57,14 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    updateThumbnail: build.mutation({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
+        method: "PATCH",
+        url: `video/${id}/thumbnail`,
+        body: formData,
+      }),
+      invalidatesTags: ["video"],
+    }),
   }),
 });
 
@@ -68,4 +76,5 @@ export const {
   useIncrementVideoViewsMutation,
   useUpdateVideoMutation,
   useDeleteVideoMutation,
+  useUpdateThumbnailMutation,
 } = videoApi;
