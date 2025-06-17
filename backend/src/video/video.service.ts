@@ -148,6 +148,30 @@ export class VideoService {
     };
   }
 
+  async searchVideo(searchText: string) {
+    const query: any = {};
+
+    if (searchText) {
+      query.$or = [
+        { title: { $regex: searchText, $options: "i" } },
+        { description: { $regex: searchText, $options: "i" } },
+        { tags: { $in: [new RegExp(searchText, "i")] } },
+      ];
+    }
+
+    const videos = await this.videoModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .populate("owner", "-password");
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Videos search result retrieved successfully",
+      data: videos,
+    };
+  }
+
   async findOne(id: Types.ObjectId) {
     const video = await this.videoModel
       .findById(id)
