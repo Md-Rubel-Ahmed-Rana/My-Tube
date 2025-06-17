@@ -41,6 +41,11 @@ export class VideoController {
     return this.videoService.searchVideo(searchText);
   }
 
+  @Get(":id/related-videos")
+  relatedVideos(@Param("id") id: Types.ObjectId) {
+    return this.videoService.relatedVideos(id);
+  }
+
   @Post("upload")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("video"))
