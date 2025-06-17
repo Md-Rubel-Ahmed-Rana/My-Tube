@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { useGetSingleVideoQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
@@ -5,6 +6,7 @@ import VideoPlayer from "./VideoPlayer";
 import moment from "moment";
 import { formatDuration } from "@/utils/formatDuration";
 import VideoPlayerPageSkeleton from "@/skeletons/Video-player-page.skeleton";
+import ChannelCard from "./ChannelCard";
 
 const Video = () => {
   const { query } = useRouter();
@@ -25,6 +27,16 @@ const Video = () => {
               <span>{moment(video?.createdAt).fromNow()}</span>
               <span>{formatDuration(video?.duration)}</span>
             </div>
+            <ChannelCard channel={video?.owner} />
+            {video?.tags?.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1">
+                {video.tags.map((tag) => (
+                  <Badge key={tag} variant="outline">
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
             <p className="text-sm text-muted-foreground">
               {video?.description}
             </p>
