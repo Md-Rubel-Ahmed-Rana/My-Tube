@@ -172,6 +172,51 @@ export class VideoService {
     };
   }
 
+  async relatedVideos(currentVideoId: Types.ObjectId) {
+    const objectId = new Types.ObjectId(currentVideoId);
+    const currentVideo = await this.videoModel.findById(objectId);
+    if (!currentVideo) {
+      throw new HttpException("Video not found", HttpStatus.NOT_FOUND);
+    }
+
+    const { title = "", description = "", tags = [] } = currentVideo;
+
+    const matchQuery = {
+      _id: { $ne: objectId },
+      $or: [
+        { title: { $regex: title.split(" ")[0], $options: "i" } },
+        { description: { $regex: description.split(" ")[0], $options: "i" } },
+        { tags: { $in: tags.map((tag) => new RegExp(tag, "i")) } },
+      ],
+    };
+
+    const matchedVideos = await this.videoModel
+      .find(matchQuery)
+      .limit(10)
+      .populate("owner", "-password");
+
+    const matchedIds = matchedVideos.map((video) => video._id);
+
+    const unmatchedVideos = await this.videoModel
+      .find({
+        _id: {
+          $nin: [objectId, ...matchedIds],
+        },
+      })
+      .limit(10)
+      .sort({ createdAt: -1 })
+      .populate("owner", "-password");
+
+    const videos = [...matchedVideos, ...unmatchedVideos];
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Related videos retrieved successfully",
+      data: videos,
+    };
+  }
+
   async findOne(id: Types.ObjectId) {
     const video = await this.videoModel
       .findById(id)
