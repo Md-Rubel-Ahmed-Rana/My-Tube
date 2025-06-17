@@ -46,6 +46,11 @@ export class VideoController {
     return this.videoService.relatedVideos(id);
   }
 
+  @Get("channel/:id")
+  getOwnerVideosForChannel(@Param("id") id: Types.ObjectId) {
+    return this.videoService.getOwnerVideosForChannel(id);
+  }
+
   @Post("upload")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("video"))

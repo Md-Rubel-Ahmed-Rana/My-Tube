@@ -95,6 +95,18 @@ export class VideoService {
     };
   }
 
+  async getOwnerVideosForChannel(owner: Types.ObjectId) {
+    const videos = await this.videoModel
+      .find({ owner: new Types.ObjectId(owner) })
+      .sort({ createdAt: -1 });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All the videos of a channel retrieved successfully",
+      data: videos,
+    };
+  }
+
   async findAll(
     searchText: string,
     filters: Record<string, string>,
