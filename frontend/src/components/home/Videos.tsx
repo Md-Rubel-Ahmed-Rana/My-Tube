@@ -1,7 +1,7 @@
 import { useGetVideosQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import VideoCard from "./VideoCard";
-import VideoLoadingSkeleton from "@/skeletons/Video-loading.skeleton";
+import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 
 const Videos = () => {
   const { data, isLoading } = useGetVideosQuery({});
