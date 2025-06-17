@@ -14,6 +14,7 @@ import { Model, Types } from "mongoose";
 import { parseField } from "src/utils/parseField";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { extractPublicId } from "src/utils/extractPublicId";
 
 @Injectable()
 export class VideoService {
@@ -180,6 +181,7 @@ export class VideoService {
     await this.videoModel.findByIdAndDelete(id);
 
     this.eventEmitter.emit("video.deleted", video?.publicId);
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -285,9 +287,25 @@ export class VideoService {
           if (error) return reject(error);
 
           try {
+            const video = await this.videoModel.findById(id);
+            if (!video) {
+              throw new HttpException(
+                "Video was not found!",
+                HttpStatus.NOT_FOUND
+              );
+            }
+
             await this.videoModel.findByIdAndUpdate(id, {
               $set: { thumbnailUrl: result?.secure_url },
             });
+
+            if (video?.thumbnailUrl) {
+              const thumbnailPublicId = extractPublicId(video.thumbnailUrl);
+
+              if (thumbnailPublicId && thumbnailPublicId !== video.publicId) {
+                this.eventEmitter.emit("thumbnail.deleted", thumbnailPublicId);
+              }
+            }
 
             resolve({
               statusCode: HttpStatus.OK,
