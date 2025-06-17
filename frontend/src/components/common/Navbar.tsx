@@ -13,7 +13,7 @@ const Navbar = () => {
   const user = data?.data as IUser;
 
   return (
-    <div className="w-full shadow-sm border-b bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+    <div className="w-full shadow-sm border-b bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 sticky top-0 z-50">
       <div className="px-4 py-3 flex items-center justify-between">
         <Link href={"/"}>
           <div className="flex items-center gap-2">
