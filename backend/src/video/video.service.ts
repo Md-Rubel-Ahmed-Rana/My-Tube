@@ -269,4 +269,45 @@ export class VideoService {
       data: null,
     };
   }
+
+  async updateVideoThumbnail(id: Types.ObjectId, file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+          folder: "my-tube/video-thumbnails",
+        },
+        async (error, result) => {
+          if (error) return reject(error);
+
+          try {
+            await this.videoModel.findByIdAndUpdate(id, {
+              $set: { thumbnailUrl: result?.secure_url },
+            });
+
+            resolve({
+              statusCode: HttpStatus.OK,
+              success: true,
+              message: "Your video thumbnail updated successfully",
+              data: null,
+            });
+          } catch (dbError) {
+            reject(
+              new HttpException(
+                "Failed to update video thumbnail",
+                HttpStatus.INTERNAL_SERVER_ERROR
+              )
+            );
+          }
+        }
+      );
+
+      const readableStream = Readable.from(file.buffer);
+      readableStream.pipe(uploadStream);
+    });
+  }
 }
