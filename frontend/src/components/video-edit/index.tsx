@@ -1,7 +1,7 @@
 import { useGetSingleVideoQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
-import VideoEditPageSkeleton from "@/skeletons/Video-edit-page.skeleton";
+import VideoEditPageSkeleton from "@/skeletons/VideoEditLoading.skeleton";
 import VideoEditForm from "./VideoEditForm";
 
 const VideoEdit = () => {

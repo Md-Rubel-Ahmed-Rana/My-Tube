@@ -2,6 +2,7 @@ import { useGetRelatedVideosQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import RelatedVideoCard from "./RelatedVideoCard";
+import RelatedVideoLoadingSkeleton from "@/skeletons/RelatedVideoLoading.skeleton";
 
 const RelatedVideos = () => {
   const { query } = useRouter();
@@ -14,9 +15,7 @@ const RelatedVideos = () => {
   return (
     <>
       {isVideoLoading ? (
-        <div>
-          <h3>Video loading...</h3>
-        </div>
+        <RelatedVideoLoadingSkeleton />
       ) : (
         <div className="flex flex-col gap-3">
           {videos?.map((video) => (

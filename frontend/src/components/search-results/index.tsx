@@ -1,5 +1,5 @@
 import { useSearchVideosQuery } from "@/features/videos";
-import VideoLoadingSkeleton from "@/skeletons/Video-loading.skeleton";
+import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 import { useRouter } from "next/router";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { IVideo } from "@/types/video.type";
