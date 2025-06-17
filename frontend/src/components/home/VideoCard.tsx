@@ -2,10 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { IVideo } from "@/types/video.type";
 import { formatDuration } from "@/utils/formatDuration";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, ThumbsUp, Clock } from "lucide-react";
 import moment from "moment";
 import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
+import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 
 type Props = {
   video: IVideo;
@@ -31,13 +33,21 @@ const VideoCard = ({ video }: Props) => {
           </span>
         </div>
 
-        <CardContent className="p-2 lg:p-2 space-y-2">
+        <CardContent className="px-2 space-y-2">
           <h2 className="text-base font-semibold truncate w-full">
             {video.title}
           </h2>
-          <p className="text-sm text-muted-foreground line-clamp-1">
-            {video.owner.name}
-          </p>
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={video.owner?.photo} alt="profile image" />
+              <AvatarFallback>
+                {formatNameForImageFallback(video?.owner?.name)}
+              </AvatarFallback>
+            </Avatar>
+            <p className="text-sm text-muted-foreground line-clamp-1">
+              {video.owner.name}
+            </p>
+          </div>
 
           <div className="flex justify-between items-center text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
