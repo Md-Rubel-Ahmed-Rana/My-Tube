@@ -1,4 +1,3 @@
-import { Params } from "./../../node_modules/@types/passport-google-oauth2/node_modules/@types/express-serve-static-core/index.d";
 import {
   Controller,
   Post,
@@ -34,6 +33,22 @@ export class VideoController {
       Number(limit) || 10,
       Number(page) || 1
     );
+  }
+
+  @Get("search")
+  searchVideo(@Query() query: QueryVideoDto) {
+    const { searchText } = query;
+    return this.videoService.searchVideo(searchText);
+  }
+
+  @Get(":id/related-videos")
+  relatedVideos(@Param("id") id: Types.ObjectId) {
+    return this.videoService.relatedVideos(id);
+  }
+
+  @Get("channel/:id")
+  getOwnerVideosForChannel(@Param("id") id: Types.ObjectId) {
+    return this.videoService.getOwnerVideosForChannel(id);
   }
 
   @Post("upload")
@@ -96,5 +111,15 @@ export class VideoController {
   @Delete(":id")
   remove(@Param("id") id: Types.ObjectId) {
     return this.videoService.remove(id);
+  }
+
+  @Patch(":id/thumbnail")
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor("thumbnail"))
+  updateProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @Param("id") id: Types.ObjectId
+  ) {
+    return this.videoService.updateVideoThumbnail(id, file);
   }
 }

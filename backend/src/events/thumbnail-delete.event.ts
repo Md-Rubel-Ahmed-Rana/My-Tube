@@ -5,8 +5,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { cloudinaryFileDelete } from "src/utils/cloudinaryFileDelete";
 
 @Injectable()
-export class VideoDelete {
-  private readonly logger = new Logger(VideoDelete.name);
+export class ThumbnailDelete {
+  private readonly logger = new Logger(ThumbnailDelete.name);
 
   constructor(private config: ConfigService) {
     cloudinary.config({
@@ -16,10 +16,18 @@ export class VideoDelete {
     });
   }
 
-  @OnEvent("video.deleted")
-  async handleVideoDeletedEvent(publicId: string) {
-    this.logger.log(`Attempting to delete video with publicId: ${publicId}`);
+  @OnEvent("thumbnail.deleted")
+  async handleThumbnailDeletedEvent(publicId: string) {
+    this.logger.log(
+      `Attempting to delete thumbnail with publicId: ${publicId}`
+    );
 
-    cloudinaryFileDelete(cloudinary, publicId, this.logger, "video", "video");
+    cloudinaryFileDelete(
+      cloudinary,
+      publicId,
+      this.logger,
+      "image",
+      "thumbnail"
+    );
   }
 }
