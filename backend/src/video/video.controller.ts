@@ -96,4 +96,14 @@ export class VideoController {
   remove(@Param("id") id: Types.ObjectId) {
     return this.videoService.remove(id);
   }
+
+  @Patch(":id/thumbnail")
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor("thumbnail"))
+  updateProfilePhoto(
+    @UploadedFile() file: Express.Multer.File,
+    @Param("id") id: Types.ObjectId
+  ) {
+    return this.videoService.updateVideoThumbnail(id, file);
+  }
 }
