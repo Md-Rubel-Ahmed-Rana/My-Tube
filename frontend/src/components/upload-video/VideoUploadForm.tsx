@@ -18,8 +18,6 @@ import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useState } from "react";
 import { useUploadVideoMutation } from "@/features/videos";
 import VideoPreviewCard from "./VideoPreviewCard";
-import { useNavigationBlocker } from "@/hooks/useNavigationBlocker";
-import { useBeforeUnload } from "@/hooks/useBeforeUnload";
 import { validateVideoSize } from "@/utils/validateVideoSize";
 
 const VideoUploadForm = () => {
@@ -58,13 +56,14 @@ const VideoUploadForm = () => {
         router,
       }
     );
+    form.reset();
   };
 
-  // prevent navigation and browser close
-  const message =
-    "Your video is being uploaded. You can't navigate to other page or close the browser anymore until uploading finished.";
-  useNavigationBlocker(isLoading, message);
-  useBeforeUnload(isLoading, message);
+  // // prevent navigation and browser close
+  // const message =
+  //   "Your video is being uploaded. You can't navigate to other page or close the browser anymore until uploading finished.";
+  // useNavigationBlocker(isLoading, message);
+  // useBeforeUnload(isLoading, message);
 
   return (
     <Form {...form}>
