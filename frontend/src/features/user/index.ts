@@ -18,8 +18,17 @@ const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
+    getUserById: builder.query({
+      query: ({ id }: { id: string }) => ({
+        url: `user/${id}`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
-export const { useUpdateUserNameMutation, useUpdateProfileImageMutation } =
-  userApi;
+export const {
+  useUpdateUserNameMutation,
+  useUpdateProfileImageMutation,
+  useGetUserByIdQuery,
+} = userApi;

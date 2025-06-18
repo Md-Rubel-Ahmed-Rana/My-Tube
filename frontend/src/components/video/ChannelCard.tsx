@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/types/user.type";
+import Link from "next/link";
 
 type Props = {
   channel: IUser;
@@ -24,7 +25,11 @@ const ChannelCard = ({ channel }: Props) => {
         <div className="space-y-1">
           <h2 className="text-lg">{channel?.name}</h2>
           <p className="text-sm text-muted-foreground">@{channel?.username}</p>
-          <Button size="sm">View Channel</Button>
+          <Link
+            href={`/channel/${channel?.username}/${channel?.id}?name=${channel?.name}`}
+          >
+            <Button size="sm">View Channel</Button>
+          </Link>
         </div>
       </div>
     </div>

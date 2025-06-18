@@ -1,23 +1,27 @@
-import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
+import { useRouter } from "next/router";
+import { useGetUserByIdQuery } from "@/features/user";
 
 type Props = {
   totalVideos: number;
 };
 
-const DashboardHeader = ({ totalVideos }: Props) => {
-  const { data, isLoading } = useGetLoggedInUserQuery({});
+const ChannelInfo = ({ totalVideos = 0 }: Props) => {
+  const { query } = useRouter();
+  const id = query?.id as string;
+  const { data, isLoading } = useGetUserByIdQuery({ id });
   const user = data?.data as IUser;
-
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Welcome back!</CardTitle>
+        <CardTitle className="text-xl font-semibold">
+          Welcome to the Channel
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
@@ -32,7 +36,7 @@ const DashboardHeader = ({ totalVideos }: Props) => {
           </Avatar>
         )}
 
-        <div className="flex-1 space-y-1 text-center sm:text-left">
+        <div className="flex-1 space-y-2 text-center sm:text-left">
           {isLoading ? (
             <>
               <Skeleton className="h-4 w-full lg:w-1/4 bg-gray-300 dark:bg-gray-700" />
@@ -71,4 +75,4 @@ const DashboardHeader = ({ totalVideos }: Props) => {
   );
 };
 
-export default DashboardHeader;
+export default ChannelInfo;
