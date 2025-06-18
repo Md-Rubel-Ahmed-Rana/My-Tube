@@ -36,7 +36,7 @@ const ShareVideo = () => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button onClick={handleShare} size="sm" className="gap-2">
+        <Button onClick={handleShare} size="xs" className="gap-2">
           <Share2 className="w-4 h-4" />
           Share
         </Button>
