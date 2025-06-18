@@ -38,14 +38,22 @@ const VideoCard = ({ video }: Props) => {
             {video.title}
           </h2>
           <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={video.owner?.photo} alt="profile image" />
-              <AvatarFallback>
-                {formatNameForImageFallback(video?.owner?.name)}
-              </AvatarFallback>
-            </Avatar>
+            <Link
+              href={`/channel/${video?.owner?.username}/${video?.owner?.id}?name=${video?.owner?.name}`}
+            >
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={video.owner?.photo} alt="profile image" />
+                <AvatarFallback>
+                  {formatNameForImageFallback(video?.owner?.name)}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
             <p className="text-sm text-muted-foreground line-clamp-1">
-              {video.owner.name}
+              <Link
+                href={`/channel/${video?.owner?.username}/${video?.owner?.id}?name=${video?.owner?.name}`}
+              >
+                {video.owner.name}
+              </Link>
             </p>
           </div>
 

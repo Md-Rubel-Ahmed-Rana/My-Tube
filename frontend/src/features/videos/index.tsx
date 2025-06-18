@@ -46,8 +46,14 @@ const videoApi = apiSlice.injectEndpoints({
       providesTags: ["video"],
     }),
     getVideos: build.query({
-      query: () => ({
-        url: "video",
+      query: ({
+        page = 1,
+        limit = 100,
+      }: {
+        page?: number;
+        limit?: number;
+      }) => ({
+        url: `video?page=${page}&limit=${limit}`,
       }),
       providesTags: ["video"],
     }),
@@ -60,6 +66,12 @@ const videoApi = apiSlice.injectEndpoints({
     getRelatedVideos: build.query({
       query: ({ currentVideoId }: { currentVideoId: string }) => ({
         url: `video/${currentVideoId}/related-videos`,
+      }),
+      providesTags: ["video"],
+    }),
+    getChannelVideos: build.query({
+      query: ({ channelId }: { channelId: string }) => ({
+        url: `video/channel/${channelId}`,
       }),
       providesTags: ["video"],
     }),
@@ -91,4 +103,5 @@ export const {
   useUpdateThumbnailMutation,
   useSearchVideosQuery,
   useGetRelatedVideosQuery,
+  useGetChannelVideosQuery,
 } = videoApi;
