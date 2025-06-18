@@ -89,6 +89,20 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    likeToAVideo: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        method: "PATCH",
+        url: `video/${id}/like`,
+      }),
+      invalidatesTags: ["video"],
+    }),
+    dislikeAVideo: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        method: "PATCH",
+        url: `video/${id}/dislike`,
+      }),
+      invalidatesTags: ["video"],
+    }),
   }),
 });
 
@@ -104,4 +118,6 @@ export const {
   useSearchVideosQuery,
   useGetRelatedVideosQuery,
   useGetChannelVideosQuery,
+  useLikeToAVideoMutation,
+  useDislikeAVideoMutation,
 } = videoApi;
