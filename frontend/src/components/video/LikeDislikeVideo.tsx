@@ -12,6 +12,8 @@ import {
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
+import { useState } from "react";
+import NotLoggedInAlert from "../common/NotLoggedInAlert";
 
 type Props = {
   id: string;
@@ -30,6 +32,7 @@ const LikeDislikeVideo = ({
   likes = [],
   dislikes = [],
 }: Props) => {
+  const [notLoggedIn, setNotLoggedIn] = useState(false);
   const { data } = useGetLoggedInUserQuery({});
   const currentUser = data?.data as IUser;
   const alreadyLiked = likes.includes(currentUser?.id);
@@ -45,6 +48,10 @@ const LikeDislikeVideo = ({
   const count = isLikedAction ? totalLikes : totalDisLikes;
 
   const handleAction = async () => {
+    if (!currentUser?.id) {
+      setNotLoggedIn(true);
+      return;
+    }
     const mutation = isLikedAction ? like : dislike;
     await handleApiMutation(mutation, { id }, 200, {
       error: `Failed to ${actionType}`,
@@ -69,29 +76,38 @@ const LikeDislikeVideo = ({
   );
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          onClick={handleAction}
-          className="flex items-center gap-1 w-full"
-          disabled={isLoading}
-          size={"xs"}
-        >
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : icon}
-          <span className="text-sm lg:hidden">
-            {isLoading ? "" : `(${count})`}
-          </span>
-          <span className="text-sm hidden lg:block">
-            {isLoading ? "" : `${displayText} (${count})`}
-          </span>
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        {alreadyPerformed
-          ? `You have ${displayText.toLowerCase()}`
-          : `${displayText} this video`}
-      </TooltipContent>
-    </Tooltip>
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={handleAction}
+            className="flex items-center gap-1 w-full"
+            disabled={isLoading}
+            size={"xs"}
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : icon}
+            <span className="text-sm lg:hidden">
+              {isLoading ? "" : `(${count})`}
+            </span>
+            <span className="text-sm hidden lg:block">
+              {isLoading ? "" : `${displayText} (${count})`}
+            </span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          {alreadyPerformed
+            ? `You have ${displayText.toLowerCase()}`
+            : `${displayText} this video`}
+        </TooltipContent>
+      </Tooltip>
+      {notLoggedIn && (
+        <NotLoggedInAlert
+          open={notLoggedIn}
+          onOpenChange={setNotLoggedIn}
+          alertText="You must be logged in to like or dislike video. Please log in to continue."
+        />
+      )}
+    </>
   );
 };
 
