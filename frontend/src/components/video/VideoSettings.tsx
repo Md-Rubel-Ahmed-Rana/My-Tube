@@ -21,7 +21,7 @@ const VideoSettings = ({ setLoop, loop }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="cursor-pointer">
-        <Settings className="text-white" size={24} />
+        <Settings className="text-white" size={20} />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>Settings</DropdownMenuLabel>

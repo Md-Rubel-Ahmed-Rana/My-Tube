@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useIncrementVideoViewsMutation } from "@/features/videos";
 import { useEffect, useRef, useState } from "react";
 import VideoSettings from "./VideoSettings";
+import SeekControls from "./SeekControls";
 
 type Props = {
   video: IVideo;
@@ -39,7 +40,7 @@ const VideoPlayer = ({ video }: Props) => {
     if (hideControlsTimeout.current) clearTimeout(hideControlsTimeout.current);
     hideControlsTimeout.current = setTimeout(() => {
       setShowControls(false);
-    }, 3000);
+    }, 2000);
   };
 
   return (
@@ -63,10 +64,14 @@ const VideoPlayer = ({ video }: Props) => {
             loop={isLoop}
           >
             {showControls && (
-              <button className="absolute cursor-pointer bottom-20 right-2 z-50 rounded-full opacity-85 hover:bg-gray-800 transition px-2">
-                <VideoSettings loop={isLoop} setLoop={setIsLoop} />
-              </button>
+              <>
+                <button className="absolute cursor-pointer bottom-20 right-2 z-50 rounded-full opacity-85 hover:bg-gray-800 transition px-2">
+                  <VideoSettings loop={isLoop} setLoop={setIsLoop} />
+                </button>
+                <SeekControls />
+              </>
             )}
+
             <MediaProvider>
               <Poster
                 className="media-poster"
