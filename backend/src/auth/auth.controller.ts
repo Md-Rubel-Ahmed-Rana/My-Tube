@@ -14,6 +14,7 @@ import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { Response } from "express";
 import { AuthGuard } from "./auth.guard";
 import { Types } from "mongoose";
+import { cookieOptions } from "src/utils/cookieOptions";
 
 @Controller("auth")
 export class AuthController {
@@ -36,12 +37,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     const token = await this.authService.login(credentials);
-    res.cookie("my_tube_access_token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("my_tube_access_token", token, cookieOptions);
 
     res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
@@ -53,7 +49,7 @@ export class AuthController {
 
   @Delete("/logout")
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie("my_tube_access_token");
+    res.clearCookie("my_tube_access_token", cookieOptions);
     res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       success: true,
