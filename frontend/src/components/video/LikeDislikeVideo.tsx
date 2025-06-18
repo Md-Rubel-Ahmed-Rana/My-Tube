@@ -56,6 +56,9 @@ const LikeDislikeVideo = ({
           size={"xs"}
         >
           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : icon}
+          <span className="text-sm  lg:hidden">
+            {isLoading ? "" : `(${actionCount})`}
+          </span>
           <span className="text-sm hidden lg:block">
             {isLoading ? "" : `${actionText} (${actionCount})`}
           </span>
