@@ -23,6 +23,8 @@ const VideoActions = ({ video }: Props) => {
           totalLikes={video?.likes?.length || 0}
           actionType="like"
           totalDisLikes={video?.dislikes?.length || 0}
+          likes={video?.likes || []}
+          dislikes={video?.dislikes || []}
         />
       </div>
       <div className="w-full lg:w-auto">
@@ -31,6 +33,8 @@ const VideoActions = ({ video }: Props) => {
           totalLikes={video?.likes?.length || 0}
           actionType="dislike"
           totalDisLikes={video?.dislikes?.length || 0}
+          likes={video?.likes || []}
+          dislikes={video?.dislikes || []}
         />
       </div>
 
