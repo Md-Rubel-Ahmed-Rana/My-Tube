@@ -21,13 +21,36 @@ const DownloadVideo = ({ video }: Props) => {
   const fileName = `MyTube-${video?.title}-${todayDate}-${date.getTime()}.mp4`;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const handleDownloadVideo = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(video.videoUrl);
-      const blob = await response.blob();
 
+      const contentLength = response.headers.get("Content-Length");
+      if (!response.body || !contentLength) {
+        throw new Error("Stream not supported or content length unavailable");
+      }
+
+      const total = parseInt(contentLength, 10);
+      let loaded = 0;
+      const reader = response.body.getReader();
+      const chunks = [];
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          chunks.push(value);
+          loaded += value.length;
+
+          const progress = Math.floor((loaded / total) * 100);
+          setProgress(progress);
+        }
+      }
+
+      const blob = new Blob(chunks);
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
 
@@ -38,13 +61,12 @@ const DownloadVideo = ({ video }: Props) => {
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(blobUrl);
-      setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
       toast.error("Failed to download video.");
       console.error("Download error:", error);
     } finally {
       setIsLoading(false);
+      setProgress(0);
     }
   };
 
@@ -58,14 +80,19 @@ const DownloadVideo = ({ video }: Props) => {
           disabled={isLoading}
         >
           {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm hidden lg:inline">
+                Downloading ({progress}%)
+              </span>
+              <span className="text-sm lg:hidden inline">({progress}%)</span>
+            </>
           ) : (
-            <Download className="w-4 h-4" />
+            <>
+              <Download className="w-4 h-4" />
+              <span className="text-sm hidden lg:inline">Download</span>
+            </>
           )}
-
-          <span className="text-sm hidden lg:block">
-            {isLoading ? "Downloading..." : "Download"}
-          </span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>Download video</TooltipContent>
