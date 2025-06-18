@@ -51,7 +51,7 @@ const LikeDislikeVideo = ({
       <TooltipTrigger asChild>
         <Button
           onClick={handleLikeAVideo}
-          className="flex items-center gap-1 w-1/6 lg:w-auto"
+          className="flex items-center gap-1 w-full"
           disabled={isLoading}
           size={"xs"}
         >
