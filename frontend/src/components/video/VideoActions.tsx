@@ -1,11 +1,11 @@
-import { ThumbsDown, Share2, Link as LinkIcon, Download } from "lucide-react";
+import { Share2, Link as LinkIcon, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import LikeVideo from "./LikeVideo";
+import LikeDislikeVideo from "./LikeDislikeVideo";
 import { IVideo } from "@/types/video.type";
 
 type Props = {
@@ -15,17 +15,19 @@ type Props = {
 const VideoActions = ({ video }: Props) => {
   return (
     <div className="flex gap-3 flex-wrap mt-4">
-      <LikeVideo id={video?.id} totalLikes={video?.likes?.length || 0} />
+      <LikeDislikeVideo
+        id={video?.id}
+        totalLikes={video?.likes?.length || 0}
+        actionType="like"
+        totalDisLikes={video?.dislikes?.length || 0}
+      />
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button className="flex items-center gap-1">
-            <ThumbsDown className="w-4 h-4" />
-            <span className="text-sm">Dislike (0)</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Dislike this video</TooltipContent>
-      </Tooltip>
+      <LikeDislikeVideo
+        id={video?.id}
+        totalLikes={video?.likes?.length || 0}
+        actionType="dislike"
+        totalDisLikes={video?.dislikes?.length || 0}
+      />
 
       <Tooltip>
         <TooltipTrigger asChild>
