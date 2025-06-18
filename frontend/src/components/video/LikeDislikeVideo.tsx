@@ -51,11 +51,12 @@ const LikeDislikeVideo = ({
       <TooltipTrigger asChild>
         <Button
           onClick={handleLikeAVideo}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 w-1/6 lg:w-auto"
           disabled={isLoading}
+          size={"xs"}
         >
           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : icon}
-          <span className="text-sm">
+          <span className="text-sm hidden lg:block">
             {isLoading ? "" : `${actionText} (${actionCount})`}
           </span>
         </Button>

@@ -14,7 +14,7 @@ type Props = {
 
 const VideoActions = ({ video }: Props) => {
   return (
-    <div className="flex gap-3 flex-wrap mt-4">
+    <div className="flex gap-2 justify-between lg:justify-start items-center my-3 w-full">
       <LikeDislikeVideo
         id={video?.id}
         totalLikes={video?.likes?.length || 0}
@@ -31,9 +31,12 @@ const VideoActions = ({ video }: Props) => {
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button className="flex items-center gap-1">
+          <Button
+            size={"xs"}
+            className="flex items-center gap-1 w-1/6 lg:w-auto"
+          >
             <Share2 className="w-4 h-4" />
-            <span className="text-sm">Share</span>
+            <span className="text-sm hidden lg:block">Share</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>Share with others</TooltipContent>
@@ -41,9 +44,12 @@ const VideoActions = ({ video }: Props) => {
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button className="flex items-center gap-1">
+          <Button
+            size={"xs"}
+            className="flex items-center gap-1 w-1/6 lg:w-auto"
+          >
             <LinkIcon className="w-4 h-4" />
-            <span className="text-sm">Copy Link</span>
+            <span className="text-sm hidden lg:block">Copy Link</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>Copy video link</TooltipContent>
@@ -51,9 +57,12 @@ const VideoActions = ({ video }: Props) => {
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button className="flex items-center gap-1">
+          <Button
+            size={"xs"}
+            className="flex items-center gap-1 w-1/6 lg:w-auto"
+          >
             <Download className="w-4 h-4" />
-            <span className="text-sm">Download</span>
+            <span className="text-sm hidden lg:block">Download</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>Download video</TooltipContent>
