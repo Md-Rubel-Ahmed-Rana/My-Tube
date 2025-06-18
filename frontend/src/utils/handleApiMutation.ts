@@ -18,7 +18,6 @@ export const handleApiMutation = async <TPayload>(
 ) => {
   try {
     const res = await mutationTrigger(payload);
-    console.log(res);
     if (res?.data?.statusCode === successStatusCode) {
       toast.success(
         res?.data?.message || customMessages.success || "Operation succeeded"
