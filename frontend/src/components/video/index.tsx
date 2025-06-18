@@ -16,6 +16,7 @@ const Video = () => {
   const id = query?.id as string;
   const { data, isLoading } = useGetSingleVideoQuery({ id });
   const video = data?.data as IVideo;
+
   return (
     <>
       <div className="p-2 lg:p-4 flex justify-between gap-3 lg:gap-5">
