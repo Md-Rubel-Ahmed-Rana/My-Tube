@@ -8,6 +8,7 @@ import { formatDuration } from "@/utils/formatDuration";
 import VideoPlayerPageSkeleton from "@/skeletons/VideoPlayLoading.skeleton";
 import ChannelCard from "./ChannelCard";
 import RelatedVideos from "../related-videos";
+import VideoActions from "./VideoActions";
 
 const Video = () => {
   const { query } = useRouter();
@@ -30,6 +31,7 @@ const Video = () => {
               <span>{moment(video?.createdAt).fromNow()}</span>
               <span>{formatDuration(video?.duration)}</span>
             </div>
+            <VideoActions />
             <ChannelCard channel={video?.owner} />
             {video?.tags?.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1">
