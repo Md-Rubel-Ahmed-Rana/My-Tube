@@ -1,4 +1,4 @@
-import { Share2, Download } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -8,6 +8,7 @@ import {
 import LikeDislikeVideo from "./LikeDislikeVideo";
 import { IVideo } from "@/types/video.type";
 import CopyLink from "./CopyLink";
+import DownloadVideo from "./DownloadVideo";
 
 type Props = {
   video: IVideo;
@@ -45,18 +46,7 @@ const VideoActions = ({ video }: Props) => {
 
       <CopyLink />
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size={"xs"}
-            className="flex items-center gap-1 w-1/6 lg:w-auto"
-          >
-            <Download className="w-4 h-4" />
-            <span className="text-sm hidden lg:block">Download</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Download video</TooltipContent>
-      </Tooltip>
+      <DownloadVideo video={video} />
     </div>
   );
 };
