@@ -1,29 +1,21 @@
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  Link as LinkIcon,
-  Download,
-} from "lucide-react";
+import { ThumbsDown, Share2, Link as LinkIcon, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import LikeVideo from "./LikeVideo";
+import { IVideo } from "@/types/video.type";
 
-const VideoActions = () => {
+type Props = {
+  video: IVideo;
+};
+
+const VideoActions = ({ video }: Props) => {
   return (
     <div className="flex gap-3 flex-wrap mt-4">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button className="flex items-center gap-1">
-            <ThumbsUp className="w-4 h-4" />
-            <span className="text-sm">Like (5)</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Like this video</TooltipContent>
-      </Tooltip>
+      <LikeVideo id={video?.id} totalLikes={video?.likes?.length || 0} />
 
       <Tooltip>
         <TooltipTrigger asChild>
