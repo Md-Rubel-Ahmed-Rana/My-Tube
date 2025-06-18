@@ -5,21 +5,28 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 import { IVideo } from "@/types/video.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIncrementVideoViewsMutation } from "@/features/videos";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { Settings } from "lucide-react";
 
 type Props = {
   video: IVideo;
+  isFetching;
 };
 
 const VideoPlayer = ({ video }: Props) => {
   const [incrementView] = useIncrementVideoViewsMutation();
   const hasCountedRef = useRef(false);
+  const [isLoop, setIsLoop] = useState(false);
 
   const handlePlay = () => {
     if (!hasCountedRef.current) {
       incrementView({ id: video?.id });
       hasCountedRef.current = true;
     }
+  };
+
+  const handleReplay = () => {
+    incrementView({ id: video?.id });
   };
 
   return (
@@ -34,7 +41,10 @@ const VideoPlayer = ({ video }: Props) => {
           autoPlay={true}
           onPlay={handlePlay}
           playsInline={true}
+          onReplay={handleReplay}
+          loop={isLoop}
         >
+          <Settings />
           <MediaProvider>
             <Poster
               className="media-poster"
