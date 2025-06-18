@@ -98,7 +98,8 @@ export class VideoService {
   async getOwnerVideosForChannel(owner: Types.ObjectId) {
     const videos = await this.videoModel
       .find({ owner: new Types.ObjectId(owner) })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .populate("owner", "-password");
     return {
       statusCode: HttpStatus.OK,
       success: true,
