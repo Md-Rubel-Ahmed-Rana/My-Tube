@@ -31,7 +31,7 @@ const CopyLink = () => {
         <Button
           size="xs"
           onClick={handleCopyLink}
-          className="flex items-center gap-1 w-1/6 lg:w-auto"
+          className="flex items-center gap-1 w-full"
         >
           {copied ? (
             <Check className="w-4 h-4 text-green-500" />

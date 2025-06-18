@@ -113,7 +113,7 @@ const DownloadVideo = ({ video }: Props) => {
         <Button
           onClick={isLoading ? handleCancelDownload : handleDownloadVideo}
           size="xs"
-          className="flex items-center gap-1 w-1/6 lg:w-auto"
+          className="flex items-center gap-1 w-full"
         >
           {isLoading ? (
             <>
