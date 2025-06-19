@@ -1,6 +1,6 @@
 import { IComment } from "@/types/comment.type";
 import CommentCard from "./CommentCard";
-import { Button } from "@/components/ui/button";
+import AddCommentButton from "./AddCommentButton";
 
 type Props = {
   comments: IComment[];
@@ -13,9 +13,7 @@ const CommentContainer = ({ comments = [] }: Props) => {
         <h2 className="text-xl font-semibold">
           {comments?.length || 0} comments
         </h2>
-        <Button variant="outline" className="bg-gray-200 dark:bg-gray-700">
-          Add a Comment
-        </Button>
+        <AddCommentButton buttonSize="xs" />
       </div>
       <div className="flex flex-col gap-2">
         {comments.map((comment) => (

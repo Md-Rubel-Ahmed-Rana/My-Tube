@@ -5,7 +5,11 @@ import { useState } from "react";
 import NotLoggedInAlert from "../common/NotLoggedInAlert";
 import AddCommentModal from "./AddCommentModal";
 
-const AddCommentButton = () => {
+type Props = {
+  buttonSize?: "xs" | "default" | "sm" | "lg";
+};
+
+const AddCommentButton = ({ buttonSize = "default" }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const { data } = useGetLoggedInUserQuery({});
@@ -25,6 +29,7 @@ const AddCommentButton = () => {
         onClick={handleOpenModal}
         variant="outline"
         className="bg-gray-200 dark:bg-gray-700"
+        size={buttonSize}
       >
         Add a Comment
       </Button>
