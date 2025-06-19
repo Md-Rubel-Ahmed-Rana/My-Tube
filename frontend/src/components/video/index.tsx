@@ -10,6 +10,8 @@ import ChannelCard from "./ChannelCard";
 import RelatedVideos from "../related-videos";
 import VideoActions from "./VideoActions";
 import RelatedVideosMobile from "./RelatedVideosMobile";
+import VideoDescription from "./VideoDescription";
+import Comments from "../comments";
 
 const Video = () => {
   const { query } = useRouter();
@@ -49,9 +51,11 @@ const Video = () => {
                   ))}
                 </div>
               )}
-              <p className="text-sm text-muted-foreground">
-                {video?.description}
-              </p>
+              <VideoDescription
+                description={video?.description || ""}
+                limit={250}
+              />
+              <Comments />
             </div>
           </div>
         )}
