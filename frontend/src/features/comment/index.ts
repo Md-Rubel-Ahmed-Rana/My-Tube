@@ -34,6 +34,13 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["comment"],
     }),
+    deleteComment: build.mutation<IApiResponse<null>, { id: string }>({
+      query: ({ id }) => ({
+        url: `comment/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["comment"],
+    }),
   }),
 });
 
@@ -41,4 +48,5 @@ export const {
   useGetCommentsByVideoQuery,
   useAddNewCommentMutation,
   useEditCommentMutation,
+  useDeleteCommentMutation,
 } = commentApi;

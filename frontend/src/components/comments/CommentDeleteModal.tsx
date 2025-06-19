@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useEditCommentMutation } from "@/features/comment";
+import { useDeleteCommentMutation } from "@/features/comment";
 
 type Props = {
   open: boolean;
@@ -17,18 +17,13 @@ type Props = {
 };
 
 const CommentDeleteModal = ({ open, setOpen, id = "" }: Props) => {
-  const [editComment, { isLoading }] = useEditCommentMutation();
+  const [editComment, { isLoading }] = useDeleteCommentMutation();
 
   const handleSubmit = async () => {
-    // await handleApiMutation(
-    //   editComment,
-    //   { comment: { text, id: comment?.id } },
-    //   200,
-    //   {
-    //     error: "Failed to edit comment",
-    //     success: "Your comment edited successfully",
-    //   }
-    // );
+    await handleApiMutation(editComment, { id }, 200, {
+      error: "Failed to delete comment",
+      success: "Your comment deleted successfully",
+    });
     setOpen(false);
   };
 
@@ -51,7 +46,7 @@ const CommentDeleteModal = ({ open, setOpen, id = "" }: Props) => {
 
         <div className="flex justify-end gap-2 pt-4">
           <Button onClick={handleClose} disabled={isLoading}>
-            Cancel
+            No
           </Button>
           <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? "Deleting..." : "Yes"}
