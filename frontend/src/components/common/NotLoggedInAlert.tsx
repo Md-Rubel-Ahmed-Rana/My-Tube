@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const NotLoggedInDialog = ({ open, onOpenChange, alertText }: Props) => {
+  const router = useRouter();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -32,7 +34,7 @@ const NotLoggedInDialog = ({ open, onOpenChange, alertText }: Props) => {
         </DialogHeader>
 
         <DialogFooter className="mt-4">
-          <Link href="/account/login" passHref>
+          <Link href={`/account/login?source=${router.asPath}`} passHref>
             <Button className="bg-gray-200 dark:bg-gray-600" size="sm">
               Login to Your Account
             </Button>

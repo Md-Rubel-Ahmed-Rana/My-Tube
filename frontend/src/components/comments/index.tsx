@@ -6,11 +6,19 @@ import CommentContainer from "./CommentContainer";
 const Comments = () => {
   const { query } = useRouter();
   const id = query?.id as string;
-  const { data, isLoading } = useGetCommentsByVideoQuery({ videoId: id });
+  const { data, isLoading, isFetching } = useGetCommentsByVideoQuery(
+    { videoId: id },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
   const comments = data?.data || [];
+
+  const isCommentLoading = isLoading || isFetching;
+
   return (
     <div>
-      {isLoading ? (
+      {isCommentLoading ? (
         <div>Comments loading...</div>
       ) : (
         <div>
