@@ -50,7 +50,7 @@ const AddCommentModal = ({ open, setOpen, user }: Props) => {
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <MessageCircle className="text-primary w-5 h-5" />
-            <DialogTitle>Add a Comment</DialogTitle>
+            <DialogTitle>Add a comment</DialogTitle>
           </div>
           <DialogDescription className="text-sm text-muted-foreground">
             Share your thoughts or feedback about this video.
