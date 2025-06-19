@@ -15,6 +15,8 @@ import { parseField } from "src/utils/parseField";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
+import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
+import { channel } from "process";
 
 @Injectable()
 export class VideoService {
@@ -64,7 +66,16 @@ export class VideoService {
             owner: new Types.ObjectId(body.owner),
           };
 
-          await this.newVideo(newVideoData);
+          const newVideo: any = await this.newVideo(newVideoData);
+
+          // fire event for new-video-uploaded
+          this.eventEmitter.emit("new-video-upload.created", {
+            id: newVideo?.id || newVideo?._id,
+            title: newVideo?.title || "",
+            description: newVideo?.description || "",
+            tags: newVideo?.tags || [],
+            channel: newVideo?.owner?.name || "",
+          });
 
           return resolve({
             statusCode: HttpStatus.CREATED,
@@ -80,7 +91,12 @@ export class VideoService {
   }
 
   async newVideo(createNewVideoDto: CreateVideoDto) {
-    return this.videoModel.create(createNewVideoDto);
+    const video = await this.videoModel.create(createNewVideoDto);
+
+    return (await this.videoModel.findById(video._id)).populate(
+      "owner",
+      "-password"
+    );
   }
 
   async getOwnerVideos(owner: string) {
@@ -93,6 +109,32 @@ export class VideoService {
       message: "All the videos of owner retrieved successfully",
       data: videos,
     };
+  }
+
+  async getVideosByIds(ids: Types.ObjectId[]) {
+    const videos = await this.videoModel
+      .find({ _id: { $in: ids } })
+      .sort({ createdAt: -1 })
+      .populate("owner", "-password");
+    return videos;
+  }
+
+  async getElasticVideoDocs(): Promise<GetElasticSearchDto[]> {
+    const videos = await this.videoModel
+      .find({})
+      .select("id title description tags owner")
+      .populate("owner", "-password");
+
+    return videos.map(
+      (video: any) =>
+        new GetElasticSearchDto(
+          video.id,
+          video.title,
+          video.description,
+          video.tags,
+          (video.owner?.name as string) || ""
+        )
+    );
   }
 
   async getOwnerVideosForChannel(owner: Types.ObjectId) {
@@ -245,6 +287,20 @@ export class VideoService {
 
   async update(id: Types.ObjectId, updatedData: UpdateVideoDto) {
     await this.videoModel.findByIdAndUpdate(id, { ...updatedData });
+
+    const video: any = await this.videoModel
+      .findById(id)
+      .populate("owner", "-password");
+
+    // fire event to update this video doc on elastic search
+    this.eventEmitter.emit("video-update-elastic.updated", {
+      id: video?.id || video?._id,
+      title: video?.title || "",
+      description: video?.description || "",
+      tags: video?.tags || [],
+      channel: video?.owner?.name || "",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -263,6 +319,14 @@ export class VideoService {
     await this.videoModel.findByIdAndDelete(id);
 
     this.eventEmitter.emit("video.deleted", video?.publicId);
+    this.eventEmitter.emit(
+      "thumbnail.deleted",
+      extractPublicId(video?.thumbnailUrl)
+    );
+    this.eventEmitter.emit("video-elastic.deleted", {
+      id: video?.id || video?._id,
+      title: video?.title || "",
+    });
 
     return {
       statusCode: HttpStatus.OK,

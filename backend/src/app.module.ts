@@ -8,6 +8,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { EventModule } from "./events/event.module";
+import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { EventModule } from "./events/event.module";
     UserModule,
     AuthModule,
     EventModule,
+    ElasticSearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
