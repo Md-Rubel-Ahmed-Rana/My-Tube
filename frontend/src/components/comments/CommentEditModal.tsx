@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useAddNewCommentMutation } from "@/features/comment";
+import { useEditCommentMutation } from "@/features/comment";
 
 type Props = {
   open: boolean;
@@ -23,18 +23,18 @@ const CommentEditModal = ({
   comment = { id: "", text: "" },
 }: Props) => {
   const [text, setText] = useState(comment.text);
-  const [addComment, { isLoading }] = useAddNewCommentMutation();
+  const [editComment, { isLoading }] = useEditCommentMutation();
 
   const handleSubmit = async () => {
-    // await handleApiMutation(
-    //   addComment,
-    //   { comment: { text, video: id, user } },
-    //   201,
-    //   {
-    //     error: "Failed to add comment",
-    //     success: "Your comment posted successfully",
-    //   }
-    // );
+    await handleApiMutation(
+      editComment,
+      { comment: { text, id: comment?.id } },
+      200,
+      {
+        error: "Failed to edit comment",
+        success: "Your comment edited successfully",
+      }
+    );
     setText("");
     setOpen(false);
   };
