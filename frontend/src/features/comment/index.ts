@@ -1,4 +1,4 @@
-import { IComment } from "@/types/comment.type";
+import { IAddComment, IComment } from "@/types/comment.type";
 import apiSlice from "../api";
 import { IApiResponse } from "@/types/common";
 
@@ -13,7 +13,18 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["comment", "video"],
     }),
+    addNewComment: build.mutation<IApiResponse<null>, { comment: IAddComment }>(
+      {
+        query: ({ comment }) => ({
+          url: "comment",
+          method: "POST",
+          body: comment,
+        }),
+        invalidatesTags: ["comment"],
+      }
+    ),
   }),
 });
 
-export const { useGetCommentsByVideoQuery } = commentApi;
+export const { useGetCommentsByVideoQuery, useAddNewCommentMutation } =
+  commentApi;

@@ -9,18 +9,32 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
+import { handleApiMutation } from "@/utils/handleApiMutation";
+import { useAddNewCommentMutation } from "@/features/comment";
+import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  user: string;
 };
 
-const AddCommentModal = ({ open, setOpen }: Props) => {
+const AddCommentModal = ({ open, setOpen, user }: Props) => {
+  const { query } = useRouter();
+  const id = query?.id as string;
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [addComment, { isLoading }] = useAddNewCommentMutation();
 
   const handleSubmit = async () => {
-    setLoading(true);
+    await handleApiMutation(
+      addComment,
+      { comment: { text, video: id, user } },
+      201,
+      {
+        error: "Failed to add comment",
+        success: "Your comment posted successfully",
+      }
+    );
     setText("");
     setOpen(false);
   };
@@ -54,11 +68,11 @@ const AddCommentModal = ({ open, setOpen }: Props) => {
         </div>
 
         <div className="flex justify-end gap-2 pt-4">
-          <Button onClick={handleClose} disabled={loading}>
+          <Button onClick={handleClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={loading || !text.trim()}>
-            {loading ? "Posting..." : "Post Comment"}
+          <Button onClick={handleSubmit} disabled={isLoading || !text.trim()}>
+            {isLoading ? "Posting..." : "Post Comment"}
           </Button>
         </div>
       </DialogContent>

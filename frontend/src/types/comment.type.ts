@@ -8,3 +8,9 @@ export type IComment = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type IAddComment = {
+  text: string;
+  video: string;
+  user: string;
+};
