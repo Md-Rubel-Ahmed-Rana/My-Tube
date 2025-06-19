@@ -34,6 +34,7 @@ export class ElasticSearchService {
           mappings: {
             properties: {
               title: { type: "text" },
+              channel: { type: "text" },
               description: { type: "text" },
               tags: { type: "text" },
             },
@@ -76,16 +77,25 @@ export class ElasticSearchService {
   }
 
   async addNewDoc(doc: CreateElasticSearchDto) {
+    console.log({
+      from: "Elastic search service",
+      doc,
+    });
     const response = await this.client.index({
       index: this.index,
       id: doc.id,
       document: {
-        title: doc.title,
-        description: doc.description,
-        tags: doc.tags,
+        title: doc.title || "",
+        description: doc.description || "",
+        tags: doc.tags || [],
+        channel: doc?.channel || "",
       },
     });
-    return response;
+    console.log({
+      from: "Elastic search service",
+      message: "Doc uploaded",
+      response,
+    });
   }
 
   async getDoc(id: string) {
@@ -113,6 +123,23 @@ export class ElasticSearchService {
     return response;
   }
 
+  async deleteAllDocs() {
+    const response = await this.client.deleteByQuery({
+      index: this.index,
+      query: {
+        match_all: {},
+      },
+      refresh: true,
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All video docs deleted from Elasticsearch.",
+      data: response,
+    };
+  }
+
   async search(keyword: string) {
     // hit elastic search to match search query
     const response = await this.client.search({
@@ -120,7 +147,7 @@ export class ElasticSearchService {
       query: {
         multi_match: {
           query: keyword,
-          fields: ["title", "description", "tags"],
+          fields: ["title", "description", "tags", "channel"],
         },
       },
     });
