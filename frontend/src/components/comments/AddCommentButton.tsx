@@ -36,7 +36,13 @@ const AddCommentButton = () => {
         />
       )}
 
-      {isOpen && <AddCommentModal open={isOpen} setOpen={setIsOpen} />}
+      {isOpen && (
+        <AddCommentModal
+          open={isOpen}
+          setOpen={setIsOpen}
+          user={currentUser?.id}
+        />
+      )}
     </>
   );
 };
