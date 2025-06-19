@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from "@nestjs/common";
+import { CommentService } from "./comment.service";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { Types } from "mongoose";
 
-@Controller('comment')
+@Controller("comment")
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
@@ -17,18 +25,23 @@ export class CommentController {
     return this.commentService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+  @Get("video/:id")
+  findAllByVideo(@Param("id") id: string) {
+    return this.commentService.findAllByVideo(new Types.ObjectId(id));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.commentService.findOne(new Types.ObjectId(id));
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
+  @Patch(":id")
+  update(@Param("id") id: string, @Body("text") text: string) {
+    return this.commentService.update(new Types.ObjectId(id), text);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.commentService.remove(new Types.ObjectId(id));
   }
 }
