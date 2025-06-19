@@ -305,6 +305,14 @@ export class VideoService {
     await this.videoModel.findByIdAndDelete(id);
 
     this.eventEmitter.emit("video.deleted", video?.publicId);
+    this.eventEmitter.emit(
+      "thumbnail.deleted",
+      extractPublicId(video?.thumbnailUrl)
+    );
+    this.eventEmitter.emit("video-elastic.deleted", {
+      id: video?.id || video?._id,
+      title: video?.title || "",
+    });
 
     return {
       statusCode: HttpStatus.OK,

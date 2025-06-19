@@ -1,23 +1,25 @@
 import { Module } from "@nestjs/common";
-import { VideoDelete } from "./video-delete.event";
+import { VideoDeleteCloudinary } from "./video-delete-cloudinary.event";
 import { ConfigService } from "@nestjs/config";
 import { ThumbnailDelete } from "./thumbnail-delete.event";
 import { UserPhotoDelete } from "./user-photo-delete.event";
-import { NewVideoUpload } from "./new-video-upload.event";
+import { NewVideoUpload } from "./new-video-upload.elastic.event";
 import { ElasticSearchService } from "src/elastic-search/elastic-search.service";
 import { VideoService } from "src/video/video.service";
 import { VideoModule } from "src/video/video.module";
+import { VideoDeleteElasticSearch } from "./video-deleted-elastic-search.event";
 
 @Module({
   imports: [VideoModule],
   providers: [
-    VideoDelete,
+    VideoDeleteCloudinary,
     ConfigService,
     ThumbnailDelete,
     UserPhotoDelete,
     NewVideoUpload,
     ElasticSearchService,
     VideoService,
+    VideoDeleteElasticSearch,
   ],
 })
 export class EventModule {}
