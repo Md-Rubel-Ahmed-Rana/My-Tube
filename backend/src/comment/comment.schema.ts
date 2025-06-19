@@ -10,6 +10,9 @@ export class Comment {
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   user: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: "Video", required: true })
+  video: Types.ObjectId;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
