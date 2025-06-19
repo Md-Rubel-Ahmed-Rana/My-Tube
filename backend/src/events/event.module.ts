@@ -8,6 +8,7 @@ import { ElasticSearchService } from "src/elastic-search/elastic-search.service"
 import { VideoService } from "src/video/video.service";
 import { VideoModule } from "src/video/video.module";
 import { VideoDeleteElasticSearch } from "./video-deleted-elastic-search.event";
+import { VideoUpdateElastic } from "./video-update.elastic.event";
 
 @Module({
   imports: [VideoModule],
@@ -20,6 +21,7 @@ import { VideoDeleteElasticSearch } from "./video-deleted-elastic-search.event";
     ElasticSearchService,
     VideoService,
     VideoDeleteElasticSearch,
+    VideoUpdateElastic,
   ],
 })
 export class EventModule {}
