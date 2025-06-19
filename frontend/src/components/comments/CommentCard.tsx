@@ -8,6 +8,7 @@ import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { useState } from "react";
 import CommentEditModal from "./CommentEditModal";
+import CommentDeleteModal from "./CommentDeleteModal";
 
 type Props = {
   comment: IComment;
@@ -18,6 +19,7 @@ const CommentCard = ({ comment }: Props) => {
   const { data } = useGetLoggedInUserQuery({});
   const currentUser = data?.data as IUser;
   const [isEdit, setIsEdit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
 
   return (
     <>
@@ -47,7 +49,11 @@ const CommentCard = ({ comment }: Props) => {
               >
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button
+                onClick={() => setIsDelete(true)}
+                variant="ghost"
+                size="icon"
+              >
                 <Trash2 className="h-4 w-4 text-red-500" />
               </Button>
             </div>
@@ -63,6 +69,13 @@ const CommentCard = ({ comment }: Props) => {
           open={isEdit}
           setOpen={setIsEdit}
           comment={{ id: comment?.id, text: comment?.text }}
+        />
+      )}
+      {isDelete && (
+        <CommentDeleteModal
+          open={isDelete}
+          setOpen={setIsDelete}
+          id={comment?.id}
         />
       )}
     </>
