@@ -16,6 +16,7 @@ import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
+import { channel } from "process";
 
 @Injectable()
 export class VideoService {
@@ -65,7 +66,16 @@ export class VideoService {
             owner: new Types.ObjectId(body.owner),
           };
 
-          await this.newVideo(newVideoData);
+          const newVideo: any = await this.newVideo(newVideoData);
+
+          // fire event for new-video-uploaded
+          this.eventEmitter.emit("new-video-upload.created", {
+            id: newVideo?.id || newVideo?._id,
+            title: newVideo?.title || "",
+            description: newVideo?.description || "",
+            tags: newVideo?.tags || [],
+            channel: newVideo?.owner?.name || "",
+          });
 
           return resolve({
             statusCode: HttpStatus.CREATED,
@@ -81,7 +91,12 @@ export class VideoService {
   }
 
   async newVideo(createNewVideoDto: CreateVideoDto) {
-    return this.videoModel.create(createNewVideoDto);
+    const video = await this.videoModel.create(createNewVideoDto);
+
+    return (await this.videoModel.findById(video._id)).populate(
+      "owner",
+      "-password"
+    );
   }
 
   async getOwnerVideos(owner: string) {
@@ -107,15 +122,17 @@ export class VideoService {
   async getElasticVideoDocs(): Promise<GetElasticSearchDto[]> {
     const videos = await this.videoModel
       .find({})
-      .select("id title description tags");
+      .select("id title description tags owner")
+      .populate("owner", "-password");
 
     return videos.map(
-      (video) =>
+      (video: any) =>
         new GetElasticSearchDto(
           video.id,
           video.title,
           video.description,
-          video.tags
+          video.tags,
+          (video.owner?.name as string) || ""
         )
     );
   }

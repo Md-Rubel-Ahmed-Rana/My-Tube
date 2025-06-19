@@ -47,6 +47,11 @@ export class ElasticSearchController {
     return this.elasticSearchService.deleteDoc(id);
   }
 
+  @Delete("all")
+  deleteAllDocs() {
+    return this.elasticSearchService.deleteAllDocs();
+  }
+
   @Get()
   search(@Query("q") q: string) {
     return this.elasticSearchService.search(q);
