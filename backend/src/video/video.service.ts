@@ -287,6 +287,20 @@ export class VideoService {
 
   async update(id: Types.ObjectId, updatedData: UpdateVideoDto) {
     await this.videoModel.findByIdAndUpdate(id, { ...updatedData });
+
+    const video: any = await this.videoModel
+      .findById(id)
+      .populate("owner", "-password");
+
+    // fire event to update this video doc on elastic search
+    this.eventEmitter.emit("video-update-elastic.updated", {
+      id: video?.id || video?._id,
+      title: video?.title || "",
+      description: video?.description || "",
+      tags: video?.tags || [],
+      channel: video?.owner?.name || "",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
