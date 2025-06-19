@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -10,29 +9,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useAddNewCommentMutation } from "@/features/comment";
-import { useRouter } from "next/router";
+import { useEditCommentMutation } from "@/features/comment";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  user: string;
+  comment: { id: string; text: string };
 };
 
-const AddCommentModal = ({ open, setOpen, user }: Props) => {
-  const { query } = useRouter();
-  const id = query?.id as string;
-  const [text, setText] = useState("");
-  const [addComment, { isLoading }] = useAddNewCommentMutation();
+const CommentEditModal = ({
+  open,
+  setOpen,
+  comment = { id: "", text: "" },
+}: Props) => {
+  const [text, setText] = useState(comment.text);
+  const [editComment, { isLoading }] = useEditCommentMutation();
 
   const handleSubmit = async () => {
     await handleApiMutation(
-      addComment,
-      { comment: { text, video: id, user } },
-      201,
+      editComment,
+      { comment: { text, id: comment?.id } },
+      200,
       {
-        error: "Failed to add comment",
-        success: "Your comment posted successfully",
+        error: "Failed to edit comment",
+        success: "Your comment edited successfully",
       }
     );
     setText("");
@@ -50,11 +50,8 @@ const AddCommentModal = ({ open, setOpen, user }: Props) => {
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <MessageCircle className="text-primary w-5 h-5" />
-            <DialogTitle>Add a comment</DialogTitle>
+            <DialogTitle>Edit comment</DialogTitle>
           </div>
-          <DialogDescription className="text-sm text-muted-foreground">
-            Share your thoughts or feedback about this video.
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2">
@@ -71,8 +68,13 @@ const AddCommentModal = ({ open, setOpen, user }: Props) => {
           <Button onClick={handleClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={isLoading || !text.trim()}>
-            {isLoading ? "Posting..." : "Post Comment"}
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              isLoading || !text.trim() || text.trim() === comment?.text.trim()
+            }
+          >
+            {isLoading ? "Saving..." : "Save changes"}
           </Button>
         </div>
       </DialogContent>
@@ -80,4 +82,4 @@ const AddCommentModal = ({ open, setOpen, user }: Props) => {
   );
 };
 
-export default AddCommentModal;
+export default CommentEditModal;
