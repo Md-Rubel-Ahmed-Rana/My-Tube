@@ -9,6 +9,7 @@ import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { EventModule } from "./events/event.module";
 import { ElasticSearchModule } from './elastic-search/elastic-search.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ElasticSearchModule } from './elastic-search/elastic-search.module';
     AuthModule,
     EventModule,
     ElasticSearchModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
