@@ -23,8 +23,22 @@ export const commentApi = apiSlice.injectEndpoints({
         invalidatesTags: ["comment"],
       }
     ),
+    editComment: build.mutation<
+      IApiResponse<null>,
+      { comment: { id: string; text: string } }
+    >({
+      query: ({ comment }) => ({
+        url: `comment/${comment?.id}`,
+        method: "PATCH",
+        body: { text: comment?.text },
+      }),
+      invalidatesTags: ["comment"],
+    }),
   }),
 });
 
-export const { useGetCommentsByVideoQuery, useAddNewCommentMutation } =
-  commentApi;
+export const {
+  useGetCommentsByVideoQuery,
+  useAddNewCommentMutation,
+  useEditCommentMutation,
+} = commentApi;
