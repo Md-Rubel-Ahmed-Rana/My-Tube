@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 
 const LoginForm = () => {
   const router = useRouter();
+  const redirectSource = router?.query?.source as string;
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -38,7 +39,7 @@ const LoginForm = () => {
       },
       {
         isRedirect: true,
-        path: "/dashboard",
+        path: redirectSource || "/dashboard",
         router,
       }
     );

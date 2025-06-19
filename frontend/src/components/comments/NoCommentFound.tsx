@@ -1,6 +1,6 @@
 import { MessageSquareOff } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import AddCommentButton from "./AddCommentButton";
 
 const NoCommentFound = () => {
   return (
@@ -11,9 +11,7 @@ const NoCommentFound = () => {
         <p className="text-sm text-muted-foreground">
           Be the first one to share your thoughts!
         </p>
-        <Button variant="outline" className="bg-gray-200 dark:bg-gray-700">
-          Add a Comment
-        </Button>
+        <AddCommentButton />
       </CardContent>
     </Card>
   );
