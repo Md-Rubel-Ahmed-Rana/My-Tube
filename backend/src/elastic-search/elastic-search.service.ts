@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Client } from "@elastic/elasticsearch";
 import { CreateElasticSearchDto } from "./dto/create-elastic-search.dto";
 import { ConfigService } from "@nestjs/config";
@@ -9,6 +9,7 @@ import { Types } from "mongoose";
 export class ElasticSearchService {
   private client: Client;
   private index = "my-tube-videos";
+  private readonly logger = new Logger(ElasticSearchService.name);
 
   constructor(
     private config: ConfigService,
@@ -21,6 +22,7 @@ export class ElasticSearchService {
       },
     });
 
+    this.logger.log("ElasticSearch client initialized.");
     this.createIndexIfNotExists();
   }
 
@@ -28,6 +30,7 @@ export class ElasticSearchService {
     const exists = await this.client.indices.exists({ index: this.index });
 
     if (!exists) {
+      this.logger.warn(`Index '${this.index}' does not exist. Creating now...`);
       await this.client.indices.create({
         index: this.index,
         body: {
@@ -41,6 +44,9 @@ export class ElasticSearchService {
           },
         } as any,
       });
+      this.logger.log(`Index '${this.index}' created successfully.`);
+    } else {
+      this.logger.log(`Index '${this.index}' already exists.`);
     }
 
     return {
@@ -55,7 +61,9 @@ export class ElasticSearchService {
     const docs: CreateElasticSearchDto[] =
       await this.videoService.getElasticVideoDocs();
 
-    console.log({ from: "Elastic service", videos: docs });
+    this.logger.log(
+      `Fetched ${docs.length} documents from database for indexing.`
+    );
 
     const response = await this.client.helpers.bulk({
       index: this.index,
@@ -68,6 +76,8 @@ export class ElasticSearchService {
       refreshOnCompletion: true,
     });
 
+    this.logger.log(`Bulk indexing completed. Indexed ${docs.length} videos.`);
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -77,11 +87,9 @@ export class ElasticSearchService {
   }
 
   async addNewDoc(doc: CreateElasticSearchDto) {
-    console.log({
-      from: "Elastic search service",
-      doc,
-    });
-    const response = await this.client.index({
+    this.logger.log(`Indexing new document with ID: ${doc.id}`);
+
+    await this.client.index({
       index: this.index,
       id: doc.id,
       document: {
@@ -91,39 +99,42 @@ export class ElasticSearchService {
         channel: doc?.channel || "",
       },
     });
-    console.log({
-      from: "Elastic search service",
-      message: "Doc uploaded",
-      response,
-    });
+
+    this.logger.log(`Document with ID ${doc.id} indexed successfully.`);
   }
 
   async getDoc(id: string) {
+    this.logger.log(`Retrieving document with ID: ${id}`);
     const response = await this.client.get({
       index: this.index,
       id,
     });
+    this.logger.log(`Document with ID ${id} retrieved.`);
     return response._source;
   }
 
   async updateDoc(id: string, doc: Partial<CreateElasticSearchDto>) {
-    const response = await this.client.update({
+    this.logger.log(`Updating document with ID: ${id}`);
+    await this.client.update({
       index: this.index,
       id,
       doc,
     });
-    return response;
+    this.logger.log(`Document with ID ${id} updated.`);
   }
 
   async deleteDoc(id: string) {
+    this.logger.log(`Deleting document with ID: ${id}`);
     const response = await this.client.delete({
       index: this.index,
       id,
     });
+    this.logger.log(`Document with ID ${id} deleted.`);
     return response;
   }
 
   async deleteAllDocs() {
+    this.logger.warn(`Deleting ALL documents from index '${this.index}'`);
     const response = await this.client.deleteByQuery({
       index: this.index,
       query: {
@@ -131,6 +142,10 @@ export class ElasticSearchService {
       },
       refresh: true,
     });
+
+    this.logger.log(
+      `All documents from index '${this.index}' deleted successfully.`
+    );
 
     return {
       statusCode: HttpStatus.OK,
@@ -141,22 +156,27 @@ export class ElasticSearchService {
   }
 
   async search(keyword: string) {
-    // hit elastic search to match search query
+    this.logger.log(`Searching videos with keyword: '${keyword}'`);
     const response = await this.client.search({
       index: this.index,
       query: {
         multi_match: {
           query: keyword,
-          fields: ["title", "description", "tags", "channel"],
+          fields: ["title^5", "tags^3", "description", "channel"],
+          fuzziness: "AUTO",
         },
       },
     });
 
-    // Now, we have to find videos from DB with matching IDs.
-    // coz, elastic search has only title, description, and tags property.
-    // but each video has a lot of properties that ES does not need to search/index video
-    const videoIds = response.hits.hits.map(
+    const hits = response.hits.hits;
+    this.logger.log(`Search query returned ${hits.length} hits.`);
+
+    const videoIds = hits.map(
       (video: any) => new Types.ObjectId(video._source?.id as string)
+    );
+
+    this.logger.log(
+      `Fetching full video data from DB for ${videoIds.length} IDs.`
     );
 
     const videos = await this.videoService.getVideosByIds(videoIds);

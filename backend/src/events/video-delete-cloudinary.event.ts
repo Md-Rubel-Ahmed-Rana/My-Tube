@@ -5,8 +5,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { cloudinaryFileDelete } from "src/utils/cloudinaryFileDelete";
 
 @Injectable()
-export class VideoDelete {
-  private readonly logger = new Logger(VideoDelete.name);
+export class VideoDeleteCloudinary {
+  private readonly logger = new Logger(VideoDeleteCloudinary.name);
 
   constructor(private config: ConfigService) {
     cloudinary.config({
