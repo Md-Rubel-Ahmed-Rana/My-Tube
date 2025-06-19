@@ -11,6 +11,7 @@ import RelatedVideos from "../related-videos";
 import VideoActions from "./VideoActions";
 import RelatedVideosMobile from "./RelatedVideosMobile";
 import VideoDescription from "./VideoDescription";
+import Comments from "../comments";
 
 const Video = () => {
   const { query } = useRouter();
@@ -54,6 +55,7 @@ const Video = () => {
                 description={video?.description || ""}
                 limit={250}
               />
+              <Comments />
             </div>
           </div>
         )}
