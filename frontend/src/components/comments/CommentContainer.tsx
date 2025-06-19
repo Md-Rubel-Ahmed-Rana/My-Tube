@@ -8,7 +8,7 @@ type Props = {
 
 const CommentContainer = ({ comments = [] }: Props) => {
   return (
-    <div className="p-2 space-y-2">
+    <div className="p-2 space-y-2 mb-20 lg:mb-auto">
       <div className="flex items-center gap-2">
         <h2 className="text-xl font-semibold">
           {comments?.length || 0} comments
