@@ -77,7 +77,7 @@ const videoApi = apiSlice.injectEndpoints({
     }),
     searchVideos: build.query({
       query: ({ searchText }: { searchText: string }) => ({
-        url: `video/search?searchText=${searchText}`,
+        url: `elastic-search?q=${searchText}`,
       }),
       providesTags: ["video"],
     }),
