@@ -15,6 +15,7 @@ import { parseField } from "src/utils/parseField";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
+import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
 
 @Injectable()
 export class VideoService {
@@ -93,6 +94,30 @@ export class VideoService {
       message: "All the videos of owner retrieved successfully",
       data: videos,
     };
+  }
+
+  async getVideosByIds(ids: Types.ObjectId[]) {
+    const videos = await this.videoModel
+      .find({ _id: { $in: ids } })
+      .sort({ createdAt: -1 })
+      .populate("owner", "-password");
+    return videos;
+  }
+
+  async getElasticVideoDocs(): Promise<GetElasticSearchDto[]> {
+    const videos = await this.videoModel
+      .find({})
+      .select("id title description tags");
+
+    return videos.map(
+      (video) =>
+        new GetElasticSearchDto(
+          video.id,
+          video.title,
+          video.description,
+          video.tags
+        )
+    );
   }
 
   async getOwnerVideosForChannel(owner: Types.ObjectId) {

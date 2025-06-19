@@ -11,5 +11,6 @@ import { Video, VideoSchema } from "./video.schema";
   ],
   controllers: [VideoController],
   providers: [VideoService, ConfigService],
+  exports: [MongooseModule],
 })
 export class VideoModule {}
