@@ -11,7 +11,9 @@ const NoCommentFound = () => {
         <p className="text-sm text-muted-foreground">
           Be the first one to share your thoughts!
         </p>
-        <Button variant="outline">Add a Comment</Button>
+        <Button variant="outline" className="bg-gray-200 dark:bg-gray-700">
+          Add a Comment
+        </Button>
       </CardContent>
     </Card>
   );
