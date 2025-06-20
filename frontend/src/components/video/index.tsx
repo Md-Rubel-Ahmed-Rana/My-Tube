@@ -30,17 +30,17 @@ const Video = () => {
           <div className="lg:w-[65%] w-full">
             {video && <VideoPlayer video={video} />}
             <div className="space-y-2 mt-2">
-              <h2 className="text-xl font-semibold">{video?.title}</h2>
+              <h2 className="text-xl font-semibold">{video?.title || ""}</h2>
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <span>{video?.views} views</span>
+                <span>{video?.views || 0} views</span>
                 <span>{moment(video?.createdAt).fromNow()}</span>
-                <span>{formatDuration(video?.duration)}</span>
+                <span>{formatDuration(video?.duration || 0)}</span>
               </div>
               <VideoActions video={video} />
               <ChannelCard channel={video?.owner} />
               {video?.tags?.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
-                  {video.tags.map((tag) => (
+                  {video?.tags?.map((tag) => (
                     <Badge
                       className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
                       key={tag}

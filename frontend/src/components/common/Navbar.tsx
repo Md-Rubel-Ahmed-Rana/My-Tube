@@ -5,13 +5,8 @@ import { ModeToggle } from "./ModeToggle";
 import NavDropdown from "./NavDropdown";
 import SearchVideoForm from "./SearchVideoForm";
 import Link from "next/link";
-import { useGetLoggedInUserQuery } from "@/features/auth";
-import { IUser } from "@/types/user.type";
 
 const Navbar = () => {
-  const { data, isLoading } = useGetLoggedInUserQuery({});
-  const user = data?.data as IUser;
-
   return (
     <div className="w-full shadow-sm border-b bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 sticky top-0 z-50">
       <div className="px-4 py-3 flex items-center justify-between">
@@ -37,16 +32,14 @@ const Navbar = () => {
             <ModeToggle />
           </div>
 
-          {!isLoading && user?.id && (
-            <div className=" hidden lg:block">
-              <Link href={"/video/upload"}>
-                <Button variant="ghost" className="border">
-                  <Plus className="h-5 w-5" />
-                  <span>Upload</span>
-                </Button>
-              </Link>
-            </div>
-          )}
+          <div className=" hidden lg:block">
+            <Link href={"/video/upload"}>
+              <Button variant="ghost" className="border">
+                <Plus className="h-5 w-5" />
+                <span>Upload</span>
+              </Button>
+            </Link>
+          </div>
 
           <NavDropdown />
         </div>

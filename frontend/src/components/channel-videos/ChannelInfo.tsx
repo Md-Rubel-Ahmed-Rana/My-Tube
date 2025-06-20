@@ -19,7 +19,7 @@ const ChannelInfo = ({ totalVideos = 0 }: Props) => {
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-xl text-center lg:text-start  font-semibold">
           Welcome to the Channel
         </CardTitle>
       </CardHeader>

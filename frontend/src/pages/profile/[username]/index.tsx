@@ -1,6 +1,7 @@
 import SEOHead from "@/components/common/SEOHead";
 import Profile from "@/components/profile";
 import RootLayout from "@/layout/RootLayout";
+import isAuthenticate from "@/middleware/ProtectRoute";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
@@ -15,8 +16,8 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
-
 ProfilePage.getLayout = function (page: ReactElement) {
   return <RootLayout>{page}</RootLayout>;
 };
+
+export default isAuthenticate(ProfilePage);
