@@ -17,7 +17,9 @@ const DashboardHeader = ({ totalVideos }: Props) => {
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Welcome back!</CardTitle>
+        <CardTitle className="text-xl text-center lg:text-start font-semibold">
+          Welcome back!
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8">
