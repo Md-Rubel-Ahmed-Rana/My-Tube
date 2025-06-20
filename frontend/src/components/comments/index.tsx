@@ -2,6 +2,7 @@ import { useGetCommentsByVideoQuery } from "@/features/comment";
 import { useRouter } from "next/router";
 import NoCommentFound from "./NoCommentFound";
 import CommentContainer from "./CommentContainer";
+import CommentLoadingSkeleton from "@/skeletons/CommentLoading.skeleton";
 
 const Comments = () => {
   const { query } = useRouter();
@@ -19,7 +20,7 @@ const Comments = () => {
   return (
     <div>
       {isCommentLoading ? (
-        <div>Comments loading...</div>
+        <CommentLoadingSkeleton />
       ) : (
         <div>
           {comments?.length <= 0 ? (
