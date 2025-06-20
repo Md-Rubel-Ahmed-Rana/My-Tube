@@ -3,6 +3,7 @@ import AuthenticatingAccess from "@/components/common/AuthenticatingAccess";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { useRouter } from "next/router";
+import { LockIcon } from "lucide-react";
 import { useEffect } from "react";
 
 const isAuthenticate = (WrappedComponent: any) => {
@@ -21,12 +22,16 @@ const isAuthenticate = (WrappedComponent: any) => {
       return <AuthenticatingAccess />;
     }
 
-    if (error) {
+    if (error || !user?.id) {
       return (
-        <div className="flex items-center justify-center h-screen w-screen bg-gray-100">
-          <h1 className="text-lg lg:text-3xl font-bold">
-            Your are not authenticated!
+        <div className="flex flex-col items-center justify-center h-[70vh] bg-gray-100 dark:bg-gray-800 text-foreground px-4">
+          <LockIcon className="w-12 h-12 text-muted-foreground mb-4" />
+          <h1 className="text-2xl lg:text-4xl font-semibold mb-2">
+            Access Denied
           </h1>
+          <p className="text-sm lg:text-base text-muted-foreground max-w-md text-center">
+            You must be signed in to view this page. Please log in to continue.
+          </p>
         </div>
       );
     }
