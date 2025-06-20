@@ -10,6 +10,7 @@ import { AuthModule } from "./auth/auth.module";
 import { EventModule } from "./events/event.module";
 import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { CommentModule } from './comment/comment.module';
+import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommentModule } from './comment/comment.module';
     EventModule,
     ElasticSearchModule,
     CommentModule,
+    PlaylistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
