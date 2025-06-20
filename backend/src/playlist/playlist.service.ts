@@ -1,26 +1,97 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePlaylistDto } from './dto/create-playlist.dto';
-import { UpdatePlaylistDto } from './dto/update-playlist.dto';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { CreatePlaylistDto } from "./dto/create-playlist.dto";
+import { Playlist } from "./playlist.schema";
+import { Model } from "mongoose";
+import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class PlaylistService {
-  create(createPlaylistDto: CreatePlaylistDto) {
-    return 'This action adds a new playlist';
+  constructor(
+    @InjectModel(Playlist.name) private playlistModel: Model<Playlist>
+  ) {}
+
+  async create(createPlaylistDto: CreatePlaylistDto) {
+    const playlist = await this.playlistModel.create(createPlaylistDto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      success: true,
+      message: "Playlist created successfully",
+      data: playlist,
+    };
   }
 
-  findAll() {
-    return `This action returns all playlist`;
+  async getAllByUser(userId: string) {
+    const playlists = await this.playlistModel.find({ user: userId });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlists fetched successfully",
+      data: playlists,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} playlist`;
+  async getOne(id: string) {
+    const playlist = await this.playlistModel.findById(id).populate("videos");
+
+    if (!playlist) {
+      throw new HttpException("Playlist not found", HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlist fetched successfully",
+      data: playlist,
+    };
   }
 
-  update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
-    return `This action updates a #${id} playlist`;
+  async update(id: string, updateDto: { name?: string }) {
+    const playlist = await this.playlistModel.findByIdAndUpdate(id, updateDto, {
+      new: true,
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlist updated successfully",
+      data: playlist,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} playlist`;
+  async remove(id: string) {
+    await this.playlistModel.findByIdAndDelete(id);
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlist deleted successfully",
+      data: null,
+    };
+  }
+
+  async addVideo(playlistId: string, videoId: string) {
+    const playlist = await this.playlistModel.findByIdAndUpdate(
+      playlistId,
+      { $addToSet: { videos: videoId } },
+      { new: true }
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video added to playlist",
+      data: playlist,
+    };
+  }
+
+  async removeVideo(playlistId: string, videoId: string) {
+    const playlist = await this.playlistModel.findByIdAndUpdate(
+      playlistId,
+      { $pull: { videos: videoId } },
+      { new: true }
+    );
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video removed from playlist",
+      data: playlist,
+    };
   }
 }
