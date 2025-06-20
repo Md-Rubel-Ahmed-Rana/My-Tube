@@ -24,4 +24,6 @@ export class CreateVideoDto {
   duration: number;
 
   size: number;
+
+  playlistId?: string;
 }
