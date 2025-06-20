@@ -12,7 +12,7 @@ const ChannelCard = ({ channel }: Props) => {
     <div className="border rounded-lg p-2">
       <div className="flex items-center gap-4 pb-2">
         <Avatar className="w-10 lg:w-14 h-10 lg:h-14">
-          <AvatarImage src={channel?.photo} alt={channel?.name} />
+          <AvatarImage src={channel?.photo || ""} alt={channel?.name || ""} />
           <AvatarFallback>
             {channel?.name
               .split(" ")
@@ -23,9 +23,11 @@ const ChannelCard = ({ channel }: Props) => {
           </AvatarFallback>
         </Avatar>
         <div className="space-y-1">
-          <h2 className="text-lg">{channel?.name}</h2>
+          <h2 className="text-lg">{channel?.name || ""}</h2>
           <Link
-            href={`/channel/${channel?.username}/${channel?.id}?name=${channel?.name}`}
+            href={`/channel/${channel?.username || ""}/${
+              channel?.id || ""
+            }?name=${channel?.name || ""}`}
           >
             <Button size="sm">View Channel</Button>
           </Link>
