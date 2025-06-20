@@ -16,7 +16,6 @@ import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
-import { channel } from "process";
 
 @Injectable()
 export class VideoService {
@@ -67,6 +66,13 @@ export class VideoService {
           };
 
           const newVideo: any = await this.newVideo(newVideoData);
+
+          if (body?.playlistId) {
+            this.eventEmitter.emit("video-added-to-playlist", {
+              playlistId: body.playlistId,
+              videoId: newVideo?.id || newVideo?._id,
+            });
+          }
 
           // fire event for new-video-uploaded
           this.eventEmitter.emit("new-video-upload.created", {

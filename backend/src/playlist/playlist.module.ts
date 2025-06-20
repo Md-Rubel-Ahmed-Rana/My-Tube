@@ -13,5 +13,6 @@ import { ConfigService } from "@nestjs/config";
   ],
   controllers: [PlaylistController],
   providers: [PlaylistService, ConfigService],
+  exports: [MongooseModule],
 })
 export class PlaylistModule {}
