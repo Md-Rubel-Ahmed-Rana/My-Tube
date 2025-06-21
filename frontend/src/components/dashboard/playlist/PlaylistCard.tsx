@@ -8,6 +8,7 @@ import { VideoIcon, CalendarClock } from "lucide-react";
 import moment from "moment";
 import { useState } from "react";
 import PlaylistEditModal from "./PlaylistEditModal";
+import PlaylistDeleteModal from "./PlaylistDeleteModal";
 
 type Props = {
   playlist: IPlaylist;
@@ -74,6 +75,14 @@ const PlaylistCard = ({ playlist }: Props) => {
           open={isEdit}
           setOpen={setIsEdit}
           playlist={{ id: playlist?.id, name: playlist?.name }}
+        />
+      )}
+
+      {isDelete && (
+        <PlaylistDeleteModal
+          open={isDelete}
+          setOpen={setIsDelete}
+          id={playlist?.id}
         />
       )}
     </Card>
