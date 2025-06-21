@@ -5,7 +5,7 @@ const AuthenticatingAccess = () => {
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-screen w-full",
+        "flex items-center justify-center h-[70vh] w-full",
         "bg-gray-100 dark:bg-gray-800 text-foreground"
       )}
     >
