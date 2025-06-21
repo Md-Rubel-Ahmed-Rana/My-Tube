@@ -15,10 +15,10 @@ export const playlistApi = apiSlice.injectEndpoints({
       providesTags: ["playlist"],
     }),
     createPlaylist: builder.mutation({
-      query: (data) => ({
+      query: ({ playlist }: { playlist: { name: string } }) => ({
         url: "/playlist",
         method: "POST",
-        body: data,
+        body: playlist,
       }),
       invalidatesTags: ["playlist"],
     }),
