@@ -56,7 +56,10 @@ const NavDropdown = () => {
                 Profile
               </DropdownMenuItem>
             </Link>
-            <Link href={"/dashboard"} className="w-full mb-2 cursor-pointer">
+            <Link
+              href={"/dashboard/videos"}
+              className="w-full mb-2 cursor-pointer"
+            >
               <DropdownMenuItem className="w-full cursor-pointer">
                 My Videos
               </DropdownMenuItem>

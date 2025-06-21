@@ -1,5 +1,5 @@
 import SEOHead from "@/components/common/SEOHead";
-import Dashboard from "@/components/dashboard";
+import Dashboard from "@/components/dashboard/videos";
 import RootLayout from "@/layout/RootLayout";
 import isAuthenticate from "@/middleware/ProtectRoute";
 import { ReactElement } from "react";
@@ -7,7 +7,7 @@ import { ReactElement } from "react";
 const DashboardPage = () => {
   return (
     <>
-      <SEOHead title="Dashboard | My Videos | MyTube" />
+      <SEOHead title="My Videos | MyTube" />
       <Dashboard />
     </>
   );
