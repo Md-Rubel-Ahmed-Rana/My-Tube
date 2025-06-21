@@ -24,11 +24,7 @@ export class PlaylistService {
     const playlists = await this.playlistModel.find({ user: userId }).populate([
       {
         path: "videos",
-        select: "title owner",
-        populate: {
-          path: "owner",
-          select: "-password",
-        },
+        select: "title",
       },
     ]);
     return {
@@ -40,7 +36,16 @@ export class PlaylistService {
   }
 
   async getOne(id: string) {
-    const playlist = await this.playlistModel.findById(id).populate("videos");
+    const playlist = await this.playlistModel.findById(id).populate([
+      {
+        path: "videos",
+        select: "title owner",
+        populate: {
+          path: "owner",
+          select: "-password",
+        },
+      },
+    ]);
 
     if (!playlist) {
       throw new HttpException("Playlist not found", HttpStatus.NOT_FOUND);
