@@ -5,6 +5,8 @@ import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import NoPlaylistFound from "./NoPlaylistFound";
 import PlaylistContainer from "./PlaylistContainer";
+import PlaylistLoadingSkeleton from "@/skeletons/PlaylistLoading.skeleton";
+import { calculateTotalPlaylistsVideos } from "@/utils/calculateTotalPlaylistsVideos";
 
 const Playlists = () => {
   const { data: userDta } = useGetLoggedInUserQuery({});
@@ -14,12 +16,14 @@ const Playlists = () => {
   });
   const playlists = data?.data || [];
 
+  const totalVideos = calculateTotalPlaylistsVideos(playlists);
+
   return (
     <div className="p-2 lg:p-3 flex flex-col gap-2">
-      <DashboardHeader totalVideos={40} />
+      <DashboardHeader totalVideos={totalVideos} />
       <DashboardItems />
       {isLoading ? (
-        <div>Loading playlists...</div>
+        <PlaylistLoadingSkeleton />
       ) : (
         <div>
           {playlists.length > 0 ? (
