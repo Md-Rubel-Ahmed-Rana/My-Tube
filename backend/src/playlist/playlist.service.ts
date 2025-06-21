@@ -21,10 +21,16 @@ export class PlaylistService {
   }
 
   async getAllByUser(userId: string) {
-    const playlists = await this.playlistModel.find({ user: userId }).populate({
-      path: "videos",
-      select: "title",
-    });
+    const playlists = await this.playlistModel.find({ user: userId }).populate([
+      {
+        path: "videos",
+        select: "title owner",
+        populate: {
+          path: "owner",
+          select: "-password",
+        },
+      },
+    ]);
     return {
       statusCode: HttpStatus.OK,
       success: true,
