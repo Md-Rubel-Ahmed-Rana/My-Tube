@@ -1,8 +1,8 @@
 import { IVideo } from "@/types/video.type";
 import MyVideoCard from "./MyVideoCard";
-import NoDataFound from "../common/NoDataFound";
+import NoDataFound from "../../common/NoDataFound";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { Plus } from "lucide-react";
 
 type Props = {

@@ -7,8 +7,8 @@ import {
 import { IVideo } from "@/types/video.type";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
-import VideoDeleteModal from "./VideoDeleteModal";
 import { useState } from "react";
+import VideoDeleteModal from "./VideoDeleteModal";
 import VideoThumbnailUpdateModal from "./VideoThumbnailUpdateModal";
 
 type Props = {
