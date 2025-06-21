@@ -38,7 +38,7 @@ const DashboardItems = () => {
 
       {isOnPlaylists && (
         <Button onClick={() => setOpen(true)} className="px-4">
-          + Create Playlist
+          Create Playlist
         </Button>
       )}
 
