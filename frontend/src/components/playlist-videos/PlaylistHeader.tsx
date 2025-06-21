@@ -30,7 +30,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
         {playlist?.name || ""}
       </h2>
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>Videos:</span>
+        <span>Playing:</span>
         <span>
           {currentVideoNumber} of {playlist?.videos?.length || 0}
         </span>
