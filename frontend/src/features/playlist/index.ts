@@ -14,6 +14,16 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["playlist"],
     }),
+    getSinglePlaylistVideos: builder.query<
+      IApiResponse<IPlaylist | null>,
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/playlist/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["playlist"],
+    }),
     createPlaylist: builder.mutation({
       query: ({ playlist }: { playlist: { name: string } }) => ({
         url: "/playlist",
@@ -45,4 +55,5 @@ export const {
   useCreatePlaylistMutation,
   useUpdatePlaylistMutation,
   useDeletePlaylistMutation,
+  useGetSinglePlaylistVideosQuery,
 } = playlistApi;

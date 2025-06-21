@@ -7,6 +7,7 @@ import moment from "moment";
 import { useState } from "react";
 import PlaylistEditModal from "./PlaylistEditModal";
 import PlaylistDeleteModal from "./PlaylistDeleteModal";
+import Link from "next/link";
 
 type Props = {
   playlist: IPlaylist;
@@ -64,9 +65,23 @@ const PlaylistCard = ({ playlist }: Props) => {
           <span>{moment(new Date(playlist.updatedAt)).fromNow()}</span>
         </div>
 
-        <Button className="w-full mt-4 bg-gray-300 dark:bg-gray-700">
-          View Playlist
-        </Button>
+        {playlist.videos.length > 0 ? (
+          <Link
+            href={`/playlist/watch/${playlist.id}/video/${
+              playlist.videos[0]?.id || playlist.videos[0]
+            }?title=${encodeURIComponent(playlist.videos[0]?.title)}`}
+          >
+            <Button className="w-full mt-4 bg-gray-300 dark:bg-gray-700">
+              Watch Playlist
+            </Button>
+          </Link>
+        ) : (
+          <Link href={`/`}>
+            <Button className="w-full mt-4 bg-gray-300 dark:bg-gray-700">
+              Add Videos
+            </Button>
+          </Link>
+        )}
       </CardContent>
       {isEdit && (
         <PlaylistEditModal
