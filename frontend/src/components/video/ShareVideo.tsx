@@ -11,9 +11,10 @@ import { toast } from "sonner";
 type Props = {
   url?: string;
   className?: string;
+  from?: "home" | "playlist" | "channel";
 };
 
-const ShareVideo = ({ url, className }: Props) => {
+const ShareVideo = ({ url, className, from }: Props) => {
   const router = useRouter();
 
   const fullUrl =
@@ -43,7 +44,9 @@ const ShareVideo = ({ url, className }: Props) => {
       <TooltipTrigger asChild>
         <Button onClick={handleShare} size="xs" className={`${className} px-5`}>
           <Share2 className="w-4 h-4" />
-          <span className="hidden lg:block">Share</span>
+          <span className={`${from === "home" ? "block" : "hidden"}  lg:block`}>
+            Share
+          </span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>Share this video</TooltipContent>
