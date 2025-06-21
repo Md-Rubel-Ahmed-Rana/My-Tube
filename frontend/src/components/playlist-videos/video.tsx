@@ -10,13 +10,8 @@ import VideoDescription from "../video/VideoDescription";
 import VideoActions from "../video/VideoActions";
 import ChannelCard from "../video/ChannelCard";
 import Comments from "../comments";
-import { IPlaylist } from "@/types/playlist.type";
 
-type Props = {
-  playlist: IPlaylist;
-};
-
-const PlaylistVideoPlayer = ({ playlist }: Props) => {
+const PlaylistVideoPlayer = () => {
   const { query } = useRouter();
   const id = query?.id as string;
   const { data, isLoading } = useGetSingleVideoQuery({ id });

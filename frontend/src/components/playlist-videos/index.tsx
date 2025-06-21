@@ -17,7 +17,7 @@ const PlayListVideos = () => {
   return (
     <>
       <div className="p-2 lg:p-4 flex justify-between gap-3 lg:gap-5">
-        <PlaylistVideoPlayer playlist={playlist} />
+        <PlaylistVideoPlayer />
         <div className="w-[30%] hidden lg:block border rounded-2xl p-2">
           <PlaylistHeader playlist={playlist} />
           <PlaylistVideosDesktop isLoading={isLoading} playlist={playlist} />
