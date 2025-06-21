@@ -3,6 +3,7 @@ import { IVideo } from "@/types/video.type";
 import CopyLink from "./CopyLink";
 import DownloadVideo from "./DownloadVideo";
 import ShareVideo from "./ShareVideo";
+import SaveVideo from "./SaveVideo";
 
 type Props = {
   video: IVideo;
@@ -42,6 +43,9 @@ const VideoActions = ({ video }: Props) => {
 
       <div className="w-full lg:w-auto">
         <DownloadVideo video={video} />
+      </div>
+      <div className="w-full lg:w-auto">
+        <SaveVideo video={video} />
       </div>
     </div>
   );

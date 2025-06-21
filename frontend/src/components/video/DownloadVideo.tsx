@@ -13,9 +13,10 @@ import { formatBytes } from "@/utils/formatBytes";
 
 type Props = {
   video: IVideo;
+  from?: "home" | "playlist" | "watch" | "search";
 };
 
-const DownloadVideo = ({ video }: Props) => {
+const DownloadVideo = ({ video, from }: Props) => {
   const date = new Date();
   const todayDate = `${date.getDate()}-${
     date.getMonth() + 1
@@ -108,36 +109,71 @@ const DownloadVideo = ({ video }: Props) => {
   };
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          onClick={isLoading ? handleCancelDownload : handleDownloadVideo}
-          size="xs"
-          className="flex items-center gap-1 w-full"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm hidden lg:inline">
-                Cancel ({progress}%)
-              </span>
-              <span className="text-sm  lg:hidden">({progress}%)</span>
-              <X className="w-4 h-4 lg:hidden" />
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4" />
-              <span className="text-sm hidden lg:inline">Download</span>
-            </>
-          )}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        {isLoading
-          ? "Cancel download"
-          : `Download video (${formatBytes(video?.size)})`}
-      </TooltipContent>
-    </Tooltip>
+    <>
+      {from !== "home" ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={isLoading ? handleCancelDownload : handleDownloadVideo}
+              size="xs"
+              className="flex items-center gap-1 w-full"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm hidden lg:inline">
+                    Cancel ({progress}%)
+                  </span>
+                  <span className="text-sm  lg:hidden">({progress}%)</span>
+                  <X className="w-4 h-4 lg:hidden" />
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  <span className="text-sm hidden lg:inline">Download</span>
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isLoading
+              ? "Cancel download"
+              : `Download video (${formatBytes(video?.size)})`}
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={isLoading ? handleCancelDownload : handleDownloadVideo}
+              size="xs"
+              className="flex bg-gray-200 dark:bg-gray-700 justify-start items-center gap-1 w-full hover:bg-gray-300 dark:hover:bg-gray-600 "
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm hidden lg:inline">
+                    Cancel ({progress}%)
+                  </span>
+                  <span className="text-sm  lg:hidden">({progress}%)</span>
+                  <X className="w-4 h-4 lg:hidden" />
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  <span className="text-sm hidden lg:inline">Download</span>
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isLoading
+              ? "Cancel download"
+              : `Download video (${formatBytes(video?.size)})`}
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </>
   );
 };
 

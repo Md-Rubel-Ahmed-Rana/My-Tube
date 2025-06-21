@@ -84,7 +84,7 @@ const PlaylistVideosMobile = ({ playlist, isLoading }: Props) => {
             </SheetTitle>
             <SheetDescription className="text-xs text-gray-800 dark:text-gray-200">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>Videos:</span>
+                <span>Playing:</span>
                 <span>
                   {currentVideoNumber} of {playlist?.videos?.length || 0}
                 </span>
