@@ -5,9 +5,7 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 import { IVideo } from "@/types/video.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIncrementVideoViewsMutation } from "@/features/videos";
-import { useEffect, useRef, useState } from "react";
-import VideoSettings from "./VideoSettings";
-import SeekControls from "./SeekControls";
+import { useEffect, useRef } from "react";
 
 type Props = {
   video: IVideo;
@@ -16,9 +14,6 @@ type Props = {
 const VideoPlayer = ({ video }: Props) => {
   const [incrementView] = useIncrementVideoViewsMutation();
   const hasCountedRef = useRef(false);
-  const [isLoop, setIsLoop] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-  const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handlePlay = () => {
     if (!hasCountedRef.current) {
@@ -35,22 +30,10 @@ const VideoPlayer = ({ video }: Props) => {
     hasCountedRef.current = false;
   }, [video?.id]);
 
-  const handleUserInteract = () => {
-    setShowControls(true);
-    if (hideControlsTimeout.current) clearTimeout(hideControlsTimeout.current);
-    hideControlsTimeout.current = setTimeout(() => {
-      setShowControls(false);
-    }, 2000);
-  };
-
   return (
     <Card className="w-full p-0 rounded-md bg-gray-100 dark:bg-gray-800 border">
       <CardContent className="p-0 rounded-md">
-        <div
-          className="relative"
-          onMouseMove={handleUserInteract}
-          onClick={handleUserInteract}
-        >
+        <div className="relative">
           <MediaPlayer
             title={video.title}
             src={video.videoUrl}
@@ -61,17 +44,7 @@ const VideoPlayer = ({ video }: Props) => {
             onPlay={handlePlay}
             playsInline
             onReplay={handleReplay}
-            loop={isLoop}
           >
-            {showControls && (
-              <>
-                <button className="absolute cursor-pointer bottom-20 right-2 z-50 rounded-full opacity-85 hover:bg-gray-800 transition px-2">
-                  <VideoSettings loop={isLoop} setLoop={setIsLoop} />
-                </button>
-                <SeekControls />
-              </>
-            )}
-
             <MediaProvider>
               <Poster
                 className="media-poster"
