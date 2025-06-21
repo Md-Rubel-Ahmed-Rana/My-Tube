@@ -17,6 +17,7 @@ import {
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { useState } from "react";
+import Link from "next/link";
 
 type Props = {
   videoId: string;
@@ -55,7 +56,7 @@ const SaveToPlaylistModal = ({ videoId, open, setOpen }: Props) => {
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
             <Video className="text-primary w-5 h-5" />
-            <DialogTitle>Save to Playlist</DialogTitle>
+            <DialogTitle> Save to Playlist</DialogTitle>
           </div>
           <DialogDescription className="text-sm text-muted-foreground">
             Select a playlist to save this video into.
@@ -63,7 +64,12 @@ const SaveToPlaylistModal = ({ videoId, open, setOpen }: Props) => {
         </DialogHeader>
 
         {playlists.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No playlists found.</p>
+          <div>
+            <p className="text-sm text-muted-foreground">No playlists found.</p>
+            <Link href={"/dashboard/playlists"}>
+              <Button>Create Playlist</Button>
+            </Link>
+          </div>
         ) : (
           <RadioGroup
             value={playlistId}

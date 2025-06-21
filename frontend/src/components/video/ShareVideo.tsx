@@ -41,13 +41,9 @@ const ShareVideo = ({ url, className }: Props) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          onClick={handleShare}
-          size="xs"
-          className={`gap-2 ${className}`}
-        >
+        <Button onClick={handleShare} size="xs" className={`${className} px-5`}>
           <Share2 className="w-4 h-4" />
-          Share
+          <span className="hidden lg:block">Share</span>
         </Button>
       </TooltipTrigger>
       <TooltipContent>Share this video</TooltipContent>
