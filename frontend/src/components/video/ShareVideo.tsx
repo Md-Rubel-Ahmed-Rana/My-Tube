@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 
-const ShareVideo = () => {
+type Props = {
+  url?: string;
+  className?: string;
+};
+
+const ShareVideo = ({ url, className }: Props) => {
   const router = useRouter();
 
   const fullUrl =
@@ -21,7 +26,7 @@ const ShareVideo = () => {
       try {
         await navigator.share({
           title: "Check out this video on MyTube!",
-          url: fullUrl,
+          url: url || fullUrl,
         });
       } catch (error) {
         console.error("Error sharing:", error);
@@ -36,7 +41,11 @@ const ShareVideo = () => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button onClick={handleShare} size="xs" className="gap-2">
+        <Button
+          onClick={handleShare}
+          size="xs"
+          className={`gap-2 ${className}`}
+        >
           <Share2 className="w-4 h-4" />
           Share
         </Button>
