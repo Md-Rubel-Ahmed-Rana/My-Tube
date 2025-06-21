@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ListVideo } from "lucide-react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useDeletePlaylistMutation } from "@/features/playlist";
+import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
@@ -18,12 +19,23 @@ type Props = {
 
 const PlaylistDeleteModal = ({ open, setOpen, id = "" }: Props) => {
   const [deletePlaylist, { isLoading }] = useDeletePlaylistMutation();
+  const router = useRouter();
 
   const handleSubmit = async () => {
-    await handleApiMutation(deletePlaylist, { id }, 200, {
-      error: "Failed to delete playlist",
-      success: "Your playlist deleted successfully",
-    });
+    await handleApiMutation(
+      deletePlaylist,
+      { id },
+      200,
+      {
+        error: "Failed to delete playlist",
+        success: "Your playlist deleted successfully",
+      },
+      {
+        isRedirect: true,
+        path: "/dashboard/playlists",
+        router,
+      }
+    );
     setOpen(false);
   };
 

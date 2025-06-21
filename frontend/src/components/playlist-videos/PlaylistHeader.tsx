@@ -7,6 +7,8 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { Shuffle, Repeat, Trash2 } from "lucide-react";
+import { useState } from "react";
+import PlaylistDeleteModal from "../dashboard/playlist/PlaylistDeleteModal";
 
 type Props = {
   playlist: IPlaylist;
@@ -15,6 +17,7 @@ type Props = {
 const PlaylistHeader = ({ playlist }: Props) => {
   const { query } = useRouter();
   const currentVideoId = query?.id as string;
+  const [isDeletePlayList, setIsDeletePlayList] = useState(false);
 
   const currentIndex = playlist?.videos?.findIndex(
     (v) => v.id === currentVideoId
@@ -55,13 +58,24 @@ const PlaylistHeader = ({ playlist }: Props) => {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="destructive" size="icon">
+            <Button
+              onClick={() => setIsDeletePlayList(true)}
+              variant="destructive"
+              size="icon"
+            >
               <Trash2 />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Delete the playlist</TooltipContent>
         </Tooltip>
       </div>
+      {isDeletePlayList && (
+        <PlaylistDeleteModal
+          open={isDeletePlayList}
+          id={playlist?.id}
+          setOpen={setIsDeletePlayList}
+        />
+      )}
     </div>
   );
 };
