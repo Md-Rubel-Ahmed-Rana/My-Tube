@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import CreatePlaylist from "./playlist/CreatePlaylist";
+import { useState } from "react";
 
 const navItems = [
   { href: "/dashboard/videos", label: "Videos" },
@@ -9,10 +11,13 @@ const navItems = [
 ];
 
 const DashboardItems = () => {
+  const [open, setOpen] = useState(false);
+
   const pathname = usePathname();
+  const isOnPlaylists = pathname === "/dashboard/playlists";
 
   return (
-    <div className="flex gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-xl">
+    <div className="flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-xl">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
 
@@ -30,6 +35,14 @@ const DashboardItems = () => {
           </Link>
         );
       })}
+
+      {isOnPlaylists && (
+        <Button onClick={() => setOpen(true)} className="px-4">
+          + Create Playlist
+        </Button>
+      )}
+
+      {open && <CreatePlaylist open={open} setOpen={setOpen} />}
     </div>
   );
 };

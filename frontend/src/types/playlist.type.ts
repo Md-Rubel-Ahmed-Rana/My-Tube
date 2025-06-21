@@ -1,9 +1,7 @@
-import { IVideo } from "./video.type";
-
 export type IPlaylist = {
   id: string;
   name: string;
-  videos: IVideo[];
+  videos: string[];
   createdAt: Date;
   updatedAt: Date;
 };
