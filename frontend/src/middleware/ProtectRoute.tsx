@@ -26,7 +26,7 @@ const isAuthenticate = (WrappedComponent: any) => {
       return (
         <div className="flex flex-col items-center justify-center h-[70vh] bg-gray-100 dark:bg-gray-800 text-foreground px-4">
           <LockIcon className="w-12 h-12 text-muted-foreground mb-4" />
-          <h1 className="text-2xl lg:text-4xl font-semibold mb-2">
+          <h1 className="text-2xl text-gray-800 dark:text-gray-200 lg:text-4xl font-semibold mb-2">
             Access Denied
           </h1>
           <p className="text-sm lg:text-base text-muted-foreground max-w-md text-center">

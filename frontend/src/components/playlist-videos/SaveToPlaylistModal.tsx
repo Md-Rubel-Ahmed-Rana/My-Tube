@@ -58,16 +58,20 @@ const SaveToPlaylistModal = ({ videoId, open, setOpen }: Props) => {
             <Video className="text-primary w-5 h-5" />
             <DialogTitle> Save to Playlist</DialogTitle>
           </div>
-          <DialogDescription className="text-sm text-muted-foreground">
-            Select a playlist to save this video into.
-          </DialogDescription>
+          {playlists.length > 0 && (
+            <DialogDescription className="text-sm text-muted-foreground">
+              Select a playlist to save this video into.
+            </DialogDescription>
+          )}
         </DialogHeader>
 
         {playlists.length === 0 ? (
-          <div>
-            <p className="text-sm text-muted-foreground">No playlists found.</p>
+          <div className="flex flex-col items-center justify-center h-40 space-y-2">
+            <p className="text-sm text-center text-muted-foreground">
+              No playlists found.
+            </p>
             <Link href={"/dashboard/playlists"}>
-              <Button>Create Playlist</Button>
+              <Button size={"sm"}>Create Playlist</Button>
             </Link>
           </div>
         ) : (
@@ -93,21 +97,23 @@ const SaveToPlaylistModal = ({ videoId, open, setOpen }: Props) => {
           </RadioGroup>
         )}
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button
-            onClick={handleClose}
-            variant="secondary"
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleAddToPlaylist}
-            disabled={isLoading || !playlistId}
-          >
-            {isLoading ? "Adding..." : "Add to Playlist"}
-          </Button>
-        </div>
+        {playlists?.length > 0 && (
+          <div className="flex justify-end gap-2 pt-4">
+            <Button
+              onClick={handleClose}
+              variant="secondary"
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddToPlaylist}
+              disabled={isLoading || !playlistId}
+            >
+              {isLoading ? "Adding..." : "Add to Playlist"}
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

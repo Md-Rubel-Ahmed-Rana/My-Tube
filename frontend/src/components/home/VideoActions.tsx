@@ -53,6 +53,7 @@ const VideoActions = ({ video }: Props) => {
             <ShareVideo
               className="w-full flex justify-start hover:bg-gray-300 dark:hover:bg-gray-600"
               url={fullUrl}
+              from="home"
             />
           </DropdownMenuItem>
         </DropdownMenuContent>

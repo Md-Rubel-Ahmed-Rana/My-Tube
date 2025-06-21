@@ -39,7 +39,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
         <div className="flex items-center gap-4 flex-wrap">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button size="icon">
                 <Repeat />
               </Button>
             </TooltipTrigger>
@@ -48,7 +48,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button size="icon">
                 <Shuffle />
               </Button>
             </TooltipTrigger>
@@ -58,12 +58,8 @@ const PlaylistHeader = ({ playlist }: Props) => {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              onClick={() => setIsDeletePlayList(true)}
-              variant="destructive"
-              size="icon"
-            >
-              <Trash2 />
+            <Button onClick={() => setIsDeletePlayList(true)} size="icon">
+              <Trash2 className="text-red-500" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Delete the playlist</TooltipContent>

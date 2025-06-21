@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/tooltip";
 import { formatDuration } from "@/utils/formatDuration";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, Clock, PlayCircle, Trash2 } from "lucide-react";
-import moment from "moment";
+import { PlayCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
 import RemovePlaylistVideo from "./RemovePlaylistVideo";
 import { useState } from "react";
@@ -53,38 +52,34 @@ const PlaylistVideoCardDesktop = ({ video }: Props) => {
           </div>
           <CardContent className="px-2 space-y-2 w-4/6">
             <h2 className="text-sm font-semibold truncate">{video.title}</h2>
-            <p className="text-xs text-muted-foreground line-clamp-1">
-              {video.owner.name}
-            </p>
-            <div className="flex text-xs justify-between items-center gap-2">
-              <div className="flex text-xs items-center gap-2">
-                <Eye className="w-4 h-4" />
-                <span>{video.views}</span>
-                <Clock className="w-4 h-4" />
-                <span>{moment(new Date(video.createdAt)).fromNow()}</span>
+            <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground line-clamp-1">
+                {video?.owner?.name || "Unknown"}
+              </p>
+              <div className="flex text-xs justify-between items-center gap-2">
+                {videoId === video?.id ? (
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <PlayCircle className="w-4 h-4" />
+                    Playing
+                  </span>
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setIsRemoveVideo(true);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <Trash2 size={16} className="text-red-400" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove video</TooltipContent>
+                  </Tooltip>
+                )}
               </div>
-              {videoId === video?.id ? (
-                <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <PlayCircle className="w-4 h-4" />
-                  Playing
-                </span>
-              ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsRemoveVideo(true);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <Trash2 size={16} className="text-red-400" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Remove video</TooltipContent>
-                </Tooltip>
-              )}
             </div>
           </CardContent>
         </div>
