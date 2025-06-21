@@ -6,9 +6,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { ListVideo } from "lucide-react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useDeleteCommentMutation } from "@/features/comment";
+import { useDeletePlaylistMutation } from "@/features/playlist";
 
 type Props = {
   open: boolean;
@@ -16,13 +16,13 @@ type Props = {
   id: string;
 };
 
-const CommentDeleteModal = ({ open, setOpen, id = "" }: Props) => {
-  const [deleteComment, { isLoading }] = useDeleteCommentMutation();
+const PlaylistDeleteModal = ({ open, setOpen, id = "" }: Props) => {
+  const [deletePlaylist, { isLoading }] = useDeletePlaylistMutation();
 
   const handleSubmit = async () => {
-    await handleApiMutation(deleteComment, { id }, 200, {
-      error: "Failed to delete comment",
-      success: "Your comment deleted successfully",
+    await handleApiMutation(deletePlaylist, { id }, 200, {
+      error: "Failed to delete playlist",
+      success: "Your playlist deleted successfully",
     });
     setOpen(false);
   };
@@ -36,11 +36,11 @@ const CommentDeleteModal = ({ open, setOpen, id = "" }: Props) => {
       <DialogContent className="sm:max-w-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
-            <MessageCircle className="text-primary w-5 h-5" />
-            <DialogTitle>Delete comment</DialogTitle>
+            <ListVideo className="text-primary w-5 h-5" />
+            <DialogTitle>Delete playlist</DialogTitle>
           </div>
           <DialogDescription className="text-sm text-muted-foreground">
-            Are you sure you want to delete the comment?
+            Are you sure you want to delete the playlist?
           </DialogDescription>
         </DialogHeader>
 
@@ -57,4 +57,4 @@ const CommentDeleteModal = ({ open, setOpen, id = "" }: Props) => {
   );
 };
 
-export default CommentDeleteModal;
+export default PlaylistDeleteModal;
