@@ -23,7 +23,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
 
   return (
     <div className="flex flex-col gap-2 p-2  border-b-gray-200 dark:border-b-gray-700 border-b">
-      <h2 className="text-md lg:text-xl font-semibold tracking-tight truncate">
+      <h2 className="text-md lg:text-lg font-semibold tracking-tight truncate">
         {playlist?.name || ""}
       </h2>
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -37,7 +37,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="outline" size="icon">
-                <Repeat className="h-5 w-5" />
+                <Repeat />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Loop Playlist</TooltipContent>
@@ -46,7 +46,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="outline" size="icon">
-                <Shuffle className="h-5 w-5" />
+                <Shuffle />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Shuffle Playlist</TooltipContent>
@@ -56,7 +56,7 @@ const PlaylistHeader = ({ playlist }: Props) => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="destructive" size="icon">
-              <Trash2 className="h-5 w-5" />
+              <Trash2 />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Delete the playlist</TooltipContent>
