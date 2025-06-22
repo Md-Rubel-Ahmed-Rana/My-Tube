@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/router";
 import RemovePlaylistVideo from "./RemovePlaylistVideo";
 import { useState } from "react";
-import { PlayCircle, Trash2 } from "lucide-react";
+import { AudioLines, PlayCircle, Trash2 } from "lucide-react";
 
 type Props = {
   video: IVideo;
@@ -45,9 +45,15 @@ const PlaylistVideoCardMobile = ({ video }: Props) => {
                 fill
                 className="object-cover rounded-md"
               />
-              <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
-                {formatDuration(video.duration)}
-              </span>
+              {videoId === video?.id ? (
+                <span className="absolute bottom-2 right-2 flex items-center gap-1 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
+                  <AudioLines className="w-4 h-4 animate-pulse" />
+                </span>
+              ) : (
+                <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
+                  {formatDuration(video.duration)}
+                </span>
+              )}
             </div>
           </div>
           <CardContent className="px-2 space-y-2 w-[70%]">
