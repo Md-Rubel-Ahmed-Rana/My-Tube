@@ -64,7 +64,6 @@ const VideoTags = ({ form, isLoading }: Props) => {
             </FormControl>
             <Button
               type="button"
-              variant="outline"
               onClick={handleAddTag}
               disabled={!inputValue.trim()}
             >
