@@ -1,29 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { uploadVideoSchema } from "@/schemas/video.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/router";
-import { uploadVideoSchema } from "@/schemas/video.schema";
-import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useState } from "react";
+import { Form } from "@/components/ui/form";
+import VideoUploadStepOne from "./VideoUploadStepOne";
+import VideoUploadStepTwo from "./VideoUploadStepTwo";
 import { useUploadVideoMutation } from "@/features/videos";
-import VideoPreviewCard from "./VideoPreviewCard";
-import { validateVideoSize } from "@/utils/validateVideoSize";
+import { handleApiMutation } from "@/utils/handleApiMutation";
+import { useRouter } from "next/router";
 
 const VideoUploadForm = () => {
-  const router = useRouter();
+  const [step, setStep] = useState(1);
   const [uploadVideo, { isLoading }] = useUploadVideoMutation();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof uploadVideoSchema>>({
     resolver: zodResolver(uploadVideoSchema),
@@ -31,17 +22,54 @@ const VideoUploadForm = () => {
       title: "",
       tags: [],
       video: undefined,
+      thumbnail: undefined,
       description: "",
+      playlistId: "",
     },
   });
 
-  const handleSubmit = async (values: z.infer<typeof uploadVideoSchema>) => {
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", values.description);
-    formData.append("video", values.video as File);
-    values.tags.forEach((tag) => formData.append("tags[]", tag));
+  const watchedVideo = form.watch("video");
+  const watchedTags = form.watch("tags");
 
+  const persistedVideoRef = useRef<File | undefined>(null);
+
+  useEffect(() => {
+    if (watchedVideo) {
+      persistedVideoRef.current = watchedVideo;
+    }
+  }, [watchedVideo]);
+
+  useEffect(() => {
+    form.setValue("tags", watchedTags);
+    if (persistedVideoRef.current) {
+      form.setValue("video", persistedVideoRef.current);
+    }
+  }, [step]);
+
+  const handleSubmit = async (data: z.infer<typeof uploadVideoSchema>) => {
+    if (data.playlistId === "" && !data.playlistId) {
+      delete data.playlistId;
+    }
+    if (data.thumbnail === null || data.thumbnail === undefined) {
+      delete data.thumbnail;
+    }
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("video", data.video);
+    data.tags.forEach((tag) => formData.append("tags[]", tag));
+    if (data.thumbnail) {
+      formData.append("thumbnail", data.thumbnail);
+    }
+    if (data.playlistId) {
+      formData.append("playlistId", data.playlistId);
+    }
+
+    await handleUploadVideo(formData);
+  };
+
+  const handleUploadVideo = async (formData: FormData) => {
     await handleApiMutation(
       uploadVideo,
       formData,
@@ -59,121 +87,30 @@ const VideoUploadForm = () => {
     form.reset();
   };
 
-  // // prevent navigation and browser close
-  // const message =
-  //   "Your video is being uploaded. You can't navigate to other page or close the browser anymore until uploading finished.";
-  // useNavigationBlocker(isLoading, message);
-  // useBeforeUnload(isLoading, message);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-6 p-6 border rounded-lg w-full"
       >
-        <h2 className="text-center text-2xl font-semibold">
-          Upload Your Video
-        </h2>
-
-        <FormField
-          control={form.control}
-          disabled={isLoading}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Video Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter video title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+        <div className="flex flex-col gap-4">
+          <h4 className="text-center font-semibold text-lg">Upload Video</h4>
+          {step === 1 && (
+            <VideoUploadStepOne
+              form={form}
+              isLoading={isLoading}
+              step={step}
+              setStep={setStep}
+            />
           )}
-        />
-
-        <FormField
-          control={form.control}
-          disabled={isLoading}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Video Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write your video description here"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          {step === 2 && (
+            <VideoUploadStepTwo
+              form={form}
+              isLoading={isLoading}
+              setStep={setStep}
+              step={step}
+            />
           )}
-        />
-
-        <FormField
-          control={form.control}
-          disabled={isLoading}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tags (comma-separated)</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={isLoading}
-                  placeholder="e.g. music, tutorial"
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value
-                        .split(",")
-                        .map((tag) => tag.trim())
-                        .filter(Boolean)
-                    )
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          disabled={isLoading}
-          name="video"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Video (Max: 100MB)</FormLabel>
-              <FormControl>
-                <Input
-                  disabled={isLoading}
-                  className="cursor-pointer"
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const isValid = validateVideoSize(file);
-                      if (isValid) {
-                        field.onChange(file);
-                        setSelectedFile(file);
-                      } else {
-                        e.target.value = "";
-                        setSelectedFile(null);
-                        field.onChange(null);
-                      }
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {selectedFile && <VideoPreviewCard video={selectedFile} />}
-
-        <div className="pt-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Uploading..." : "Upload Video"}
-          </Button>
         </div>
       </form>
     </Form>

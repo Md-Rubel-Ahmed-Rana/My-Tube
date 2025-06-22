@@ -3,6 +3,11 @@ import { z } from "zod";
 export const uploadVideoSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
 
+  playlistId: z
+    .string()
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
+
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters long." })
@@ -19,6 +24,12 @@ export const uploadVideoSchema = z.object({
   video: z.custom<File>((file) => file instanceof File, {
     message: "A valid video file is required.",
   }),
+
+  thumbnail: z
+    .custom<File>((file) => file instanceof File, {
+      message: "A valid thumbnail file is required.",
+    })
+    .optional(),
 });
 
 export const videoEditSchema = z.object({

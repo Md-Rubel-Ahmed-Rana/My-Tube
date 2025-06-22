@@ -9,7 +9,7 @@ const videoApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["video"],
+      invalidatesTags: ["video", "playlist"],
     }),
     incrementVideoViews: build.mutation({
       query: ({ id }: { id: string }) => ({
