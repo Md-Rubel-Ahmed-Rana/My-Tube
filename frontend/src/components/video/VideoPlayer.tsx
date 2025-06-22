@@ -6,13 +6,36 @@ import { IVideo } from "@/types/video.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIncrementVideoViewsMutation } from "@/features/videos";
 import { useEffect, useRef } from "react";
+import { useAutoplayNextVideo } from "@/hooks/useAutoplayNextVideo";
+import { useRouter } from "next/router";
+import { useShuffleAutoplayNextVideo } from "@/hooks/useShuffleAutoplayNextVideo";
 
 type Props = {
   video: IVideo;
+  shouldLoop?: boolean;
+  isShuffle?: boolean;
 };
 
-const VideoPlayer = ({ video }: Props) => {
+const VideoPlayer = ({
+  video,
+  shouldLoop = false,
+  isShuffle = false,
+}: Props) => {
+  const router = useRouter();
   const [incrementView] = useIncrementVideoViewsMutation();
+  const { nextPath } = useAutoplayNextVideo();
+  const { nextPath: shuffleNextPath } = useShuffleAutoplayNextVideo(true);
+
+  const handleVideoEnd = () => {
+    if (isShuffle && shuffleNextPath) {
+      router.push(shuffleNextPath);
+    } else if (nextPath && !shouldLoop) {
+      router.push(nextPath);
+    } else {
+      console.log("Reached end of playlist.");
+    }
+  };
+
   const hasCountedRef = useRef(false);
 
   const handlePlay = () => {
@@ -44,6 +67,8 @@ const VideoPlayer = ({ video }: Props) => {
             onPlay={handlePlay}
             playsInline
             onReplay={handleReplay}
+            onEnded={handleVideoEnd}
+            loop={shouldLoop}
           >
             <MediaProvider>
               <Poster
