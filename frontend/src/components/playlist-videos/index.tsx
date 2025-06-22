@@ -15,16 +15,22 @@ const PlayListVideos = () => {
   });
   const playlist = data?.data as IPlaylist;
   const [shouldLoopAVideo, setShouldLoopAVideo] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
 
   return (
     <>
       <div className="p-2 lg:p-4 flex justify-between gap-3 lg:gap-5">
-        <PlaylistVideoPlayer shouldLoopAVideo={shouldLoopAVideo} />
+        <PlaylistVideoPlayer
+          shouldLoopAVideo={shouldLoopAVideo}
+          isShuffle={isShuffle}
+        />
         <div className="w-[30%] hidden lg:block border rounded-2xl p-2">
           <PlaylistHeader
             setShouldLoopAVideo={setShouldLoopAVideo}
             playlist={playlist}
             shouldLoopAVideo={shouldLoopAVideo}
+            isShuffle={isShuffle}
+            setIsShuffle={setIsShuffle}
           />
           <PlaylistVideosDesktop isLoading={isLoading} playlist={playlist} />
         </div>
