@@ -64,6 +64,11 @@ const NavDropdown = () => {
                 My Videos
               </DropdownMenuItem>
             </Link>
+            <Link href={"/dashboard/playlists"} className="w-full mb-2">
+              <DropdownMenuItem className="cursor-pointer">
+                My Playlists
+              </DropdownMenuItem>
+            </Link>
             <Link href={"/video/upload"} className="w-full mb-2 cursor-pointer">
               <DropdownMenuItem className="w-full cursor-pointer">
                 Upload Video

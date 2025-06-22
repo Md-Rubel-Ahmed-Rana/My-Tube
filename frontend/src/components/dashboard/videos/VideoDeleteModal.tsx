@@ -34,7 +34,7 @@ const VideoDeleteModal = ({ video, onOpenChange, open }: Props) => {
       },
       {
         isRedirect: true,
-        path: "/dashboard",
+        path: "/dashboard/videos",
         router,
       }
     );

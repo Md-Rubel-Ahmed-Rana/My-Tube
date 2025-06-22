@@ -56,7 +56,7 @@ const VideoEditForm = ({ video }: Props) => {
       },
       {
         isRedirect: true,
-        path: "/dashboard",
+        path: "/dashboard/videos",
         router,
       }
     );
