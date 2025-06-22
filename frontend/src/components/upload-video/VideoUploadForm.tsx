@@ -52,7 +52,7 @@ const VideoUploadForm = () => {
       },
       {
         isRedirect: true,
-        path: "/dashboard",
+        path: "/dashboard/videos",
         router,
       }
     );
