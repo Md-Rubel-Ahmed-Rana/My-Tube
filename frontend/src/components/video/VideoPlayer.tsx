@@ -6,13 +6,26 @@ import { IVideo } from "@/types/video.type";
 import { Card, CardContent } from "@/components/ui/card";
 import { useIncrementVideoViewsMutation } from "@/features/videos";
 import { useEffect, useRef } from "react";
+import { useAutoplayNextVideo } from "@/hooks/useAutoplayNextVideo";
+import { useRouter } from "next/router";
 
 type Props = {
   video: IVideo;
 };
 
 const VideoPlayer = ({ video }: Props) => {
+  const router = useRouter();
   const [incrementView] = useIncrementVideoViewsMutation();
+  const { nextPath } = useAutoplayNextVideo();
+
+  const handleVideoEnd = () => {
+    if (nextPath) {
+      router.push(nextPath);
+    } else {
+      console.log("Reached end of playlist.");
+    }
+  };
+
   const hasCountedRef = useRef(false);
 
   const handlePlay = () => {
@@ -44,6 +57,7 @@ const VideoPlayer = ({ video }: Props) => {
             onPlay={handlePlay}
             playsInline
             onReplay={handleReplay}
+            onEnded={handleVideoEnd}
           >
             <MediaProvider>
               <Poster
