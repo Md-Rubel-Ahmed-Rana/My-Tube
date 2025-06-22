@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 import { IVideo } from "@/types/video.type";
-import { formatDuration } from "@/utils/formatDuration";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, ThumbsUp, Clock } from "lucide-react";
@@ -10,6 +8,7 @@ import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import VideoActions from "./VideoActions";
 import { useRouter } from "next/router";
+import VideoThumbnail from "./VideoThumbnail";
 
 type Props = {
   video: IVideo;
@@ -28,17 +27,7 @@ const VideoCard = ({ video }: Props) => {
 
   return (
     <Card className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-lg overflow-hidden">
-      <div onClick={handleNavigate} className="relative w-full h-52">
-        <Image
-          src={video.thumbnailUrl}
-          alt={video.title}
-          fill
-          className="object-cover"
-        />
-        <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
-          {formatDuration(video.duration)}
-        </span>
-      </div>
+      <VideoThumbnail video={video} />
 
       <CardContent className="px-2 space-y-2">
         <h2
