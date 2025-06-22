@@ -11,15 +11,17 @@ import { useRouter } from "next/router";
 
 type Props = {
   video: IVideo;
+  shouldLoop?: boolean;
 };
 
-const VideoPlayer = ({ video }: Props) => {
+const VideoPlayer = ({ video, shouldLoop = false }: Props) => {
   const router = useRouter();
   const [incrementView] = useIncrementVideoViewsMutation();
   const { nextPath } = useAutoplayNextVideo();
 
   const handleVideoEnd = () => {
-    if (nextPath) {
+    if (nextPath && !shouldLoop) {
+      // play next video of playlist
       router.push(nextPath);
     } else {
       console.log("Reached end of playlist.");
@@ -58,6 +60,7 @@ const VideoPlayer = ({ video }: Props) => {
             playsInline
             onReplay={handleReplay}
             onEnded={handleVideoEnd}
+            loop={shouldLoop}
           >
             <MediaProvider>
               <Poster
