@@ -8,20 +8,28 @@ import { useIncrementVideoViewsMutation } from "@/features/videos";
 import { useEffect, useRef } from "react";
 import { useAutoplayNextVideo } from "@/hooks/useAutoplayNextVideo";
 import { useRouter } from "next/router";
+import { useShuffleAutoplayNextVideo } from "@/hooks/useShuffleAutoplayNextVideo";
 
 type Props = {
   video: IVideo;
   shouldLoop?: boolean;
+  isShuffle?: boolean;
 };
 
-const VideoPlayer = ({ video, shouldLoop = false }: Props) => {
+const VideoPlayer = ({
+  video,
+  shouldLoop = false,
+  isShuffle = false,
+}: Props) => {
   const router = useRouter();
   const [incrementView] = useIncrementVideoViewsMutation();
   const { nextPath } = useAutoplayNextVideo();
+  const { nextPath: shuffleNextPath } = useShuffleAutoplayNextVideo(true);
 
   const handleVideoEnd = () => {
-    if (nextPath && !shouldLoop) {
-      // play next video of playlist
+    if (isShuffle && shuffleNextPath) {
+      router.push(shuffleNextPath);
+    } else if (nextPath && !shouldLoop) {
       router.push(nextPath);
     } else {
       console.log("Reached end of playlist.");

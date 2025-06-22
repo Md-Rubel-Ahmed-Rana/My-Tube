@@ -6,20 +6,24 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Shuffle, Repeat, Trash2 } from "lucide-react";
+import { Shuffle, Repeat, Trash2, Repeat1 } from "lucide-react";
 import { useState } from "react";
 import PlaylistDeleteModal from "../dashboard/playlist/PlaylistDeleteModal";
 
 type Props = {
   playlist: IPlaylist;
   shouldLoopAVideo: boolean;
+  isShuffle: boolean;
   setShouldLoopAVideo: (value: boolean) => void;
+  setIsShuffle: (value: boolean) => void;
 };
 
 const PlaylistHeader = ({
   playlist,
   setShouldLoopAVideo,
   shouldLoopAVideo,
+  isShuffle,
+  setIsShuffle,
 }: Props) => {
   const { query } = useRouter();
   const currentVideoId = query?.id as string;
@@ -29,6 +33,16 @@ const PlaylistHeader = ({
     (v) => v.id === currentVideoId
   );
   const currentVideoNumber = currentIndex !== -1 ? currentIndex + 1 : "-";
+
+  const handleLoopVideo = () => {
+    setShouldLoopAVideo(!shouldLoopAVideo);
+    setIsShuffle(false);
+  };
+
+  const handleShuffleVideo = () => {
+    setIsShuffle(!isShuffle);
+    setShouldLoopAVideo(false);
+  };
 
   return (
     <div className="flex flex-col gap-2 p-2  border-b-gray-200 dark:border-b-gray-700 border-b">
@@ -46,7 +60,7 @@ const PlaylistHeader = ({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                onClick={() => setShouldLoopAVideo(!shouldLoopAVideo)}
+                onClick={handleLoopVideo}
                 size="icon"
                 className={
                   shouldLoopAVideo
@@ -54,11 +68,11 @@ const PlaylistHeader = ({
                     : "text-muted-foreground"
                 }
               >
-                <Repeat
-                  className={
-                    shouldLoopAVideo ? "text-white" : "text-muted-foreground"
-                  }
-                />
+                {shouldLoopAVideo ? (
+                  <Repeat1 className={"text-white"} />
+                ) : (
+                  <Repeat className={"text-muted-foreground"} />
+                )}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -68,8 +82,18 @@ const PlaylistHeader = ({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="icon">
-                <Shuffle />
+              <Button
+                onClick={handleShuffleVideo}
+                size="icon"
+                className={
+                  isShuffle
+                    ? "bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600"
+                    : "text-muted-foreground"
+                }
+              >
+                <Shuffle
+                  className={isShuffle ? "text-white" : "text-muted-foreground"}
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Shuffle Playlist</TooltipContent>
