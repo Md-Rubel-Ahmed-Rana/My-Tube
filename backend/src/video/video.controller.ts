@@ -12,9 +12,13 @@ import {
   Param,
   Patch,
   Delete,
+  UploadedFiles,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
-import { FileInterceptor } from "@nestjs/platform-express";
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from "@nestjs/platform-express";
 import { AuthGuard } from "src/auth/auth.guard";
 import { QueryVideoDto } from "./dto/query-video.dto";
 import { Types } from "mongoose";
@@ -53,18 +57,31 @@ export class VideoController {
 
   @Post("upload")
   @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor("video"))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "video", maxCount: 1 },
+      { name: "thumbnail", maxCount: 1 },
+    ])
+  )
   async upload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      video?: Express.Multer.File[];
+      thumbnail?: Express.Multer.File[];
+    },
     @Body() body,
     @Req() req: { user: { id: string } }
   ) {
-    if (!file) {
-      throw new BadRequestException("No file provided");
+    const videoFile = files.video?.[0];
+    const thumbnailFile = files.thumbnail?.[0];
+
+    if (!videoFile) {
+      throw new BadRequestException("Video is required");
     }
-    return await this.videoService.uploadVideo(file, {
+
+    return await this.videoService.create(videoFile, thumbnailFile, {
       ...body,
-      owner: req?.user?.id,
+      owner: req.user.id,
     });
   }
 
