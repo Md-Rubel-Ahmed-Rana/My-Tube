@@ -4,7 +4,6 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,22 +13,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronUp } from "lucide-react";
 import RelatedVideoLoadingSkeleton from "@/skeletons/RelatedVideoLoading.skeleton";
 import PlaylistVideoCardMobile from "./PlaylistVideoCardMobile";
-import { useRouter } from "next/router";
+import PlaylistHeader from "./PlaylistHeader";
 
 type Props = {
   playlist: IPlaylist;
   isLoading: boolean;
+  setShouldLoopAVideo: (value: boolean) => void;
+  setIsShuffle: (value: boolean) => void;
+  shouldLoopAVideo: boolean;
+  isShuffle: boolean;
 };
 
-const PlaylistVideosMobile = ({ playlist, isLoading }: Props) => {
+const PlaylistVideosMobile = ({
+  playlist,
+  isLoading,
+  isShuffle,
+  setIsShuffle,
+  setShouldLoopAVideo,
+  shouldLoopAVideo,
+}: Props) => {
   const videos = (playlist?.videos || []) as IVideo[];
   const video = videos[0];
-
-  const { query } = useRouter();
-  const currentVideoId = query?.id as string;
-
-  const currentIndex = videos?.findIndex((v) => v?.id === currentVideoId);
-  const currentVideoNumber = currentIndex !== -1 ? currentIndex + 1 : "-";
 
   return (
     <div className="fixed bottom-2 left-0 w-full z-50 flex justify-center">
@@ -79,16 +83,14 @@ const PlaylistVideosMobile = ({ playlist, isLoading }: Props) => {
           className="h-[60vh] sm:h-[50vh] overflow-y-auto pb-0 mb-0 bg-gray-300 dark:bg-gray-900 text-gray-800 dark:text-gray-200"
         >
           <SheetHeader className="pb-0 mb-0 ">
-            <SheetTitle className="p-0 text-sm text-gray-800 dark:text-gray-200 truncate w-10/12">
-              {playlist?.name || "Playlist Videos"}
-            </SheetTitle>
             <SheetDescription className="text-xs text-gray-800 dark:text-gray-200">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>Playing:</span>
-                <span>
-                  {currentVideoNumber} of {playlist?.videos?.length || 0}
-                </span>
-              </div>
+              <PlaylistHeader
+                setShouldLoopAVideo={setShouldLoopAVideo}
+                playlist={playlist}
+                shouldLoopAVideo={shouldLoopAVideo}
+                isShuffle={isShuffle}
+                setIsShuffle={setIsShuffle}
+              />
             </SheetDescription>
           </SheetHeader>
 

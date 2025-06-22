@@ -45,7 +45,7 @@ const PlaylistHeader = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 p-2  border-b-gray-200 dark:border-b-gray-700 border-b">
+    <div className="flex flex-col gap-2 p-0 lg:p-2  border-b-gray-200 dark:border-b-gray-700 border-b pb-2">
       <h2 className="text-md lg:text-lg font-semibold tracking-tight truncate">
         {playlist?.name || ""}
       </h2>

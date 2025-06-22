@@ -26,8 +26,8 @@ const PlayListVideos = () => {
         />
         <div className="w-[30%] hidden lg:block border rounded-2xl p-2">
           <PlaylistHeader
-            setShouldLoopAVideo={setShouldLoopAVideo}
             playlist={playlist}
+            setShouldLoopAVideo={setShouldLoopAVideo}
             shouldLoopAVideo={shouldLoopAVideo}
             isShuffle={isShuffle}
             setIsShuffle={setIsShuffle}
@@ -36,7 +36,14 @@ const PlayListVideos = () => {
         </div>
       </div>
       <div className="block lg:hidden">
-        <PlaylistVideosMobile isLoading={isLoading} playlist={playlist} />
+        <PlaylistVideosMobile
+          isLoading={isLoading}
+          playlist={playlist}
+          setShouldLoopAVideo={setShouldLoopAVideo}
+          shouldLoopAVideo={shouldLoopAVideo}
+          isShuffle={isShuffle}
+          setIsShuffle={setIsShuffle}
+        />
       </div>
     </>
   );
