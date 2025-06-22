@@ -7,7 +7,7 @@ import { MediaPlayer, MediaProvider } from "@vidstack/react";
 import "@vidstack/react/player/styles/base.css";
 import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 type Props = {
@@ -17,7 +17,9 @@ type Props = {
 const VideoThumbnail = ({ video }: Props) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const [mute, setMute] = useState(true);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleNavigate = () => {
     router.push(
@@ -28,12 +30,37 @@ const VideoThumbnail = ({ video }: Props) => {
   };
 
   const handleMuteToggle = (e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent navigation
+    e.stopPropagation();
     setMute((prev) => !prev);
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting && entry.intersectionRatio >= 0.5);
+      },
+      {
+        threshold: [0.5],
+      }
+    );
+
+    const current = containerRef.current;
+    if (current) observer.observe(current);
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, []);
+
+  const isMobile =
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 768px)").matches;
+
+  const shouldPlay = isMobile ? isInView : isHovered;
+
   return (
     <div
+      ref={containerRef}
       onClick={handleNavigate}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -44,7 +71,7 @@ const VideoThumbnail = ({ video }: Props) => {
         alt={video.title}
         fill
         className={`object-cover transition-opacity duration-300 ${
-          isHovered ? "opacity-0" : "opacity-100"
+          shouldPlay ? "opacity-0" : "opacity-100"
         }`}
       />
 
@@ -53,7 +80,7 @@ const VideoThumbnail = ({ video }: Props) => {
         {formatDuration(video.duration)}
       </span>
 
-      {isHovered && (
+      {shouldPlay && (
         <div className="absolute inset-0 z-20 pointer-events-none">
           <MediaPlayer
             src={video.videoUrl}
