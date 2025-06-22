@@ -23,7 +23,7 @@ const videoApi = apiSlice.injectEndpoints({
         url: `video/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["video"],
+      invalidatesTags: ["video", "playlist"],
     }),
     updateVideo: build.mutation({
       query: ({

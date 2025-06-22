@@ -43,9 +43,21 @@ const VideoThumbnailUpload = ({ form, isLoading, step }: Props) => {
     <div className="space-y-3 w-full">
       <div className="flex items-center space-x-2">
         <Checkbox
+          disabled={isLoading}
           id="autoGenerate"
           checked={autoGenerateThumbnail}
-          onCheckedChange={(checked) => setAutoGenerateThumbnail(!!checked)}
+          onCheckedChange={(checked) => {
+            setAutoGenerateThumbnail(!!checked);
+            if (checked) {
+              form.setValue("thumbnail", null);
+              setSelectedThumbnail(null);
+            } else {
+              const currentThumbnail = form.getValues("thumbnail");
+              if (currentThumbnail) {
+                setSelectedThumbnail(currentThumbnail);
+              }
+            }
+          }}
         />
         <label htmlFor="autoGenerate" className="text-sm">
           Auto-generate thumbnail
