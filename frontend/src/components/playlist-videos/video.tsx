@@ -11,7 +11,11 @@ import VideoActions from "../video/VideoActions";
 import ChannelCard from "../video/ChannelCard";
 import Comments from "../comments";
 
-const PlaylistVideoPlayer = () => {
+type Props = {
+  shouldLoopAVideo: boolean;
+};
+
+const PlaylistVideoPlayer = ({ shouldLoopAVideo }: Props) => {
   const { query } = useRouter();
   const id = query?.id as string;
   const { data, isLoading } = useGetSingleVideoQuery({ id });
@@ -23,7 +27,7 @@ const PlaylistVideoPlayer = () => {
         <VideoPlayerPageSkeleton />
       ) : (
         <>
-          <VideoPlayer video={video} />
+          <VideoPlayer video={video} shouldLoop={shouldLoopAVideo} />
           <div className="space-y-2 mt-2">
             <h2 className="text-xl font-semibold">{video?.title || ""}</h2>
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">

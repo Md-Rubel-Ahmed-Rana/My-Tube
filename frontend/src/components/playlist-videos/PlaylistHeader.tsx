@@ -12,9 +12,15 @@ import PlaylistDeleteModal from "../dashboard/playlist/PlaylistDeleteModal";
 
 type Props = {
   playlist: IPlaylist;
+  shouldLoopAVideo: boolean;
+  setShouldLoopAVideo: (value: boolean) => void;
 };
 
-const PlaylistHeader = ({ playlist }: Props) => {
+const PlaylistHeader = ({
+  playlist,
+  setShouldLoopAVideo,
+  shouldLoopAVideo,
+}: Props) => {
   const { query } = useRouter();
   const currentVideoId = query?.id as string;
   const [isDeletePlayList, setIsDeletePlayList] = useState(false);
@@ -39,11 +45,25 @@ const PlaylistHeader = ({ playlist }: Props) => {
         <div className="flex items-center gap-4 flex-wrap">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="icon">
-                <Repeat />
+              <Button
+                onClick={() => setShouldLoopAVideo(!shouldLoopAVideo)}
+                size="icon"
+                className={
+                  shouldLoopAVideo
+                    ? "bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600"
+                    : "text-muted-foreground"
+                }
+              >
+                <Repeat
+                  className={
+                    shouldLoopAVideo ? "text-white" : "text-muted-foreground"
+                  }
+                />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Loop Playlist</TooltipContent>
+            <TooltipContent>
+              {shouldLoopAVideo ? "Looping enabled" : "Loop a video"}
+            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
