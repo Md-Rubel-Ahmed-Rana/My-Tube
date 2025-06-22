@@ -39,7 +39,6 @@ export class PlaylistService {
     const playlist = await this.playlistModel.findById(id).populate([
       {
         path: "videos",
-        select: "title owner",
         populate: {
           path: "owner",
           select: "-password",
