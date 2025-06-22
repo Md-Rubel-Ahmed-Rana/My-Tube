@@ -31,11 +31,12 @@ export class VideoService {
     });
   }
 
-  async uploadVideo(file: Express.Multer.File, body: CreateVideoDto) {
-    if (!file) {
-      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
-    }
-
+  async streamUploadVideo(video: Express.Multer.File): Promise<{
+    publicId: string;
+    videoUrl: string;
+    duration: number;
+    bytes: number;
+  }> {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -46,63 +47,121 @@ export class VideoService {
         async (error, result) => {
           if (error) return reject(error);
 
-          const newVideoData: CreateVideoDto = {
+          return resolve({
             publicId: result.public_id,
             videoUrl: result.secure_url,
-            thumbnailUrl: cloudinary.url(result.public_id, {
-              resource_type: "video",
-              format: "jpg",
-              secure: true,
-            }),
             duration: result.duration,
-            size: result.bytes,
-            tags: parseField(body?.tags),
-            title: body.title,
-            description: body.description,
-            dislikes: [],
-            likes: [],
-            views: 0,
-            owner: new Types.ObjectId(body.owner),
-          };
-
-          const newVideo: any = await this.newVideo(newVideoData);
-
-          if (body?.playlistId) {
-            this.eventEmitter.emit("video-added-to-playlist", {
-              playlistId: body.playlistId,
-              videoId: newVideo?.id || newVideo?._id,
-            });
-          }
-
-          // fire event for new-video-uploaded
-          this.eventEmitter.emit("new-video-upload.created", {
-            id: newVideo?.id || newVideo?._id,
-            title: newVideo?.title || "",
-            description: newVideo?.description || "",
-            tags: newVideo?.tags || [],
-            channel: newVideo?.owner?.name || "",
-          });
-
-          return resolve({
-            statusCode: HttpStatus.CREATED,
-            success: true,
-            message: "Your video uploaded successfully",
-            data: null,
+            bytes: result.bytes,
           });
         }
       );
-      const readable = Readable.from(file.buffer);
+      const readable = Readable.from(video.buffer);
       readable.pipe(uploadStream);
     });
   }
 
-  async newVideo(createNewVideoDto: CreateVideoDto) {
-    const video = await this.videoModel.create(createNewVideoDto);
+  async uploadVideoThumbnail(thumbnail: Express.Multer.File): Promise<string> {
+    if (!thumbnail) {
+      throw new HttpException(
+        "Thumbnail file is missing",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+          folder: "my-tube/video-thumbnails",
+        },
+        async (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
 
-    return (await this.videoModel.findById(video._id)).populate(
-      "owner",
-      "-password"
-    );
+      const readableStream = Readable.from(thumbnail.buffer);
+      readableStream.pipe(uploadStream);
+    });
+  }
+
+  async getDefaultThumbnail(publicId: string): Promise<string> {
+    if (!publicId) {
+      throw new HttpException("Public ID is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    return cloudinary.url(publicId, {
+      resource_type: "video",
+      format: "jpg",
+      secure: true,
+    });
+  }
+
+  async create(
+    video: Express.Multer.File,
+    thumbnail: Express.Multer.File,
+    body: CreateVideoDto
+  ) {
+    if (!video) {
+      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    const { publicId, videoUrl, duration, bytes } =
+      await this.streamUploadVideo(video);
+
+    if (
+      thumbnail &&
+      typeof thumbnail === "object" &&
+      "buffer" in thumbnail &&
+      Buffer.isBuffer(thumbnail.buffer)
+    ) {
+      body.thumbnailUrl = await this.uploadVideoThumbnail(thumbnail);
+    } else {
+      body.thumbnailUrl = await this.getDefaultThumbnail(publicId);
+    }
+
+    const newVideoData: CreateVideoDto = {
+      publicId,
+      videoUrl,
+      thumbnailUrl: body.thumbnailUrl,
+      duration,
+      size: bytes,
+      tags: parseField(body?.tags),
+      title: body.title,
+      description: body.description,
+      dislikes: [],
+      likes: [],
+      views: 0,
+      owner: new Types.ObjectId(body.owner),
+    };
+
+    const uploadedVideo: any = await this.videoModel.create(newVideoData);
+
+    const newVideo: any = await this.videoModel
+      .findById(uploadedVideo._id)
+      .populate("owner", "-password");
+
+    if (body?.playlistId) {
+      this.eventEmitter.emit("video-added-to-playlist", {
+        playlistId: body.playlistId,
+        videoId: newVideo?.id || newVideo?._id,
+      });
+    }
+
+    // fire event for new-video-uploaded
+    this.eventEmitter.emit("new-video-upload.created", {
+      id: newVideo?.id || newVideo?._id,
+      title: newVideo?.title || "",
+      description: newVideo?.description || "",
+      tags: newVideo?.tags || [],
+      channel: newVideo?.owner?.name || "",
+    });
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      success: true,
+      message: "Your video uploaded successfully",
+      data: null,
+    };
   }
 
   async getOwnerVideos(owner: string) {
