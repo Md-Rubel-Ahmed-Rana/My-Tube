@@ -42,6 +42,11 @@ export class PlaylistController {
     return this.playlistService.getOne(id);
   }
 
+  @Get("slug/:slug")
+  getOneBySlug(@Param("slug") slug: string) {
+    return this.playlistService.getOneBySlug(slug);
+  }
+
   @Patch(":id")
   @UseGuards(AuthGuard)
   update(@Param("id") id: string, @Body() updateDto: UpdatePlaylistDto) {

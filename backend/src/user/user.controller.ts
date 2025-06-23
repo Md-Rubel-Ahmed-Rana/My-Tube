@@ -31,6 +31,11 @@ export class UserController {
     return this.userService.findById(id);
   }
 
+  @Get("slug/:slug")
+  findBySlug(@Param("slug") slug: string) {
+    return this.userService.findBySlug(slug);
+  }
+
   @Patch(":id")
   update(
     @Param("id") id: Types.ObjectId,

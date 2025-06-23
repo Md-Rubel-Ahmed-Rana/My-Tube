@@ -62,6 +62,29 @@ export class PlaylistService {
     };
   }
 
+  async getOneBySlug(slug: string) {
+    const playlist = await this.playlistModel.findOne({ slug }).populate([
+      {
+        path: "videos",
+        populate: {
+          path: "owner",
+          select: "-password",
+        },
+      },
+    ]);
+
+    if (!playlist) {
+      throw new HttpException("Playlist not found", HttpStatus.NOT_FOUND);
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlist fetched successfully",
+      data: playlist,
+    };
+  }
+
   async update(id: string, updateDto: { name?: string }) {
     const playlist = await this.playlistModel.findByIdAndUpdate(id, updateDto, {
       new: true,
