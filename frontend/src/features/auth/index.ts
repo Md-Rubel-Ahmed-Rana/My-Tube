@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ILogin, IRegister } from "@/types/auth.type";
 import apiSlice, { baseApi } from "../api";
 import { signIn } from "next-auth/react";
 import axios from "axios";
+import { toast } from "sonner";
 
 const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -50,9 +52,19 @@ export const userLogin = async (user: {
   email: string;
   photo: string;
 }) => {
-  await axios.post(`${baseApi}/auth/google/login`, user, {
+  const result: any = await axios.post(`${baseApi}/auth/google/login`, user, {
     withCredentials: true,
   });
+  if (result?.data?.statusCode === 200) {
+    toast.success(result?.data?.message || "User logged in successfully");
+    window.location.reload();
+  } else {
+    toast.error(
+      result?.data.error?.message ||
+        result?.error?.data?.message ||
+        "Failed to login"
+    );
+  }
 };
 
 export const initializeGoogleOneTap = () => {
