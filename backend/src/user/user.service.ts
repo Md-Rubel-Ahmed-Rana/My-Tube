@@ -11,6 +11,7 @@ import { Readable } from "stream";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { generateUsername } from "src/utils/generateUsername";
+import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
 
 @Injectable()
 export class UserService {
@@ -52,6 +53,15 @@ export class UserService {
   async findByEmail(email: string) {
     await this.isExist("email", email);
     return await this.userModel.findOne({ email });
+  }
+
+  async getUserByEmailForGoogleLogin(email: string) {
+    return await this.userModel.findOne({ email });
+  }
+
+  async createUserWithGoogle(data: GoogleLoginDto) {
+    data.username = generateUsername(data?.email);
+    return await this.userModel.create(data);
   }
 
   async update(id: Types.ObjectId, updateUserDto: UpdateUserDto) {
