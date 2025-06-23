@@ -9,6 +9,7 @@ import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import VideoActions from "./VideoActions";
 import { useRouter } from "next/router";
 import VideoThumbnail from "./VideoThumbnail";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   video: IVideo;
@@ -16,6 +17,8 @@ type Props = {
 
 const VideoCard = ({ video }: Props) => {
   const router = useRouter();
+  const [isInView, setIsInView] = useState(false);
+  const cardContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleNavigate = () => {
     router.push(
@@ -25,9 +28,30 @@ const VideoCard = ({ video }: Props) => {
     );
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting && entry.intersectionRatio >= 1);
+      },
+      {
+        threshold: [1.0],
+      }
+    );
+
+    const current = cardContainerRef.current;
+    if (current) observer.observe(current);
+
+    return () => {
+      if (current) observer.unobserve(current);
+    };
+  }, []);
+
   return (
-    <Card className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-lg overflow-hidden">
-      <VideoThumbnail video={video} />
+    <Card
+      ref={cardContainerRef}
+      className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-lg overflow-hidden"
+    >
+      <VideoThumbnail video={video} isInView={isInView} />
 
       <CardContent className="px-2 space-y-2">
         <h2
