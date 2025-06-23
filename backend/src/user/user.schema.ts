@@ -8,11 +8,14 @@ export class User {
   @Prop()
   name: string;
 
-  @Prop({ unique: true })
+  @Prop({ index: true, unique: true })
   email: string;
 
-  @Prop({ unique: true })
+  @Prop({ index: true, unique: true })
   username: string;
+
+  @Prop({ index: true, unique: true })
+  slug: string;
 
   @Prop()
   photo: string;
