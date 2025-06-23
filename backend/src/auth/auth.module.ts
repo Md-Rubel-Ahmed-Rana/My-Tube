@@ -6,6 +6,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "src/user/user.schema";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { OAuth2Strategy } from "./oauth2.strategy";
 
 const configService = new ConfigService();
 
@@ -19,6 +20,6 @@ const configService = new ConfigService();
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, ConfigService],
+  providers: [AuthService, UserService, ConfigService, OAuth2Strategy],
 })
 export class AuthModule {}

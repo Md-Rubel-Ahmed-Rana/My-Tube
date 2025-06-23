@@ -16,6 +16,7 @@ import { AuthGuard } from "./auth.guard";
 import { Types } from "mongoose";
 import { cookieOptions } from "src/utils/cookieOptions";
 import { GoogleLoginDto } from "./dto/google-login.dto";
+import { AuthGuard as PassportAuthGuard } from "@nestjs/passport";
 
 @Controller("auth")
 export class AuthController {
@@ -45,6 +46,26 @@ export class AuthController {
       success: true,
       message: "User logged in successfully!",
       data: null,
+    });
+  }
+
+  @Get("google")
+  @UseGuards(PassportAuthGuard("oauth2"))
+  async googleAuth() {}
+
+  @Get("callback/google")
+  @UseGuards(PassportAuthGuard("oauth2"))
+  async googleAuthRedirect(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const { id, name, email, picture } = req.user;
+
+    return res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Google login successful",
+      data: { id, name, email, picture },
     });
   }
 
