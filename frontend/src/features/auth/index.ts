@@ -69,7 +69,7 @@ export const userLogin = async (user: {
 export const initializeGoogleOneTap = async () => {
   window.google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-    callback: async (response) => {
+    callback: async (response: any) => {
       const idToken = response.credential;
       await axios.post(
         `${baseApi}/auth/google/onetap`,
