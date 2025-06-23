@@ -57,6 +57,18 @@ export class AuthController {
   @UseGuards(PassportAuthGuard("oauth2"))
   async googleAuth() {}
 
+  @Post("google/onetap")
+  async googleOneTapLogin(
+    @Body("idToken") idToken: string,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const token = await this.authService.googleOneTapLogin(idToken);
+
+    res.cookie("my_tube_access_token", token, cookieOptions);
+
+    return res.redirect(this.configService.get<string>("GOOGLE_REDIRECT_URL"));
+  }
+
   @Get("callback/google")
   @UseGuards(PassportAuthGuard("oauth2"))
   async googleAuthRedirect(
