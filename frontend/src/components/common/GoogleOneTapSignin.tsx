@@ -1,27 +1,30 @@
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { initializeGoogleOneTap } from "@/features/auth";
+import {
+  initializeGoogleOneTap,
+  useGetLoggedInUserQuery,
+} from "@/features/auth";
+import { IUser } from "@/types/user.type";
 
 const GoogleOneTapSignin = () => {
-  const { data: session, status } = useSession();
+  const { data, isLoading } = useGetLoggedInUserQuery({});
+  const user = data?.data as IUser;
 
   useEffect(() => {
-    if (status !== "loading") {
-      if (!session?.user?.email) {
+    if (!isLoading && !user?.id) {
+      const loadGoogleOneTap = () => {
         if (window.google) {
-          console.log("window.google");
           initializeGoogleOneTap();
-        } else {
-          window.addEventListener("DOMContentLoaded", () => {
-            console.log("DOMContentLoaded");
-            initializeGoogleOneTap();
-          });
         }
+      };
+
+      if (document.readyState === "complete") {
+        loadGoogleOneTap();
       } else {
-        return;
+        window.addEventListener("load", loadGoogleOneTap);
+        return () => window.removeEventListener("load", loadGoogleOneTap);
       }
     }
-  }, [session, status]);
+  }, [isLoading, user]);
 
   return (
     <script src="https://accounts.google.com/gsi/client" async defer></script>
