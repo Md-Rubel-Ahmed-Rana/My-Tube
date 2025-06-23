@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ILogin, IRegister } from "@/types/auth.type";
 import apiSlice, { baseApi } from "../api";
-import { signIn } from "next-auth/react";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -67,31 +66,52 @@ export const userLogin = async (user: {
   }
 };
 
-export const initializeGoogleOneTap = () => {
+// export const initializeGoogleOneTap = () => {
+//   window.google.accounts.id.initialize({
+//     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+//     callback: async (response) => {
+//       signIn("googleonetap", {
+//         credential: response.credential,
+//         redirect: false,
+//       });
+//       const res = await fetch("/api/auth/one-tap-login", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ credential: response.credential }),
+//       });
+
+//       const user = await res.json();
+//       await userLogin({
+//         name: user?.name,
+//         email: user?.email,
+//         photo: user?.picture,
+//       });
+//     },
+//     auto_select: true,
+//     cancel_on_tap_outside: false,
+//   });
+//   window.google.accounts.id.prompt();
+// };
+
+export const initializeGoogleOneTap = async () => {
   window.google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
     callback: async (response) => {
-      signIn("googleonetap", {
-        credential: response.credential,
-        redirect: false,
-      });
-      const res = await fetch("/api/auth/one-tap-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ credential: response.credential }),
-      });
-
-      const user = await res.json();
-      await userLogin({
-        name: user?.name,
-        email: user?.email,
-        photo: user?.picture,
-      });
+      const idToken = response.credential;
+      // Send token to backend
+      await axios.post(
+        `${baseApi}/auth/google/onetap`,
+        { idToken },
+        {
+          withCredentials: true,
+        }
+      );
     },
     auto_select: true,
     cancel_on_tap_outside: false,
   });
+
   window.google.accounts.id.prompt();
 };
