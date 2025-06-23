@@ -47,7 +47,7 @@ export default NextAuth({
       if (user) Object.assign(token, user);
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       session.user = {
         name: token?.name as string,
         email: token?.email as string,

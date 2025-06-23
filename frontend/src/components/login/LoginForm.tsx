@@ -16,6 +16,7 @@ import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUserLoginMutation } from "@/features/auth";
 import PasswordInputField from "../common/PasswordInputField";
 import { useRouter } from "next/router";
+import GoogleSignInButton from "../common/GoogleSignInButton";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -49,7 +50,7 @@ const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleLogin)}
-        className="space-y-8 px-3 py-5 rounded-lg border w-full"
+        className="space-y-6 px-3 py-5 rounded-lg border w-full"
       >
         <div className="text-center text-lg">
           <h1>Welcome Back!</h1>
@@ -71,11 +72,13 @@ const LoginForm = () => {
 
         <PasswordInputField form={form} isLoading={isLoading} />
 
-        <div className="w-full text-center ">
+        <div className="w-full text-center">
           <Button disabled={isLoading} className="w-full" type="submit">
             {isLoading ? "Logging..." : "Login"}
           </Button>
         </div>
+
+        <GoogleSignInButton />
       </form>
     </Form>
   );
