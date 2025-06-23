@@ -3,6 +3,7 @@ import { CreatePlaylistDto } from "./dto/create-playlist.dto";
 import { Playlist } from "./playlist.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
+import { Slugify } from "src/utils/slugify";
 
 @Injectable()
 export class PlaylistService {
@@ -11,6 +12,9 @@ export class PlaylistService {
   ) {}
 
   async create(createPlaylistDto: CreatePlaylistDto) {
+    createPlaylistDto.slug = Slugify.generatePlaylistSlug(
+      createPlaylistDto.name
+    );
     const playlist = await this.playlistModel.create(createPlaylistDto);
     return {
       statusCode: HttpStatus.CREATED,

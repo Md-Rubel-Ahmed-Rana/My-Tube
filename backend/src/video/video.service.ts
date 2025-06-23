@@ -16,6 +16,7 @@ import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
+import { Slugify } from "src/utils/slugify";
 
 @Injectable()
 export class VideoService {
@@ -132,6 +133,7 @@ export class VideoService {
       likes: [],
       views: 0,
       owner: new Types.ObjectId(body.owner),
+      slug: Slugify.generateVideoSlug(body.title, publicId),
     };
 
     const uploadedVideo: any = await this.videoModel.create(newVideoData);

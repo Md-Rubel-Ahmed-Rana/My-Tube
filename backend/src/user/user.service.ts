@@ -12,6 +12,7 @@ import { extractPublicId } from "src/utils/extractPublicId";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { generateUsername } from "src/utils/generateUsername";
 import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
+import { Slugify } from "src/utils/slugify";
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,11 @@ export class UserService {
     await this.userAlreadyExist(createUserDto.email);
     createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
     createUserDto.username = generateUsername(createUserDto?.email);
+    createUserDto.slug = Slugify.generateUserSlug(
+      createUserDto.name,
+      createUserDto.username
+    );
+
     await this.userModel.create(createUserDto);
     return {
       statusCode: HttpStatus.CREATED,
@@ -61,6 +67,7 @@ export class UserService {
 
   async createUserWithGoogle(data: GoogleLoginDto) {
     data.username = generateUsername(data?.email);
+    data.slug = Slugify.generateUserSlug(data.name, data.username);
     return await this.userModel.create(data);
   }
 

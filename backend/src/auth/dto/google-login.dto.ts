@@ -3,6 +3,8 @@ export class GoogleLoginDto {
 
   username: string;
 
+  slug: string;
+
   email: string;
 
   photo: string;

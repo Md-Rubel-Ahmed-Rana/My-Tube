@@ -82,6 +82,7 @@ export class AuthController {
       email,
       photo: picture,
       username: id,
+      slug: id,
     });
 
     res.cookie("my_tube_access_token", token, cookieOptions);

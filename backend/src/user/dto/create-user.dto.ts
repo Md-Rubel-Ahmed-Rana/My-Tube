@@ -3,6 +3,8 @@ export class CreateUserDto {
 
   username: string;
 
+  slug: string;
+
   email: string;
 
   password: string;
