@@ -50,7 +50,7 @@ const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleLogin)}
-        className="space-y-6 px-3 py-5 rounded-lg border w-full"
+        className="space-y-4 px-3 py-5 rounded-lg border w-full"
       >
         <div className="text-center text-lg">
           <h1>Welcome Back!</h1>
