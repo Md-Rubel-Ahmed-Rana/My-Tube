@@ -17,10 +17,14 @@ import { Types } from "mongoose";
 import { cookieOptions } from "src/utils/cookieOptions";
 import { GoogleLoginDto } from "./dto/google-login.dto";
 import { AuthGuard as PassportAuthGuard } from "@nestjs/passport";
+import { ConfigService } from "@nestjs/config";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard)
@@ -61,12 +65,16 @@ export class AuthController {
   ) {
     const { id, name, email, picture } = req.user;
 
-    return res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      success: true,
-      message: "Google login successful",
-      data: { id, name, email, picture },
+    const token = await this.authService.googleLogin({
+      name,
+      email,
+      photo: picture,
+      username: id,
     });
+
+    res.cookie("my_tube_access_token", token, cookieOptions);
+
+    return res.redirect(this.configService.get<string>("GOOGLE_REDIRECT_URL"));
   }
 
   @Post("/google/login")
@@ -80,7 +88,7 @@ export class AuthController {
     res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       success: true,
-      message: "Google logged in successfully!",
+      message: "User logged in successfully!",
       data: null,
     });
   }
