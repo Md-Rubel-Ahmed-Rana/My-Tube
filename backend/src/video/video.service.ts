@@ -352,6 +352,19 @@ export class VideoService {
     };
   }
 
+  async findOneBySlug(slug: string) {
+    const video = await this.videoModel
+      .findOne({ slug })
+      .populate("owner", "-password");
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Video retrieved successfully",
+      data: video,
+    };
+  }
+
   async update(id: Types.ObjectId, updatedData: UpdateVideoDto) {
     await this.videoModel.findByIdAndUpdate(id, { ...updatedData });
 

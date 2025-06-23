@@ -56,6 +56,16 @@ export class UserService {
     };
   }
 
+  async findBySlug(slug: string) {
+    const user = await this.userModel.findOne({ slug }, "-password");
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "User fetched successfully!",
+      data: user,
+    };
+  }
+
   async findByEmail(email: string) {
     await this.isExist("email", email);
     return await this.userModel.findOne({ email });
