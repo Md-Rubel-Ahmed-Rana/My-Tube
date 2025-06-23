@@ -37,10 +37,12 @@ const Profile = () => {
                 </>
               )}
             </Avatar>
-            <Camera
+            <button
+              className="absolute -top-1 -right-1 cursor-pointer z-30 bg-black/60 text-white rounded-full p-2 hover:bg-black/80 pointer-events-auto"
               onClick={() => setIsPhotoChange(true)}
-              className="absolute top-0 right-0 cursor-pointer"
-            />
+            >
+              <Camera size={18} />
+            </button>
             {isPhotoChange && (
               <UpdateProfileImageModal
                 id={user?.id}
