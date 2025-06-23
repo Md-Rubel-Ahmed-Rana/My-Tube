@@ -1,4 +1,5 @@
 import { useLogoutMutation } from "@/features/auth";
+import { signOut } from "next-auth/react";
 import { toast } from "sonner";
 
 const LogoutButton = () => {
@@ -7,6 +8,7 @@ const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       await logout({}).unwrap();
+      signOut();
       toast.success("Logged out successfully");
       window.location.replace("/");
     } catch (error) {
