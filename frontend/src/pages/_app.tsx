@@ -8,7 +8,6 @@ import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
 import GoogleOneTapSignin from "@/components/common/GoogleOneTapSignin";
 import { SessionProvider } from "next-auth/react";
-import AuthSync from "@/components/common/AuthSync";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -32,7 +31,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           {getLayout(<Component {...pageProps} />)}
           <Toaster position="top-center" />
           <GoogleOneTapSignin />
-          <AuthSync />
         </Provider>
       </ThemeProvider>
     </SessionProvider>

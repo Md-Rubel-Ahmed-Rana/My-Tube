@@ -1,18 +1,15 @@
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { baseApi } from "@/features/api";
 
 const GoogleSignInButton = () => {
   const [loading, setLoading] = useState(false);
-
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      await signIn("google", {
-        callbackUrl: "/dashboard/videos",
-      });
+      window.open(`${baseApi}/auth/google`, "_self");
     } catch (error) {
       console.error("Google Sign-In Error:", error);
     } finally {
