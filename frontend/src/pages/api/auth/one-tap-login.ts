@@ -3,11 +3,6 @@ import { OAuth2Client } from "google-auth-library";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-console.log({
-  from: "One tap login server",
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-});
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
