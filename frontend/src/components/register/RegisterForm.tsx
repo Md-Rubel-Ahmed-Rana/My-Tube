@@ -17,6 +17,7 @@ import { useUserRegisterMutation } from "@/features/auth";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import PasswordInputField from "../common/PasswordInputField";
 import { useRouter } from "next/router";
+import GoogleSignInButton from "../common/GoogleSignInButton";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -99,6 +100,8 @@ const RegisterForm = () => {
             {isLoading ? "Creating..." : "Create account"}
           </Button>
         </div>
+
+        <GoogleSignInButton />
       </form>
     </Form>
   );
