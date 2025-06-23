@@ -15,8 +15,11 @@ export class Video extends Document {
   @Prop({ required: false })
   thumbnailUrl: string;
 
-  @Prop({ required: true })
+  @Prop({ index: true, required: true })
   publicId: string;
+
+  @Prop({ index: true, required: true })
+  slug: string;
 
   @Prop({ type: Types.ObjectId, ref: "User", required: true })
   owner: Types.ObjectId;

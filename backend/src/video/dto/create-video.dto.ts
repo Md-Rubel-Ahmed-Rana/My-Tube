@@ -13,6 +13,8 @@ export class CreateVideoDto {
 
   publicId: string;
 
+  slug: string;
+
   owner: Types.ObjectId;
 
   views: number;

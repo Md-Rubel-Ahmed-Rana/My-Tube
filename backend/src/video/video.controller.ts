@@ -96,6 +96,11 @@ export class VideoController {
     return this.videoService.findOne(id);
   }
 
+  @Get("slug/:slug")
+  findOneBySlug(@Param("slug") slug: string) {
+    return this.videoService.findOneBySlug(slug);
+  }
+
   @Patch(":id")
   @UseGuards(AuthGuard)
   update(@Param("id") id: Types.ObjectId, @Body() body: UpdateVideoDto) {

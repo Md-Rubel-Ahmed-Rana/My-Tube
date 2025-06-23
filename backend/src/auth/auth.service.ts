@@ -89,6 +89,7 @@ export class AuthService {
       email: payload.email,
       name: payload.name,
       photo: payload.picture,
+      slug: "",
     };
 
     return this.getOrCreateUserAndGenerateToken(credentials);

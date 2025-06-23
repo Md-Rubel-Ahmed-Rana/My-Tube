@@ -16,6 +16,9 @@ export class Playlist {
   })
   user: Types.ObjectId;
 
+  @Prop({ index: true, required: true })
+  slug: string;
+
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: "Video", default: [] })
   videos: Types.ObjectId[];
 }
