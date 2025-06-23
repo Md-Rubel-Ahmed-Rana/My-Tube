@@ -71,13 +71,18 @@ export const initializeGoogleOneTap = async () => {
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
     callback: async (response: any) => {
       const idToken = response.credential;
-      await axios.post(
-        `${baseApi}/auth/google/onetap`,
-        { idToken },
-        {
-          withCredentials: true,
-        }
-      );
+      try {
+        await axios.post(
+          `${baseApi}/auth/google/onetap`,
+          { idToken },
+          {
+            withCredentials: true,
+          }
+        );
+        window.location.replace("/dashboard/videos");
+      } catch {
+        window.location.replace("/dashboard/videos");
+      }
     },
     auto_select: true,
     cancel_on_tap_outside: false,
