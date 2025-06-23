@@ -15,6 +15,7 @@ import { Response } from "express";
 import { AuthGuard } from "./auth.guard";
 import { Types } from "mongoose";
 import { cookieOptions } from "src/utils/cookieOptions";
+import { GoogleLoginDto } from "./dto/google-login.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -43,6 +44,22 @@ export class AuthController {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User logged in successfully!",
+      data: null,
+    });
+  }
+
+  @Post("/google/login")
+  async googleLogin(
+    @Body() credentials: GoogleLoginDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const token = await this.authService.googleLogin(credentials);
+    res.cookie("my_tube_access_token", token, cookieOptions);
+
+    res.status(HttpStatus.OK).json({
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Google logged in successfully!",
       data: null,
     });
   }
