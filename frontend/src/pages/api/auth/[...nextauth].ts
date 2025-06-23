@@ -5,12 +5,6 @@ import { OAuth2Client } from "google-auth-library";
 
 const gsiClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-console.log({
-  from: "...nextauth server",
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-});
-
 export default NextAuth({
   providers: [
     GoogleProvider({
