@@ -6,9 +6,12 @@ import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
 import { Types } from "mongoose";
 import { GoogleLoginDto } from "./dto/google-login.dto";
+import { OAuth2Client } from "google-auth-library";
 
 @Injectable()
 export class AuthService {
+  private client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
   constructor(
     private readonly userService: UserService,
     private jwtService: JwtService,
@@ -42,38 +45,53 @@ export class AuthService {
     return `Bearer ${token}`;
   }
 
-  async googleLogin(credentials: GoogleLoginDto): Promise<string> {
+  private async getOrCreateUserAndGenerateToken(
+    credentials: GoogleLoginDto
+  ): Promise<string> {
     const isExist = await this.userService.getUserByEmailForGoogleLogin(
       credentials.email
     );
 
-    let accessToken: string;
+    const user = isExist?._id
+      ? isExist
+      : await this.userService.createUserWithGoogle(credentials);
 
-    if (isExist?._id) {
-      console.log("User exist", isExist);
-      const token = await this.jwtService.signAsync(
-        {
-          id: isExist?.id || isExist?._id,
-          email: isExist?.email,
-        },
-        { secret: this.configService.get<string>("JWT_SECRET") }
-      );
+    const token = await this.jwtService.signAsync(
+      {
+        id: user?.id || user?._id,
+        email: user?.email,
+      },
+      { secret: this.configService.get<string>("JWT_SECRET") }
+    );
 
-      accessToken = `Bearer ${token}`;
-    } else {
-      const user = await this.userService.createUserWithGoogle(credentials);
-      console.log("User not exist. create user", user);
-      const token = await this.jwtService.signAsync(
-        {
-          id: user?.id || user?._id,
-          email: user?.email,
-        },
-        { secret: this.configService.get<string>("JWT_SECRET") }
-      );
-      accessToken = `Bearer ${token}`;
-    }
+    return `Bearer ${token}`;
+  }
 
-    return accessToken;
+  async googleLogin(credentials: GoogleLoginDto): Promise<string> {
+    return this.getOrCreateUserAndGenerateToken(credentials);
+  }
+
+  async googleOneTapLogin(idToken: string): Promise<string> {
+    if (!idToken)
+      throw new HttpException("ID Token required", HttpStatus.BAD_REQUEST);
+
+    const ticket = await this.client.verifyIdToken({
+      idToken,
+      audience: this.configService.get<string>("GOOGLE_CLIENT_ID"),
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload)
+      throw new HttpException("Invalid Google token", HttpStatus.UNAUTHORIZED);
+
+    const credentials = {
+      username: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      photo: payload.picture,
+    };
+
+    return this.getOrCreateUserAndGenerateToken(credentials);
   }
 
   async auth(id: Types.ObjectId) {
