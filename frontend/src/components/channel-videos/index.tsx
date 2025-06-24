@@ -18,7 +18,7 @@ const ChannelVideos = () => {
   const videos = (data?.data || []) as IVideo[];
 
   return (
-    <div className="p-2 lg:p-4">
+    <div className="p-2 lg:p-4 flex flex-col gap-3">
       <ChannelInfo
         totalVideos={videos?.length || 0}
         channel={user}
@@ -27,7 +27,7 @@ const ChannelVideos = () => {
       {isLoading ? (
         <VideoLoadingSkeleton />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mt-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {videos?.map((video) => (
             <VideoCard key={video?.id} video={video} />
           ))}

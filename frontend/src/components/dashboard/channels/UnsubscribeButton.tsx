@@ -12,6 +12,7 @@ export const UnsubscribeButton = ({ channelId }: Props) => {
 
   const handleUnsubscribe = async (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     await handleApiMutation(unsubscribe, { channelId }, 200, {
       error: "Failed to unsubscribe. Please try again later.",
       success: "Unsubscribed successfully.",
@@ -23,7 +24,7 @@ export const UnsubscribeButton = ({ channelId }: Props) => {
       onClick={handleUnsubscribe}
       size="sm"
       disabled={isLoading}
-      className="ml-auto mt-2 bg-gray-400 dark:bg-gray-700"
+      className="bg-gray-400 dark:bg-gray-700"
     >
       {isLoading ? (
         <p className="flex items-center gap-2">

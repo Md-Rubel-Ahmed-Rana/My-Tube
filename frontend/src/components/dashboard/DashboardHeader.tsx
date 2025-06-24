@@ -48,8 +48,11 @@ const DashboardHeader = ({ totalVideos }: Props) => {
           ) : (
             <>
               <h2 className="text-lg font-medium">{user?.name}</h2>
-              <p className="text-muted-foreground">
-                {user?.username || "unknown username"}
+              <span className="text-muted-foreground text-xs border rounded-md px-3 py-1 ">
+                {user?.subscriptions || 0} subscribers
+              </span>
+              <p className="text-muted-foreground mt-1">
+                @{user?.username || "unknown username"}
               </p>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center sm:justify-start">
                 <Badge
