@@ -8,6 +8,12 @@ export const channelApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["channel", "video"],
     }),
+    myChannels: build.query({
+      query: () => ({
+        url: `/channels/me`,
+      }),
+      providesTags: ["channel", "video"],
+    }),
     subscribeChannel: build.mutation({
       query: ({ channelId }: { channelId: string }) => ({
         url: `/channels/subscribe`,
@@ -31,4 +37,5 @@ export const {
   useIsSubscribedChannelQuery,
   useSubscribeChannelMutation,
   useUnsubscribeChannelMutation,
+  useMyChannelsQuery,
 } = channelApi;
