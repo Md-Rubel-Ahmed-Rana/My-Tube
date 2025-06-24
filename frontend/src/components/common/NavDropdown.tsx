@@ -47,9 +47,9 @@ const NavDropdown = () => {
         {user?.id ? (
           <>
             <Link
-              href={`/profile/${
-                user?.username || user?.name?.split(" ")?.join("-")
-              }?name=${user?.name}`}
+              href={`/profile/${user?.slug || user?.username}?name=${
+                user?.name
+              }`}
               className="w-full mb-2 cursor-pointer"
             >
               <DropdownMenuItem className="w-full cursor-pointer">
