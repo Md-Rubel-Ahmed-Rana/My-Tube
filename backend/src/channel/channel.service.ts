@@ -10,30 +10,20 @@ export class ChannelService {
     @InjectModel(Channel.name) private channelModel: Model<Channel>
   ) {}
 
-  async create(data: CreateChannelDto) {
+  async subscribe(data: CreateChannelDto) {
     const isExist = await this.channelModel.findOne({ user: data.user });
     if (isExist) {
-      return this.subscribe(data);
+      await this.channelModel.findOneAndUpdate(
+        { user: data.user },
+        { $addToSet: { channels: data.channel } }
+      );
+    } else {
+      await this.channelModel.create({
+        user: data.user,
+        channels: [data.channel],
+      });
     }
 
-    await this.channelModel.create({
-      user: data.user,
-      channels: [data.channel],
-    });
-
-    return {
-      statusCode: 200,
-      success: true,
-      message: "Channel subscribed successfully",
-      data: null,
-    };
-  }
-
-  async subscribe(data: CreateChannelDto) {
-    await this.channelModel.findOneAndUpdate(
-      { user: data.user },
-      { $addToSet: { channels: data.channel } }
-    );
     return {
       statusCode: 200,
       success: true,

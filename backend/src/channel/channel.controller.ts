@@ -1,34 +1,61 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
-import { UpdateChannelDto } from './dto/update-channel.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Req,
+} from "@nestjs/common";
+import { ChannelService } from "./channel.service";
+import { CreateChannelDto } from "./dto/create-channel.dto";
+import { AuthGuard } from "src/auth/auth.guard";
 
-@Controller('channel')
+@Controller("channels")
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
-  @Post()
-  create(@Body() createChannelDto: CreateChannelDto) {
-    return this.channelService.create(createChannelDto);
+  @Patch("subscribe")
+  @UseGuards(AuthGuard)
+  subscribe(
+    @Body() dto: CreateChannelDto,
+    @Req() req: { user: { id: string } }
+  ) {
+    return this.channelService.subscribe({
+      ...dto,
+      user: req.user?.id,
+    });
+  }
+
+  @Patch("unsubscribe")
+  @UseGuards(AuthGuard)
+  unsubscribe(
+    @Body() dto: CreateChannelDto,
+    @Req() req: { user: { id: string } }
+  ) {
+    return this.channelService.unsubscribe({
+      ...dto,
+      user: req.user?.id,
+    });
+  }
+
+  @Get("me")
+  @UseGuards(AuthGuard)
+  getChannels(@Req() req: { user: { id: string } }) {
+    return this.channelService.getChannels(req?.user?.id);
+  }
+
+  @Get("is-subscribed/:channelId")
+  isSubscribed(
+    @Req() req: { user: { id: string } },
+    @Param("channelId") channelId: string
+  ) {
+    return this.channelService.isSubscribed(req?.user?.id, channelId);
   }
 
   @Get()
   findAll() {
     return this.channelService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.channelService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChannelDto: UpdateChannelDto) {
-    return this.channelService.update(+id, updateChannelDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.channelService.remove(+id);
   }
 }

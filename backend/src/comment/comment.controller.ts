@@ -18,8 +18,8 @@ import { AuthGuard } from "src/auth/auth.guard";
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @UseGuards(AuthGuard)
   @Post()
+  @UseGuards(AuthGuard)
   create(
     @Req() req: { user: { id: string } },
     @Body() createCommentDto: CreateCommentDto
@@ -46,14 +46,14 @@ export class CommentController {
     return this.commentService.findOne(new Types.ObjectId(id));
   }
 
-  @UseGuards(AuthGuard)
   @Patch(":id")
+  @UseGuards(AuthGuard)
   update(@Param("id") id: string, @Body("text") text: string) {
     return this.commentService.update(new Types.ObjectId(id), text);
   }
 
-  @UseGuards(AuthGuard)
   @Delete(":id")
+  @UseGuards(AuthGuard)
   remove(@Param("id") id: string) {
     return this.commentService.remove(new Types.ObjectId(id));
   }
