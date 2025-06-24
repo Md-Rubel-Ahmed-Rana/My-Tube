@@ -42,8 +42,8 @@ export class VideoController {
 
   @Get("feed")
   @UseGuards(PublicAuthGuard)
-  getHomepageFeed() {
-    return this.videoService.performBestVideosQuery();
+  getHomepageFeed(@Req() req: { user: { id: string } }) {
+    return this.videoService.performBestVideosQuery(req?.user?.id);
   }
 
   @Get("search")
