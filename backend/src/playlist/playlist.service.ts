@@ -28,7 +28,7 @@ export class PlaylistService {
     const playlists = await this.playlistModel.find({ user: userId }).populate([
       {
         path: "videos",
-        select: "title",
+        select: "title slug",
       },
     ]);
     return {
