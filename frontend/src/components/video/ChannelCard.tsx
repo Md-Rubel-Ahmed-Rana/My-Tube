@@ -24,11 +24,7 @@ const ChannelCard = ({ channel }: Props) => {
         </Avatar>
         <div className="space-y-1">
           <h2 className="text-lg">{channel?.name || ""}</h2>
-          <Link
-            href={`/channel/${channel?.username || ""}/${
-              channel?.id || ""
-            }?name=${channel?.name || ""}`}
-          >
+          <Link href={`/channel/${channel?.slug}?name=${channel?.name}`}>
             <Button size="sm">View Channel</Button>
           </Link>
         </div>

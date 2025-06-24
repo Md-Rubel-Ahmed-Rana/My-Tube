@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { useGetSingleVideoQuery } from "@/features/videos";
+import { useGetSingleVideoBySlugQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import VideoPlayer from "./VideoPlayer";
@@ -15,8 +15,8 @@ import Comments from "../comments";
 
 const Video = () => {
   const { query } = useRouter();
-  const id = query?.id as string;
-  const { data, isLoading } = useGetSingleVideoQuery({ id });
+  const slug = query?.videoslug as string;
+  const { data, isLoading } = useGetSingleVideoBySlugQuery({ slug });
   const video = data?.data as IVideo;
 
   return (
@@ -60,11 +60,11 @@ const Video = () => {
           </div>
         )}
         <div className="w-[30%] hidden lg:block">
-          <RelatedVideos />
+          <RelatedVideos currentVideoId={video?.id} />
         </div>
       </div>
       <div className="block lg:hidden">
-        <RelatedVideosMobile />
+        <RelatedVideosMobile currentVideoId={video?.id} />
       </div>
     </>
   );

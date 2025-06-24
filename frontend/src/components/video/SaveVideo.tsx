@@ -34,7 +34,7 @@ const SaveVideo = ({ video }: Props) => {
       <SaveToPlaylistModal
         open={isOpen}
         setOpen={setIsOpen}
-        videoId={video.id}
+        videoId={video?.id}
       />
     </>
   );

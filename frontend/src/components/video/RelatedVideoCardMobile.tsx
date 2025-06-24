@@ -4,7 +4,7 @@ import Link from "next/link";
 import { formatDuration } from "@/utils/formatDuration";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye } from "lucide-react";
-import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
+import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
   video: IVideo;
@@ -12,12 +12,7 @@ type Props = {
 
 const RelatedVideoCardMobile = ({ video }: Props) => {
   return (
-    <Link
-      href={`/video/watch/${formatVideoPublicId(video?.publicId)}/${
-        video?.id
-      }?title=${video?.title}&description=${video?.description || "unknown"}`}
-      className="w-full"
-    >
+    <Link href={makeVideoWatchPath(video)} className="w-full">
       <Card className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2">
         <div className="flex justify-between w-full gap-3">
           <div className="w-[30%]">

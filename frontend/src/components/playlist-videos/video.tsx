@@ -1,4 +1,4 @@
-import { useGetSingleVideoQuery } from "@/features/videos";
+import { useGetSingleVideoBySlugQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/router";
@@ -18,8 +18,8 @@ type Props = {
 
 const PlaylistVideoPlayer = ({ shouldLoopAVideo, isShuffle }: Props) => {
   const { query } = useRouter();
-  const id = query?.id as string;
-  const { data, isLoading } = useGetSingleVideoQuery({ id });
+  const slug = query?.videoslug as string;
+  const { data, isLoading } = useGetSingleVideoBySlugQuery({ slug });
   const video = data?.data as IVideo;
 
   return (
