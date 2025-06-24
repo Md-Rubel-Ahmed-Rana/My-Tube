@@ -17,11 +17,14 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.dto";
 import { Slugify } from "src/utils/slugify";
+import { ChannelService } from "src/channel/channel.service";
+import { GetUserDto } from "src/user/dto/get-user.dto";
 
 @Injectable()
 export class VideoService {
   constructor(
     private config: ConfigService,
+    private channelService: ChannelService,
     @InjectModel(Video.name) private videoModel: Model<Video>,
     private eventEmitter: EventEmitter2
   ) {
@@ -214,6 +217,64 @@ export class VideoService {
       success: true,
       message: "All the videos of a channel retrieved successfully",
       data: videos,
+    };
+  }
+
+  async performBestVideosQuery(userId?: string) {
+    let personalizedVideos: any[] = [];
+
+    if (userId) {
+      const result = await this.channelService.getChannels(userId);
+      const subscribedChannels = (result?.data as GetUserDto[])?.map(
+        (c) => c.id
+      );
+
+      if (subscribedChannels.length) {
+        // 1. Videos from subscribed channels (most recent first)
+        const subscribedVideos = await this.videoModel
+          .find({ owner: { $in: subscribedChannels } })
+          .sort({ createdAt: -1 }) // newest first
+          .limit(20)
+          .populate("owner", "-password");
+
+        personalizedVideos.push(...subscribedVideos);
+      }
+    }
+
+    // 2. Trending Videos (views + likes)
+    const trendingVideos = await this.videoModel
+      .find({})
+      .sort({ views: -1 }) // Could be improved later with a scoring system
+      .limit(10)
+      .populate("owner", "-password");
+
+    // 3. Latest videos (to fill any gaps)
+    const latestVideos = await this.videoModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate("owner", "-password");
+
+    // Merge all videos: prioritize order, then remove duplicates
+    const allVideos = [
+      ...personalizedVideos,
+      ...trendingVideos,
+      ...latestVideos,
+    ];
+
+    // Remove duplicates by video _id
+    const uniqueVideosMap = new Map<string, any>();
+    for (const video of allVideos) {
+      uniqueVideosMap.set(video._id.toString(), video);
+    }
+
+    const finalFeed = Array.from(uniqueVideosMap.values());
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Personalized video feed retrieved",
+      data: finalFeed,
     };
   }
 

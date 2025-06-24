@@ -11,5 +11,6 @@ import { ConfigService } from "@nestjs/config";
   ],
   controllers: [ChannelController],
   providers: [ChannelService, ConfigService],
+  exports: [MongooseModule],
 })
 export class ChannelModule {}
