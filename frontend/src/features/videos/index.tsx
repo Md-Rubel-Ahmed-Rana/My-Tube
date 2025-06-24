@@ -79,6 +79,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getHomeFeedVideos: build.query<IApiResponse<IVideo[] | []>, void>({
+      query: () => ({
+        url: `video/feed`,
+      }),
+      providesTags: ["video"],
+    }),
     getChannelVideos: build.query<
       IApiResponse<IVideo[] | []>,
       { channelId: string }
@@ -137,4 +143,5 @@ export const {
   useGetChannelVideosQuery,
   useLikeToAVideoMutation,
   useDislikeAVideoMutation,
+  useGetHomeFeedVideosQuery,
 } = videoApi;
