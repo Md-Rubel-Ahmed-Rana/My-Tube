@@ -9,18 +9,19 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetRelatedVideosQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronUp } from "lucide-react";
 import RelatedVideoCardMobile from "./RelatedVideoCardMobile";
 import RelatedVideoLoadingSkeleton from "@/skeletons/RelatedVideoLoading.skeleton";
 
-const RelatedVideosMobile = () => {
-  const { query } = useRouter();
-  const id = query?.id as string;
+type Props = {
+  currentVideoId: string;
+};
+
+const RelatedVideosMobile = ({ currentVideoId }: Props) => {
   const { data, isLoading, isFetching } = useGetRelatedVideosQuery({
-    currentVideoId: id,
+    currentVideoId,
   });
   const videos = (data?.data || []) as IVideo[];
   const isVideoLoading = isLoading || isFetching;

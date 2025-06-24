@@ -67,8 +67,8 @@ const PlaylistCard = ({ playlist }: Props) => {
 
         {playlist.videos.length > 0 ? (
           <Link
-            href={`/playlist/watch/${playlist.id}/video/${
-              playlist.videos[0]?.id || playlist.videos[0]
+            href={`/playlist/watch/${playlist.slug}/video/${
+              playlist.videos[0]?.slug
             }?title=${encodeURIComponent(playlist.videos[0]?.title)}`}
           >
             <Button className="w-full mt-4 bg-gray-300 dark:bg-gray-700">

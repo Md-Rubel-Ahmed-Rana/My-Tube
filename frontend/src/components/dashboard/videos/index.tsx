@@ -6,7 +6,7 @@ import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 import DashboardItems from "../DashboardItems";
 
 const Dashboard = () => {
-  const { data, isLoading } = useGetVideosByOwnerQuery({});
+  const { data, isLoading } = useGetVideosByOwnerQuery();
   const videos = (data?.data || []) as IVideo[];
   return (
     <div className="p-2 lg:p-3 flex flex-col gap-2">

@@ -15,7 +15,11 @@ const PlaylistVideosDesktop = ({ playlist, isLoading }: Props) => {
       ) : (
         <div className="flex flex-col gap-3">
           {playlist.videos?.map((video) => (
-            <PlaylistVideoCardDesktop key={video?.id} video={video} />
+            <PlaylistVideoCardDesktop
+              key={video?.id}
+              video={video}
+              playlistId={playlist?.id}
+            />
           ))}
         </div>
       )}

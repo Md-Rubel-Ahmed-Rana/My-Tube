@@ -4,18 +4,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
-import { useRouter } from "next/router";
-import { useGetUserByIdQuery } from "@/features/user";
 
 type Props = {
   totalVideos: number;
+  channel: IUser;
+  isLoading: boolean;
 };
 
-const ChannelInfo = ({ totalVideos = 0 }: Props) => {
-  const { query } = useRouter();
-  const id = query?.id as string;
-  const { data, isLoading } = useGetUserByIdQuery({ id });
-  const user = data?.data as IUser;
+const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
       <CardHeader>
@@ -29,9 +25,9 @@ const ChannelInfo = ({ totalVideos = 0 }: Props) => {
           <Skeleton className="h-16 w-16 rounded-full bg-gray-300 dark:bg-gray-700" />
         ) : (
           <Avatar className="h-16 w-16">
-            <AvatarImage src={user?.photo} alt="profile image" />
+            <AvatarImage src={channel?.photo} alt="profile image" />
             <AvatarFallback>
-              {formatNameForImageFallback(user?.name)}
+              {formatNameForImageFallback(channel?.name)}
             </AvatarFallback>
           </Avatar>
         )}
@@ -49,9 +45,9 @@ const ChannelInfo = ({ totalVideos = 0 }: Props) => {
             </>
           ) : (
             <>
-              <h2 className="text-lg font-medium">{user?.name}</h2>
+              <h2 className="text-lg font-medium">{channel?.name}</h2>
               <p className="text-muted-foreground">
-                {user?.username || "unknown username"}
+                {channel?.username || "unknown username"}
               </p>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center sm:justify-start">
                 <Badge
@@ -64,7 +60,7 @@ const ChannelInfo = ({ totalVideos = 0 }: Props) => {
                   className="bg-gray-200 dark:bg-gray-700"
                   variant="secondary"
                 >
-                  Joined: {new Date(user?.createdAt).toLocaleDateString()}
+                  Joined: {new Date(channel?.createdAt).toLocaleDateString()}
                 </Badge>
               </div>
             </>

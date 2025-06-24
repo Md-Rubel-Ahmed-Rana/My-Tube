@@ -1,4 +1,4 @@
-import { useGetSinglePlaylistVideosQuery } from "@/features/playlist";
+import { useGetPlaylistVideosBySlugQuery } from "@/features/playlist";
 import { IPlaylist } from "@/types/playlist.type";
 import { useRouter } from "next/router";
 import PlaylistVideoPlayer from "./video";
@@ -9,9 +9,9 @@ import { useState } from "react";
 
 const PlayListVideos = () => {
   const { query } = useRouter();
-  const playlistId = query?.playlistId as string;
-  const { data, isLoading } = useGetSinglePlaylistVideosQuery({
-    id: playlistId,
+  const playlistslug = query?.playlistslug as string;
+  const { data, isLoading } = useGetPlaylistVideosBySlugQuery({
+    slug: playlistslug,
   });
   const playlist = data?.data as IPlaylist;
   const [shouldLoopAVideo, setShouldLoopAVideo] = useState(false);

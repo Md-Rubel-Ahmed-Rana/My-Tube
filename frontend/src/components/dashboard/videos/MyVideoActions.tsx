@@ -30,7 +30,7 @@ const MyVideoActions = ({ video }: Props) => {
 
         <DropdownMenuContent align="end">
           <Link
-            href={`/video/edit/${video?.id}?title=${video?.title}`}
+            href={`/video/edit/${video?.slug}?title=${video?.title}`}
             className="w-full mb-2 cursor-pointer"
             onClick={(e) => e.stopPropagation()}
           >

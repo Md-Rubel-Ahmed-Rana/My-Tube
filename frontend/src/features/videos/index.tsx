@@ -1,5 +1,6 @@
-import { IEditVideo } from "@/types/video.type";
+import { IEditVideo, IVideo } from "@/types/video.type";
 import apiSlice from "../api";
+import { IApiResponse } from "@/types/common";
 
 const videoApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
@@ -39,7 +40,7 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
-    getVideosByOwner: build.query({
+    getVideosByOwner: build.query<IApiResponse<IVideo[] | []>, void>({
       query: () => ({
         url: "video/owner",
       }),
@@ -57,26 +58,41 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
-    getSingleVideo: build.query({
-      query: ({ id }: { id: string }) => ({
+    getSingleVideo: build.query<IApiResponse<IVideo>, { id: string }>({
+      query: ({ id }) => ({
         url: `video/${id}`,
       }),
       providesTags: ["video"],
     }),
-    getRelatedVideos: build.query({
-      query: ({ currentVideoId }: { currentVideoId: string }) => ({
+    getSingleVideoBySlug: build.query<IApiResponse<IVideo>, { slug: string }>({
+      query: ({ slug }) => ({
+        url: `video/slug/${slug}`,
+      }),
+      providesTags: ["video"],
+    }),
+    getRelatedVideos: build.query<
+      IApiResponse<IVideo[] | []>,
+      { currentVideoId: string }
+    >({
+      query: ({ currentVideoId }) => ({
         url: `video/${currentVideoId}/related-videos`,
       }),
       providesTags: ["video"],
     }),
-    getChannelVideos: build.query({
-      query: ({ channelId }: { channelId: string }) => ({
+    getChannelVideos: build.query<
+      IApiResponse<IVideo[] | []>,
+      { channelId: string }
+    >({
+      query: ({ channelId }) => ({
         url: `video/channel/${channelId}`,
       }),
       providesTags: ["video"],
     }),
-    searchVideos: build.query({
-      query: ({ searchText }: { searchText: string }) => ({
+    searchVideos: build.query<
+      IApiResponse<IVideo[] | []>,
+      { searchText: string }
+    >({
+      query: ({ searchText }) => ({
         url: `elastic-search?q=${searchText}`,
       }),
       providesTags: ["video"],
@@ -111,6 +127,7 @@ export const {
   useGetVideosByOwnerQuery,
   useGetVideosQuery,
   useGetSingleVideoQuery,
+  useGetSingleVideoBySlugQuery,
   useIncrementVideoViewsMutation,
   useUpdateVideoMutation,
   useDeleteVideoMutation,

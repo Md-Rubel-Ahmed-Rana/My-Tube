@@ -14,19 +14,20 @@ import { useState } from "react";
 
 type Props = {
   video: IVideo;
+  playlistId: string;
 };
 
-const PlaylistVideoCardDesktop = ({ video }: Props) => {
+const PlaylistVideoCardDesktop = ({ video, playlistId }: Props) => {
   const { query, push } = useRouter();
-  const playlistId = query?.playlistId as string;
-  const videoId = query?.id as string;
+  const playlistslug = query?.playlistslug as string;
+  const videoslug = query?.videoslug as string;
   const [isRemoveVideo, setIsRemoveVideo] = useState(false);
 
   const handleCardClick = () => {
     push(
-      `/playlist/watch/${playlistId}/video/${
-        video.id
-      }?title=${encodeURIComponent(video.title)}`
+      `/playlist/watch/${playlistslug}/video/${
+        video?.slug
+      }?title=${encodeURIComponent(video?.title)}`
     );
   };
 
@@ -35,7 +36,7 @@ const PlaylistVideoCardDesktop = ({ video }: Props) => {
       <Card
         onClick={handleCardClick}
         className={`${
-          videoId === video?.id
+          videoslug === video?.slug
             ? "bg-gray-300 dark:bg-gray-700"
             : "bg-gray-100 dark:bg-gray-800"
         }  hover:shadow-md transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2 border-0`}
@@ -49,7 +50,7 @@ const PlaylistVideoCardDesktop = ({ video }: Props) => {
                 fill
                 className="object-cover rounded-lg"
               />
-              {videoId === video?.id ? (
+              {videoslug === video?.slug ? (
                 <span className="absolute bottom-2 right-2 flex items-center gap-1 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
                   <AudioLines className="w-4 h-4 animate-pulse" />
                 </span>
@@ -67,7 +68,7 @@ const PlaylistVideoCardDesktop = ({ video }: Props) => {
                 {video?.owner?.name || "Unknown"}
               </p>
               <div className="flex text-xs justify-between items-center gap-2">
-                {videoId === video?.id ? (
+                {videoslug === video?.slug ? (
                   <span className="flex items-center gap-1 text-xs text-muted-foreground">
                     <PlayCircle className="w-4 h-4" />
                     Playing
