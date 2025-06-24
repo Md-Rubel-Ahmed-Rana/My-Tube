@@ -88,11 +88,19 @@ export class ChannelService {
         a.name.localeCompare(b.name)
       ) || [];
 
+    const channelsWithSubscriptions = await Promise.all(
+      sortedChannels.map(async (channel: any) => {
+        const subscriptions = await this.getTotalSubscriptions(channel._id);
+
+        return { ...channel, subscriptions, id: channel?._id };
+      })
+    );
+
     return {
       statusCode: 200,
       success: true,
       message: "Fetched user channels",
-      data: sortedChannels,
+      data: channelsWithSubscriptions,
     };
   }
 
