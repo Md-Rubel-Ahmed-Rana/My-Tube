@@ -401,28 +401,52 @@ export class VideoService {
   }
 
   async findOne(id: Types.ObjectId) {
-    const video = await this.videoModel
+    const video: any = await this.videoModel
       .findById(id)
       .populate("owner", "-password");
+
+    const subscriptions = await this.channelService.getTotalSubscriptions(
+      video.owner?.id
+    );
 
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "Video retrieved successfully",
-      data: video,
+      data: {
+        ...video._doc,
+        id: video._id,
+        owner: {
+          ...video?._doc?.owner?._doc,
+          subscriptions,
+          id: video?.owner?._id,
+        },
+      },
     };
   }
 
   async findOneBySlug(slug: string) {
-    const video = await this.videoModel
+    const video: any = await this.videoModel
       .findOne({ slug })
       .populate("owner", "-password");
+
+    const subscriptions = await this.channelService.getTotalSubscriptions(
+      video.owner?.id
+    );
 
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "Video retrieved successfully",
-      data: video,
+      data: {
+        ...video._doc,
+        id: video._id,
+        owner: {
+          ...video?._doc?.owner?._doc,
+          subscriptions,
+          id: video?.owner?._id,
+        },
+      },
     };
   }
 
