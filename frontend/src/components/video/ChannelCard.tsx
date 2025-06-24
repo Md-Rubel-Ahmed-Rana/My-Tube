@@ -2,12 +2,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IUser } from "@/types/user.type";
 import Link from "next/link";
 import SubscriptionButton from "./SubscriptionButton";
+import { useGetLoggedInUserQuery } from "@/features/auth";
 
 type Props = {
   channel: IUser;
 };
 
 const ChannelCard = ({ channel }: Props) => {
+  const { data: userData } = useGetLoggedInUserQuery({});
+  const user = userData?.data as IUser;
   return (
     <div className="border rounded-lg lg:p-2 p-1">
       <div className="flex items-center lg:justify-start justify-between gap-4">
@@ -37,7 +40,9 @@ const ChannelCard = ({ channel }: Props) => {
             </small>
           </div>
         </div>
-        <SubscriptionButton channelId={channel?.id} />
+        {channel?.id !== user?.id && (
+          <SubscriptionButton channelId={channel?.id} />
+        )}
       </div>
     </div>
   );
