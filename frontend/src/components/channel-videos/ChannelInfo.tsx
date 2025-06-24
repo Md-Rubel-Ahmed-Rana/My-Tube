@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
+import SubscriptionButton from "../video/SubscriptionButton";
+import { useGetLoggedInUserQuery } from "@/features/auth";
 
 type Props = {
   totalVideos: number;
@@ -12,6 +14,8 @@ type Props = {
 };
 
 const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
+  const { data: userData } = useGetLoggedInUserQuery({});
+  const user = userData?.data as IUser;
   return (
     <Card className="w-full shadow-md rounded-md bg-gray-100 dark:bg-gray-800">
       <CardHeader>
@@ -63,6 +67,11 @@ const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
                   Joined: {new Date(channel?.createdAt).toLocaleDateString()}
                 </Badge>
               </div>
+              {channel?.id !== user?.id && (
+                <div className="pt-2">
+                  <SubscriptionButton channelId={channel?.id} />
+                </div>
+              )}
             </>
           )}
         </div>

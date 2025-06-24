@@ -26,7 +26,10 @@ export const UnsubscribeButton = ({ channelId }: Props) => {
       className="ml-auto mt-2 bg-gray-400 dark:bg-gray-700"
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <p className="flex items-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span>Unsubscribing</span>
+        </p>
       ) : (
         <>
           <XCircle className="w-4 h-4 mr-1" />

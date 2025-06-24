@@ -8,8 +8,6 @@ const Channels = () => {
   const { data, isLoading } = useMyChannelsQuery({});
   const channels = (data?.data || []) as IUser[];
 
-  console.log(channels);
-
   return (
     <div className="p-2 lg:p-4">
       <div className="mb-6">
@@ -21,7 +19,7 @@ const Channels = () => {
       </div>
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(12)].map((_, i) => (
             <Skeleton
               key={i}
               className="h-[120px] w-full rounded-xl bg-gray-300 dark:bg-gray-700"
