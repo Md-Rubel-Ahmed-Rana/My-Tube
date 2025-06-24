@@ -11,6 +11,7 @@ import { EventModule } from "./events/event.module";
 import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { CommentModule } from './comment/comment.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { ChannelModule } from './channel/channel.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PlaylistModule } from './playlist/playlist.module';
     ElasticSearchModule,
     CommentModule,
     PlaylistModule,
+    ChannelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
