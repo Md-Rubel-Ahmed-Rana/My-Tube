@@ -53,7 +53,7 @@ const SubscriptionButton = ({ channelId }: Props) => {
           variant={isSubscribed ? "outline" : "default"}
           size="sm"
           className={cn(
-            "rounded-full px-4 py-2 flex items-center gap-2 transition-all duration-200",
+            "rounded-full px-4 py-2 bg-gray-300 dark:bg-gray-700 flex items-center gap-2 transition-all duration-200",
             isSubscribed
               ? "border-muted-foreground text-muted-foreground hover:border-primary hover:text-primary"
               : "bg-primary text-white hover:bg-primary/90"
