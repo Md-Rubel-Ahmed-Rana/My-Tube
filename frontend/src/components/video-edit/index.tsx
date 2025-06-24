@@ -1,4 +1,4 @@
-import { useGetSingleVideoQuery } from "@/features/videos";
+import { useGetSingleVideoBySlugQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import VideoEditPageSkeleton from "@/skeletons/VideoEditLoading.skeleton";
@@ -6,8 +6,8 @@ import VideoEditForm from "./VideoEditForm";
 
 const VideoEdit = () => {
   const { query } = useRouter();
-  const id = query?.id as string;
-  const { data, isLoading } = useGetSingleVideoQuery({ id });
+  const slug = query?.slug as string;
+  const { data, isLoading } = useGetSingleVideoBySlugQuery({ slug });
   const video = data?.data as IVideo;
   return (
     <div className="p-2 lg:p-4">

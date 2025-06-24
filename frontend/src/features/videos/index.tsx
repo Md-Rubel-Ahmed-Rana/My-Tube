@@ -46,11 +46,14 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
-    getVideos: build.query<
-      IApiResponse<IVideo[] | []>,
-      { page?: number; limit?: number }
-    >({
-      query: ({ page = 1, limit = 100 }) => ({
+    getVideos: build.query({
+      query: ({
+        page = 1,
+        limit = 100,
+      }: {
+        page?: number;
+        limit?: number;
+      }) => ({
         url: `video?page=${page}&limit=${limit}`,
       }),
       providesTags: ["video"],
@@ -63,7 +66,7 @@ const videoApi = apiSlice.injectEndpoints({
     }),
     getSingleVideoBySlug: build.query<IApiResponse<IVideo>, { slug: string }>({
       query: ({ slug }) => ({
-        url: `video/slug${slug}`,
+        url: `video/slug/${slug}`,
       }),
       providesTags: ["video"],
     }),
@@ -124,6 +127,7 @@ export const {
   useGetVideosByOwnerQuery,
   useGetVideosQuery,
   useGetSingleVideoQuery,
+  useGetSingleVideoBySlugQuery,
   useIncrementVideoViewsMutation,
   useUpdateVideoMutation,
   useDeleteVideoMutation,

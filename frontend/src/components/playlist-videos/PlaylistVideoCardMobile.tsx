@@ -14,19 +14,20 @@ import { AudioLines, PlayCircle, Trash2 } from "lucide-react";
 
 type Props = {
   video: IVideo;
+  playlistId: string;
 };
 
-const PlaylistVideoCardMobile = ({ video }: Props) => {
+const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
   const { query, push } = useRouter();
-  const playlistId = query?.playlistId as string;
-  const videoId = query?.id as string;
+  const playlistSlug = query?.playlistslug as string;
+  const videoslug = query?.videoslug as string;
   const [isRemoveVideo, setIsRemoveVideo] = useState(false);
 
   const handleCardClick = () => {
     push(
-      `/playlist/watch/${playlistId}/video/${
-        video.id
-      }?title=${encodeURIComponent(video.title)}`
+      `/playlist/watch/${playlistSlug}/video/${
+        video.slug
+      }?title=${encodeURIComponent(video?.title)}`
     );
   };
 
@@ -41,11 +42,11 @@ const PlaylistVideoCardMobile = ({ video }: Props) => {
             <div className="relative h-14">
               <Image
                 src={video.thumbnailUrl}
-                alt={video.title}
+                alt={video?.title}
                 fill
                 className="object-cover rounded-md"
               />
-              {videoId === video?.id ? (
+              {videoslug === video?.slug ? (
                 <span className="absolute bottom-2 right-2 flex items-center gap-1 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md">
                   <AudioLines className="w-4 h-4 animate-pulse" />
                 </span>
@@ -63,7 +64,7 @@ const PlaylistVideoCardMobile = ({ video }: Props) => {
               <p className="text-xs text-muted-foreground">
                 {video?.owner?.name || "Unknown"}
               </p>
-              {videoId === video?.id ? (
+              {videoslug === video?.slug ? (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <PlayCircle className="w-4 h-4" />
                   Playing

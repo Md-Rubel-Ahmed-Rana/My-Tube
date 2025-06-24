@@ -1,4 +1,4 @@
-import { useGetSinglePlaylistVideosQuery } from "@/features/playlist";
+import { useGetPlaylistVideosBySlugQuery } from "@/features/playlist";
 import { IPlaylist } from "@/types/playlist.type";
 import { useRouter } from "next/router";
 
@@ -6,24 +6,26 @@ export const useShuffleAutoplayNextVideo = (isShuffle: boolean) => {
   const router = useRouter();
   const { pathname, query } = router;
 
-  const playlistId = query.playlistId as string;
-  const currentVideoId = query.id as string;
+  const playlistSlug = query.playlistslug as string;
+  const currentVideoSlug = query.videoslug as string;
 
   const isPlaylistWatchRoute = pathname.startsWith("/playlist/watch");
 
-  const { data } = useGetSinglePlaylistVideosQuery({ id: playlistId });
+  const { data } = useGetPlaylistVideosBySlugQuery({ slug: playlistSlug });
   const playlist = data?.data as IPlaylist;
 
   const videos = playlist?.videos || [];
 
-  const currentIndex = videos.findIndex((video) => video.id === currentVideoId);
+  const currentIndex = videos.findIndex(
+    (video) => video.slug === currentVideoSlug
+  );
 
   let nextVideo = null;
 
   if (isPlaylistWatchRoute && currentIndex !== -1) {
     if (isShuffle) {
       const remainingVideos = videos.filter(
-        (video) => video.id !== currentVideoId
+        (video) => video.slug !== currentVideoSlug
       );
       if (remainingVideos.length > 0) {
         const randomIndex = Math.floor(Math.random() * remainingVideos.length);
@@ -36,8 +38,8 @@ export const useShuffleAutoplayNextVideo = (isShuffle: boolean) => {
 
   const getNextPath = () => {
     if (!nextVideo) return null;
-    return `/playlist/watch/${playlist.id}/video/${
-      nextVideo.id
+    return `/playlist/watch/${playlist.slug}/video/${
+      nextVideo.slug
     }?title=${encodeURIComponent(nextVideo.title)}`;
   };
 

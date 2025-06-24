@@ -58,8 +58,8 @@ const VideoPlayer = ({
       <CardContent className="p-0 rounded-md">
         <div className="relative">
           <MediaPlayer
-            title={video.title}
-            src={video.videoUrl}
+            title={video?.title}
+            src={video?.videoUrl}
             controls
             aspectRatio="16/9"
             className="rounded-lg p-0 overflow-hidden lg:h-[80vh] h-auto"
@@ -73,8 +73,8 @@ const VideoPlayer = ({
             <MediaProvider>
               <Poster
                 className="media-poster"
-                src={video.thumbnailUrl}
-                alt={`Thumbnail of ${video.title}`}
+                src={video?.thumbnailUrl}
+                alt={`Thumbnail of ${video?.title}`}
               />
               <Track
                 src="/captions/english.vtt"

@@ -1,5 +1,4 @@
 import { IVideo } from "@/types/video.type";
-import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { formatDuration } from "@/utils/formatDuration";
@@ -9,6 +8,7 @@ import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import { useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
   video: IVideo;
@@ -22,11 +22,7 @@ const VideoThumbnail = ({ video, isInView }: Props) => {
   const [mute, setMute] = useState(true);
 
   const handleNavigate = () => {
-    router.push(
-      `/video/watch/${formatVideoPublicId(video?.publicId)}/${
-        video?.id
-      }?title=${video?.title}&description=${video?.description || "unknown"}`
-    );
+    router.push(makeVideoWatchPath(video));
   };
 
   const handleMuteToggle = (e: React.MouseEvent) => {

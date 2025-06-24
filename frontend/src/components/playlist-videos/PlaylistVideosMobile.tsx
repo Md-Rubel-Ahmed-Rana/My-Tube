@@ -99,7 +99,11 @@ const PlaylistVideosMobile = ({
           ) : (
             <div className="px-2 flex flex-col gap-2">
               {videos.map((video) => (
-                <PlaylistVideoCardMobile key={video?.id} video={video} />
+                <PlaylistVideoCardMobile
+                  key={video?.id}
+                  video={video}
+                  playlistId={playlist?.id}
+                />
               ))}
             </div>
           )}

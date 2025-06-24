@@ -4,12 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, ThumbsUp, Clock } from "lucide-react";
 import moment from "moment";
-import { formatVideoPublicId } from "@/utils/formatVideoPublicId";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import VideoActions from "./VideoActions";
 import { useRouter } from "next/router";
 import VideoThumbnail from "./VideoThumbnail";
 import { useEffect, useRef, useState } from "react";
+import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
   video: IVideo;
@@ -21,11 +21,7 @@ const VideoCard = ({ video }: Props) => {
   const cardContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleNavigate = () => {
-    router.push(
-      `/video/watch/${formatVideoPublicId(video?.publicId)}/${
-        video?.id
-      }?title=${video?.title}&description=${video?.description || "unknown"}`
-    );
+    router.push(makeVideoWatchPath(video));
   };
 
   useEffect(() => {
@@ -63,7 +59,7 @@ const VideoCard = ({ video }: Props) => {
         <div className="flex justify-between items-center gap-2">
           <div className="flex items-center gap-2">
             <Link
-              href={`/channel/${video?.owner?.username}/${video?.owner?.id}?name=${video?.owner?.name}`}
+              href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={video.owner?.photo} alt="profile image" />
@@ -74,7 +70,7 @@ const VideoCard = ({ video }: Props) => {
             </Link>
             <p className="text-sm text-muted-foreground line-clamp-1">
               <Link
-                href={`/channel/${video?.owner?.username}/${video?.owner?.id}?name=${video?.owner?.name}`}
+                href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
               >
                 {video.owner.name}
               </Link>
