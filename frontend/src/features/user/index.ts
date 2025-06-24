@@ -1,4 +1,6 @@
+import { IApiResponse } from "@/types/common";
 import apiSlice from "../api";
+import { IUser } from "@/types/user.type";
 
 const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,9 +20,15 @@ const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
-    getUserById: builder.query({
-      query: ({ id }: { id: string }) => ({
+    getUserById: builder.query<IApiResponse<IUser>, { id: string }>({
+      query: ({ id }) => ({
         url: `user/${id}`,
+      }),
+      providesTags: ["user"],
+    }),
+    getUserBySlug: builder.query<IApiResponse<IUser>, { slug: string }>({
+      query: ({ slug }) => ({
+        url: `user/slug/${slug}`,
       }),
       providesTags: ["user"],
     }),
@@ -31,4 +39,5 @@ export const {
   useUpdateUserNameMutation,
   useUpdateProfileImageMutation,
   useGetUserByIdQuery,
+  useGetUserBySlugQuery,
 } = userApi;

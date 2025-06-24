@@ -15,11 +15,21 @@ export const playlistApi = apiSlice.injectEndpoints({
       providesTags: ["playlist"],
     }),
     getSinglePlaylistVideos: builder.query<
-      IApiResponse<IPlaylist | null>,
+      IApiResponse<IPlaylist>,
       { id: string }
     >({
       query: ({ id }) => ({
         url: `/playlist/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["playlist"],
+    }),
+    getPlaylistVideosBySlug: builder.query<
+      IApiResponse<IPlaylist>,
+      { slug: string }
+    >({
+      query: ({ slug }) => ({
+        url: `/playlist/slug/${slug}`,
         method: "GET",
       }),
       providesTags: ["playlist"],
@@ -80,4 +90,5 @@ export const {
   useGetSinglePlaylistVideosQuery,
   useRemoveVideoFromPlaylistMutation,
   useAddVideoToPlaylistMutation,
+  useGetPlaylistVideosBySlugQuery,
 } = playlistApi;
