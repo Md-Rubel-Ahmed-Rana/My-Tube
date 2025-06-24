@@ -7,6 +7,8 @@ import { User, UserSchema } from "src/user/user.schema";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { OAuth2Strategy } from "./oauth2.strategy";
+import { ChannelService } from "src/channel/channel.service";
+import { ChannelModule } from "src/channel/channel.module";
 
 const configService = new ConfigService();
 
@@ -18,8 +20,15 @@ const configService = new ConfigService();
       signOptions: { expiresIn: "1d" },
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    ChannelModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, ConfigService, OAuth2Strategy],
+  providers: [
+    AuthService,
+    UserService,
+    ConfigService,
+    OAuth2Strategy,
+    ChannelService,
+  ],
 })
 export class AuthModule {}

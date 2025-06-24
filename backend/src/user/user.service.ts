@@ -13,11 +13,13 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { generateUsername } from "src/utils/generateUsername";
 import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
 import { Slugify } from "src/utils/slugify";
+import { ChannelService } from "src/channel/channel.service";
 
 @Injectable()
 export class UserService {
   constructor(
     private config: ConfigService,
+    private channelService: ChannelService,
     @InjectModel(User.name) private userModel: Model<User>,
     private eventEmitter: EventEmitter2
   ) {
@@ -47,22 +49,29 @@ export class UserService {
   }
 
   async findById(id: Types.ObjectId) {
-    const user = await this.userModel.findById(id, "-password");
+    const user: any = await this.userModel.findById(id, "-password");
+    const subscriptions = await this.channelService.getTotalSubscriptions(
+      user?.id || user?._id
+    );
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: user,
+      data: { ...user._doc, subscriptions },
     };
   }
 
   async findBySlug(slug: string) {
-    const user = await this.userModel.findOne({ slug }, "-password");
+    const user: any = await this.userModel.findOne({ slug }, "-password");
+    const subscriptions = await this.channelService.getTotalSubscriptions(
+      user?.id || user?._id
+    );
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: user,
+      data: { ...user._doc, subscriptions },
     };
   }
 
