@@ -3,6 +3,7 @@ import { CreateChannelDto } from "./dto/create-channel.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
 import { Model, Types } from "mongoose";
+import { GetUserDto } from "src/user/dto/get-user.dto";
 
 @Injectable()
 export class ChannelService {
@@ -77,7 +78,7 @@ export class ChannelService {
       ])
       .lean();
 
-    const sortedChannels =
+    const sortedChannels: any =
       result?.channels?.sort((a: any, b: any) =>
         a.name.localeCompare(b.name)
       ) || [];

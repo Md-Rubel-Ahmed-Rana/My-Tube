@@ -23,6 +23,7 @@ import { AuthGuard } from "src/auth/auth.guard";
 import { QueryVideoDto } from "./dto/query-video.dto";
 import { Types } from "mongoose";
 import { UpdateVideoDto } from "./dto/update-video.dto";
+import { PublicAuthGuard } from "src/auth/public-auth.guard";
 
 @Controller("video")
 export class VideoController {
@@ -37,6 +38,12 @@ export class VideoController {
       Number(limit) || 10,
       Number(page) || 1
     );
+  }
+
+  @Get("feed")
+  @UseGuards(PublicAuthGuard)
+  getHomepageFeed() {
+    return this.videoService.performBestVideosQuery();
   }
 
   @Get("search")
