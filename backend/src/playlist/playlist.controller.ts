@@ -14,6 +14,7 @@ import { CreatePlaylistDto } from "./dto/create-playlist.dto";
 import { UpdatePlaylistDto } from "./dto/update-playlist.dto";
 import { ModifyVideoDto } from "./dto/modify-video.dto";
 import { AuthGuard } from "src/auth/auth.guard";
+import { ReorderPlaylistDto } from "./dto/reorder-playlist.dto";
 
 @Controller("playlist")
 export class PlaylistController {
@@ -45,6 +46,14 @@ export class PlaylistController {
   @Get("slug/:slug")
   getOneBySlug(@Param("slug") slug: string) {
     return this.playlistService.getOneBySlug(slug);
+  }
+
+  @Patch(":id/reorder")
+  reorder(
+    @Param("id") playlistId: string,
+    @Body() { videoIds }: ReorderPlaylistDto
+  ) {
+    return this.playlistService.reorderVideos(playlistId, videoIds);
   }
 
   @Patch(":id")

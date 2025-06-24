@@ -134,4 +134,19 @@ export class PlaylistService {
       data: playlist,
     };
   }
+
+  async reorderVideos(playlistId: string, videoIds: string[]) {
+    const playlist = await this.playlistModel.findByIdAndUpdate(
+      playlistId,
+      { videos: videoIds },
+      { new: true }
+    );
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Videos reordered in playlist",
+      data: playlist,
+    };
+  }
 }
