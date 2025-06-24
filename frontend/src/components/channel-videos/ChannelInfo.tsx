@@ -51,7 +51,7 @@ const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
             <>
               <h2 className="text-lg font-medium">{channel?.name}</h2>
               <span className="text-muted-foreground text-xs border rounded-md px-3 py-1 ">
-                {user?.subscriptions || 0} subscribers
+                {channel?.subscriptions || 0} subscribers
               </span>
               <p className="text-muted-foreground mt-1">
                 @{channel?.username || "unknown username"}
