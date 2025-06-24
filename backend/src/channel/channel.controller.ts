@@ -47,6 +47,7 @@ export class ChannelController {
   }
 
   @Get("is-subscribed/:channelId")
+  @UseGuards(AuthGuard)
   isSubscribed(
     @Req() req: { user: { id: string } },
     @Param("channelId") channelId: string

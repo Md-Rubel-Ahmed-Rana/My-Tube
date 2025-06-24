@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateChannelDto } from "./dto/create-channel.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 @Injectable()
 export class ChannelService {
@@ -46,10 +46,11 @@ export class ChannelService {
   }
 
   async isSubscribed(userId: string, channelId: string) {
+    console.log({ userId, channelId });
     const result = await this.channelModel
       .findOne({
-        user: userId,
-        channels: channelId,
+        user: new Types.ObjectId(userId),
+        channels: new Types.ObjectId(channelId),
       })
       .lean();
 
@@ -57,7 +58,7 @@ export class ChannelService {
       statusCode: 200,
       success: true,
       message: result ? "Channel is subscribed" : "Channel is not subscribed",
-      data: { isSubscribed: !!result },
+      data: result,
     };
   }
 
@@ -76,16 +77,33 @@ export class ChannelService {
       ])
       .lean();
 
+    const sortedChannels =
+      result?.channels?.sort((a: any, b: any) =>
+        a.name.localeCompare(b.name)
+      ) || [];
+
     return {
       statusCode: 200,
       success: true,
       message: "Fetched user channels",
-      data: result?.channels || [],
+      data: sortedChannels,
     };
   }
 
   async findAll() {
-    const results = await this.channelModel.find().lean();
+    const results = await this.channelModel
+      .find()
+      .populate([
+        {
+          path: "channels",
+          select: "-password",
+        },
+        {
+          path: "user",
+          select: "-password",
+        },
+      ])
+      .lean();
     return {
       statusCode: 200,
       success: true,
