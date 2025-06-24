@@ -50,8 +50,11 @@ const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
           ) : (
             <>
               <h2 className="text-lg font-medium">{channel?.name}</h2>
-              <p className="text-muted-foreground">
-                {channel?.username || "unknown username"}
+              <span className="text-muted-foreground text-xs border rounded-md px-3 py-1 ">
+                {user?.subscriptions || 0} subscribers
+              </span>
+              <p className="text-muted-foreground mt-1">
+                @{channel?.username || "unknown username"}
               </p>
               <div className="flex items-center gap-2 mt-1 flex-wrap justify-center sm:justify-start">
                 <Badge
@@ -67,6 +70,7 @@ const ChannelInfo = ({ totalVideos = 0, channel, isLoading }: Props) => {
                   Joined: {new Date(channel?.createdAt).toLocaleDateString()}
                 </Badge>
               </div>
+
               {channel?.id !== user?.id && (
                 <div className="pt-2">
                   <SubscriptionButton channelId={channel?.id} />
