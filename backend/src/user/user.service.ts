@@ -58,7 +58,7 @@ export class UserService {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions },
+      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
     };
   }
 
@@ -71,7 +71,7 @@ export class UserService {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions },
+      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
     };
   }
 
