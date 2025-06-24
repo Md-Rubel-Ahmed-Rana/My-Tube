@@ -3,7 +3,6 @@ import { CreateChannelDto } from "./dto/create-channel.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
 import { Model, Types } from "mongoose";
-import { GetUserDto } from "src/user/dto/get-user.dto";
 
 @Injectable()
 export class ChannelService {
@@ -46,8 +45,14 @@ export class ChannelService {
     };
   }
 
+  async getTotalSubscriptions(channelId: string): Promise<number> {
+    const result = await this.channelModel.find({
+      channels: new Types.ObjectId(channelId),
+    });
+    return result?.length || 0;
+  }
+
   async isSubscribed(userId: string, channelId: string) {
-    console.log({ userId, channelId });
     const result = await this.channelModel
       .findOne({
         user: new Types.ObjectId(userId),
@@ -83,11 +88,19 @@ export class ChannelService {
         a.name.localeCompare(b.name)
       ) || [];
 
+    const channelsWithSubscriptions = await Promise.all(
+      sortedChannels.map(async (channel: any) => {
+        const subscriptions = await this.getTotalSubscriptions(channel._id);
+
+        return { ...channel, subscriptions, id: channel?._id };
+      })
+    );
+
     return {
       statusCode: 200,
       success: true,
       message: "Fetched user channels",
-      data: sortedChannels,
+      data: channelsWithSubscriptions,
     };
   }
 
