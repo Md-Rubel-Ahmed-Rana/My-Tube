@@ -3,6 +3,7 @@ export type IUser = {
   name: string;
   username: string;
   slug: string;
+  subscriptions: number;
   photo: string;
   email: string;
   createdAt: Date;
