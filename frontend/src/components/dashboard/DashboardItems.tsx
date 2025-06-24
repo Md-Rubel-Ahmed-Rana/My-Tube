@@ -42,6 +42,20 @@ const DashboardItems = () => {
         </Button>
       )}
 
+      <Link key={"/dashboard/channels"} href={"/dashboard/channels"} passHref>
+        <Button
+          variant={pathname === "/dashboard/channels" ? "default" : "ghost"}
+          className={cn(
+            "px-4",
+            pathname === "/dashboard/channels"
+              ? "font-semibold"
+              : "text-muted-foreground"
+          )}
+        >
+          Channels
+        </Button>
+      </Link>
+
       {open && <CreatePlaylist open={open} setOpen={setOpen} />}
     </div>
   );
