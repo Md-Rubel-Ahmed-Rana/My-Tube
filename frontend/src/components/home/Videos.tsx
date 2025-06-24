@@ -1,11 +1,11 @@
-import { useGetVideosQuery } from "@/features/videos";
+import { useGetHomeFeedVideosQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import VideoCard from "./VideoCard";
 import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 
 const Videos = () => {
-  const { data, isLoading } = useGetVideosQuery({});
-  const videos = (data?.data?.videos || []) as IVideo[];
+  const { data, isLoading } = useGetHomeFeedVideosQuery();
+  const videos = (data?.data || []) as IVideo[];
   return (
     <>
       {isLoading ? (
