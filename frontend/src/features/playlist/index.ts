@@ -50,6 +50,14 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["playlist"],
     }),
+    reorderPlaylistVideos: builder.mutation({
+      query: ({ id, videoIds }: { id: string; videoIds: string[] }) => ({
+        url: `/playlist/${id}/reorder`,
+        method: "PATCH",
+        body: { videoIds },
+      }),
+      invalidatesTags: ["playlist"],
+    }),
     removeVideoFromPlaylist: builder.mutation({
       query: ({ id, videoId }: { id: string; videoId: string }) => ({
         url: `/playlist/${id}/remove-video`,
@@ -91,4 +99,5 @@ export const {
   useRemoveVideoFromPlaylistMutation,
   useAddVideoToPlaylistMutation,
   useGetPlaylistVideosBySlugQuery,
+  useReorderPlaylistVideosMutation,
 } = playlistApi;

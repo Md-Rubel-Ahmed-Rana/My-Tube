@@ -5,7 +5,8 @@ import PlaylistVideoPlayer from "./video";
 import PlaylistVideosMobile from "./PlaylistVideosMobile";
 import PlaylistVideosDesktop from "./PlaylistVideosDesktop";
 import PlaylistHeader from "./PlaylistHeader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { IVideo } from "@/types/video.type";
 
 const PlayListVideos = () => {
   const { query } = useRouter();
@@ -16,6 +17,15 @@ const PlayListVideos = () => {
   const playlist = data?.data as IPlaylist;
   const [shouldLoopAVideo, setShouldLoopAVideo] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
+  const [videos, setVideos] = useState<IVideo[] | []>(
+    (!isLoading && playlist?.videos) || []
+  );
+
+  useEffect(() => {
+    if (!isLoading && playlist?.videos) {
+      setVideos(playlist.videos);
+    }
+  }, [isLoading, playlist?.videos]);
 
   return (
     <>
@@ -32,7 +42,12 @@ const PlayListVideos = () => {
             isShuffle={isShuffle}
             setIsShuffle={setIsShuffle}
           />
-          <PlaylistVideosDesktop isLoading={isLoading} playlist={playlist} />
+          <PlaylistVideosDesktop
+            isLoading={isLoading}
+            playlist={playlist}
+            videos={videos}
+            setVideos={setVideos}
+          />
         </div>
       </div>
       <div className="block lg:hidden">
@@ -43,6 +58,8 @@ const PlayListVideos = () => {
           shouldLoopAVideo={shouldLoopAVideo}
           isShuffle={isShuffle}
           setIsShuffle={setIsShuffle}
+          videos={videos}
+          setVideos={setVideos}
         />
       </div>
     </>

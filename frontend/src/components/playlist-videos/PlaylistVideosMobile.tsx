@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IPlaylist } from "@/types/playlist.type";
 import {
   Sheet,
@@ -6,14 +7,28 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IVideo } from "@/types/video.type";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronUp } from "lucide-react";
 import RelatedVideoLoadingSkeleton from "@/skeletons/RelatedVideoLoading.skeleton";
-import PlaylistVideoCardMobile from "./PlaylistVideoCardMobile";
 import PlaylistHeader from "./PlaylistHeader";
+import { useReorderPlaylistVideosMutation } from "@/features/playlist";
+import { handleApiMutation } from "@/utils/handleApiMutation";
+import SortableVideoCard from "./SortableVideoCard";
 
 type Props = {
   playlist: IPlaylist;
@@ -22,6 +37,8 @@ type Props = {
   setIsShuffle: (value: boolean) => void;
   shouldLoopAVideo: boolean;
   isShuffle: boolean;
+  videos: IVideo[];
+  setVideos: (videos: IVideo[]) => void;
 };
 
 const PlaylistVideosMobile = ({
@@ -31,9 +48,28 @@ const PlaylistVideosMobile = ({
   setIsShuffle,
   setShouldLoopAVideo,
   shouldLoopAVideo,
+  videos,
+  setVideos,
 }: Props) => {
-  const videos = (playlist?.videos || []) as IVideo[];
+  const sensors = useSensors(useSensor(PointerSensor));
   const video = videos[0];
+
+  const [reorderVideos] = useReorderPlaylistVideosMutation();
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = videos.findIndex((v) => v.id === active.id);
+      const newIndex = videos.findIndex((v) => v.id === over.id);
+      const reorderedVideos = arrayMove(videos, oldIndex, newIndex);
+      setVideos(reorderedVideos);
+      handleReorderVideos(reorderedVideos.map((video) => video?.id));
+    }
+  };
+
+  const handleReorderVideos = async (videoIds: string[]) => {
+    await handleApiMutation(reorderVideos, { id: playlist?.id, videoIds }, 200);
+  };
 
   return (
     <div className="fixed bottom-2 left-0 w-full z-50 flex justify-center">
@@ -97,15 +133,26 @@ const PlaylistVideosMobile = ({
           {isLoading ? (
             <RelatedVideoLoadingSkeleton />
           ) : (
-            <div className="px-2 flex flex-col gap-2">
-              {videos.map((video) => (
-                <PlaylistVideoCardMobile
-                  key={video?.id}
-                  video={video}
-                  playlistId={playlist?.id}
-                />
-              ))}
-            </div>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={videos?.map((v) => v?.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="px-2 flex flex-col gap-2">
+                  {videos.map((video) => (
+                    <SortableVideoCard
+                      key={video.id}
+                      video={video}
+                      playlistId={playlist.id}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </SheetContent>
       </Sheet>
