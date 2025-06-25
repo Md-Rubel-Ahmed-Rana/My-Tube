@@ -7,6 +7,7 @@ import { ReactElement, ReactNode } from "react";
 import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
 import GoogleOneTapSignin from "@/components/common/GoogleOneTapSignin";
+import ServerStarting from "@/components/common/ServerStarting";
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -29,6 +30,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         {getLayout(<Component {...pageProps} />)}
         <Toaster position="top-center" />
         <GoogleOneTapSignin />
+        <ServerStarting />
       </Provider>
     </ThemeProvider>
   );
