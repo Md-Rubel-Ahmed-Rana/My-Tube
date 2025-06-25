@@ -58,6 +58,8 @@ const PlayListVideos = () => {
           shouldLoopAVideo={shouldLoopAVideo}
           isShuffle={isShuffle}
           setIsShuffle={setIsShuffle}
+          videos={videos}
+          setVideos={setVideos}
         />
       </div>
     </>
