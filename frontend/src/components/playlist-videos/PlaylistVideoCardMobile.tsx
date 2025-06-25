@@ -35,7 +35,11 @@ const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
     <>
       <Card
         onClick={handleCardClick}
-        className="bg-gray-100 dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2"
+        className={`${
+          videoslug === video?.slug
+            ? "bg-gray-300 dark:bg-gray-700"
+            : "bg-gray-100 dark:bg-gray-800"
+        }  hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2`}
       >
         <div className="flex justify-between w-full gap-3">
           <div className="w-[30%]">
