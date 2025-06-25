@@ -9,6 +9,8 @@ import {
 import { Shuffle, Repeat, Trash2, Repeat1 } from "lucide-react";
 import { useState } from "react";
 import PlaylistDeleteModal from "../dashboard/playlist/PlaylistDeleteModal";
+import { useGetSingleVideoBySlugQuery } from "@/features/videos";
+import { IVideo } from "@/types/video.type";
 
 type Props = {
   playlist: IPlaylist;
@@ -26,12 +28,12 @@ const PlaylistHeader = ({
   setIsShuffle,
 }: Props) => {
   const { query } = useRouter();
-  const currentVideoId = query?.id as string;
+  const slug = query?.videoslug as string;
+  const { data } = useGetSingleVideoBySlugQuery({ slug });
+  const video = data?.data as IVideo;
   const [isDeletePlayList, setIsDeletePlayList] = useState(false);
 
-  const currentIndex = playlist?.videos?.findIndex(
-    (v) => v.id === currentVideoId
-  );
+  const currentIndex = playlist?.videos?.findIndex((v) => v.id === video?.id);
   const currentVideoNumber = currentIndex !== -1 ? currentIndex + 1 : "-";
 
   const handleLoopVideo = () => {
@@ -52,7 +54,7 @@ const PlaylistHeader = ({
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <span>Playing:</span>
         <span>
-          {currentVideoNumber} of {playlist?.videos?.length || 0}
+          {currentVideoNumber || 0} of {playlist?.videos?.length || 0}
         </span>
       </div>
       <div className="flex items-center justify-between gap-4 flex-wrap">
