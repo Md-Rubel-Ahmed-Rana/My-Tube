@@ -10,7 +10,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/router";
 import RemovePlaylistVideo from "./RemovePlaylistVideo";
 import { useState } from "react";
-import { AudioLines, PlayCircle, Trash2 } from "lucide-react";
+import { AudioLines, GripVertical, PlayCircle, Trash2 } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
 
 type Props = {
   video: IVideo;
@@ -18,30 +19,24 @@ type Props = {
 };
 
 const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
-  const { query, push } = useRouter();
-  const playlistSlug = query?.playlistslug as string;
+  const { query } = useRouter();
   const videoslug = query?.videoslug as string;
   const [isRemoveVideo, setIsRemoveVideo] = useState(false);
-
-  const handleCardClick = () => {
-    push(
-      `/playlist/watch/${playlistSlug}/video/${
-        video.slug
-      }?title=${encodeURIComponent(video?.title)}`
-    );
-  };
+  const { listeners } = useSortable({ id: video.id });
 
   return (
     <>
       <Card
-        onClick={handleCardClick}
         className={`${
           videoslug === video?.slug
             ? "bg-gray-300 dark:bg-gray-700"
             : "bg-gray-100 dark:bg-gray-800"
         }  hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2`}
       >
-        <div className="flex justify-between w-full gap-3">
+        <div className="flex justify-between items-center w-full gap-3">
+          <div {...listeners} className="cursor-grab active:cursor-grabbing">
+            <GripVertical className="w-4 h-4 text-gray-400" />
+          </div>
           <div className="w-[30%]">
             <div className="relative h-14">
               <Image
