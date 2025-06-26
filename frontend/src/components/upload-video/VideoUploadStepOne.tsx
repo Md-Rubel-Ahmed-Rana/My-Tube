@@ -8,11 +8,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { FileText } from "lucide-react";
 import VideoTags from "./VideoTags";
 import { toast } from "sonner";
 import VideoPlaylist from "./VideoPlaylist";
+import RichTextEditor from "../common/RichTextEditor";
 
 type Props = {
   form: any;
@@ -57,15 +57,15 @@ const VideoUploadStepOne = ({ form, isLoading, setStep, step }: Props) => {
 
       <FormField
         control={form.control}
-        disabled={isLoading}
         name="description"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Video Description</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="Write your video description here"
-                {...field}
+              <RichTextEditor
+                value={field.value}
+                onChange={field.onChange}
+                isDisabled={isLoading}
               />
             </FormControl>
             <FormMessage />
