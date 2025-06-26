@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const MAX_DESC_LENGTH = 1000000;
+
 export const uploadVideoSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
 
@@ -11,8 +13,8 @@ export const uploadVideoSchema = z.object({
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters long." })
-    .max(1000, {
-      message: "Description must be at most 1000 characters long.",
+    .max(MAX_DESC_LENGTH, {
+      message: `Description must be at most ${MAX_DESC_LENGTH} characters long.`,
     }),
 
   tags: z
@@ -38,8 +40,8 @@ export const videoEditSchema = z.object({
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters long." })
-    .max(1000, {
-      message: "Description must be at most 1000 characters long.",
+    .max(MAX_DESC_LENGTH, {
+      message: `Description must be at most ${MAX_DESC_LENGTH} characters long.`,
     }),
 
   tags: z
