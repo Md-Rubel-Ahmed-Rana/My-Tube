@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -18,6 +17,7 @@ import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUpdateVideoMutation } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
 import { useEffect, useState } from "react";
+import RichTextEditor from "../common/RichTextEditor";
 
 type Props = {
   video: IVideo;
@@ -87,7 +87,7 @@ const VideoEditForm = ({ video }: Props) => {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           disabled={isLoading}
           name="description"
@@ -98,6 +98,23 @@ const VideoEditForm = ({ video }: Props) => {
                 <Textarea
                   placeholder="Write your video description here"
                   {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Video Description</FormLabel>
+              <FormControl>
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  isDisabled={isLoading}
                 />
               </FormControl>
               <FormMessage />

@@ -38,6 +38,24 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* react quill styles override */
+.ql-container {
+  border-radius: 10px !important;
+  border: none !important;
+  overflow: hidden;
+}
+
+.ql-toolbar {
+  border-top-left-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
+}
+
+.ql-editor {
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
