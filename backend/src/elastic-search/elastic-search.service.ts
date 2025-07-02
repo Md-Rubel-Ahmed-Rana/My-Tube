@@ -34,16 +34,55 @@ export class ElasticSearchService {
       await this.client.indices.create({
         index: this.index,
         body: {
-          mappings: {
-            properties: {
-              title: { type: "text" },
-              channel: { type: "text" },
-              description: { type: "text" },
-              tags: { type: "text" },
+          settings: {
+            analysis: {
+              filter: {
+                edge_ngram_filter: {
+                  type: "edge_ngram",
+                  min_gram: 2,
+                  max_gram: 20,
+                },
+              },
+              analyzer: {
+                edge_ngram_analyzer: {
+                  tokenizer: "standard",
+                  filter: ["lowercase", "edge_ngram_filter"],
+                },
+                lowercase_analyzer: {
+                  tokenizer: "standard",
+                  filter: ["lowercase"],
+                },
+              },
             },
           },
-        } as any,
+          mappings: {
+            properties: {
+              id: { type: "keyword" },
+              title: {
+                type: "text",
+                analyzer: "edge_ngram_analyzer",
+                search_analyzer: "lowercase_analyzer",
+              },
+              channel: {
+                type: "text",
+                analyzer: "edge_ngram_analyzer",
+                search_analyzer: "lowercase_analyzer",
+              },
+              description: {
+                type: "text",
+                analyzer: "edge_ngram_analyzer",
+                search_analyzer: "lowercase_analyzer",
+              },
+              tags: {
+                type: "text",
+                analyzer: "edge_ngram_analyzer",
+                search_analyzer: "lowercase_analyzer",
+              },
+            },
+          },
+        } as Record<string, any>,
       });
+
       this.logger.log(`Index '${this.index}' created successfully.`);
     } else {
       this.logger.log(`Index '${this.index}' already exists.`);
@@ -158,13 +197,28 @@ export class ElasticSearchService {
 
   async search(keyword: string) {
     this.logger.log(`Searching videos with keyword: '${keyword}'`);
+
     const response = await this.client.search({
       index: this.index,
       query: {
-        multi_match: {
-          query: keyword,
-          fields: ["title^5", "tags^3", "description", "channel"],
-          fuzziness: "AUTO",
+        bool: {
+          should: [
+            {
+              multi_match: {
+                query: keyword,
+                fields: ["title^5", "tags^3", "description", "channel"],
+                fuzziness: "AUTO",
+              },
+            },
+            {
+              wildcard: {
+                title: {
+                  value: `*${keyword.toLowerCase()}*`,
+                  boost: 0.3,
+                },
+              },
+            },
+          ],
         },
       },
     });
