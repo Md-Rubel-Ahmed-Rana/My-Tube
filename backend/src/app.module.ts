@@ -12,6 +12,7 @@ import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { CommentModule } from './comment/comment.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { ChannelModule } from './channel/channel.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ChannelModule } from './channel/channel.module';
     CommentModule,
     PlaylistModule,
     ChannelModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
