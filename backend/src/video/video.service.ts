@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NotFoundException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -22,6 +23,7 @@ import { GetUserDto } from "src/user/dto/get-user.dto";
 
 @Injectable()
 export class VideoService {
+  private readonly logger = new Logger(VideoService.name);
   constructor(
     private config: ConfigService,
     private channelService: ChannelService,
@@ -181,11 +183,16 @@ export class VideoService {
     };
   }
 
-  async getVideosByIds(ids: Types.ObjectId[]) {
+  async getVideosByIds(ids: (Types.ObjectId | string)[]) {
+    const objectIds = ids.map((id) =>
+      typeof id === "string" ? new Types.ObjectId(id) : id
+    );
+
     const videos = await this.videoModel
-      .find({ _id: { $in: ids } })
+      .find({ _id: { $in: objectIds } })
       .sort({ createdAt: -1 })
       .populate("owner", "-password");
+
     return videos;
   }
 

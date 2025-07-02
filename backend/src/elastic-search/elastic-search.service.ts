@@ -93,6 +93,7 @@ export class ElasticSearchService {
       index: this.index,
       id: doc.id,
       document: {
+        id: doc.id,
         title: doc.title || "",
         description: doc.description || "",
         tags: doc.tags || [],
@@ -171,9 +172,9 @@ export class ElasticSearchService {
     const hits = response.hits.hits;
     this.logger.log(`Search query returned ${hits.length} hits.`);
 
-    const videoIds = hits.map(
-      (video: any) => new Types.ObjectId(video._source?.id as string)
-    );
+    const videoIds = hits.map((video: any) => {
+      return new Types.ObjectId((video?._id || video?._source?.id) as string);
+    });
 
     this.logger.log(
       `Fetching full video data from DB for ${videoIds.length} IDs.`
