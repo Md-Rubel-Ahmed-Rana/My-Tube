@@ -14,6 +14,11 @@ export class ElasticSearchController {
     return this.elasticSearchService.addFullDbDocs();
   }
 
+  @Get()
+  getAllDocs(@Query("limit") limit: number, @Query("page") page: number) {
+    return this.elasticSearchService.getAllDocs(page, limit);
+  }
+
   @Delete("all")
   deleteAllDocs() {
     return this.elasticSearchService.deleteAllDocs();

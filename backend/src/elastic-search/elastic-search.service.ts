@@ -153,6 +153,36 @@ export class ElasticSearchService {
     return response._source;
   }
 
+  async getAllDocs(page = 1, limit = 10) {
+    const from = (page - 1) * limit;
+
+    const response: any = await this.client.search({
+      index: this.index,
+      body: {
+        from,
+        size: limit,
+        query: {
+          match_all: {},
+        },
+      } as Record<string, any>,
+    });
+
+    const docs = response.hits.hits.map((hit) => hit._source);
+    this.logger.log(`Fetched ${docs.length} documents (Page: ${page}).`);
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Docs retrieved from Elasticsearch",
+      success: true,
+      data: docs,
+      pagination: {
+        page,
+        limit,
+        total: response.hits.total.value as number,
+      },
+    };
+  }
+
   async updateDoc(id: string, doc: Partial<CreateElasticSearchDto>) {
     this.logger.log(`Updating document with ID: ${id}`);
     await this.client.update({
