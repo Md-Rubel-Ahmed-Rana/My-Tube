@@ -1,0 +1,266 @@
+import {
+  ChevronRight,
+  Users,
+  UserCheck,
+  UsersRound,
+  Trash2,
+  Video,
+  VideoIcon,
+  Eye,
+  Hourglass,
+  Trash,
+  LayoutDashboard,
+  ListVideo,
+  ListChecks,
+  Ban,
+  Film,
+  UserCog,
+  UserPlus2,
+  MonitorSpeaker,
+  RadioTower,
+  UserRound,
+  MessageCircle,
+  MessageSquareText,
+  MessageSquare,
+} from "lucide-react";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+
+const rootPath = "/admin/dashboard";
+
+const navMain = [
+  {
+    title: "Manage admins",
+    icon: UserCog,
+    isActive: false,
+    items: [
+      {
+        title: "All admins",
+        url: `${rootPath}/admins`,
+        icon: Users,
+      },
+      {
+        title: "Create admin",
+        url: `${rootPath}/admins/create`,
+        icon: UserPlus2,
+      },
+    ],
+  },
+  {
+    title: "Manage users",
+    icon: Users,
+    isActive: false,
+    items: [
+      {
+        title: "Users stats",
+        url: `${rootPath}/users/stats`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "All users",
+        url: `${rootPath}/users`,
+        icon: UsersRound,
+      },
+      {
+        title: "Users by status",
+        url: `${rootPath}/users/status`,
+        icon: UserCheck,
+      },
+      {
+        title: "Delete users",
+        url: `${rootPath}/users/deleted`,
+        icon: Trash2,
+      },
+    ],
+  },
+  {
+    title: "Manage videos",
+    icon: Video,
+    isActive: false,
+    items: [
+      {
+        title: "Videos stats",
+        url: `${rootPath}/videos/stats`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "All videos",
+        url: `${rootPath}/videos`,
+        icon: ListVideo,
+      },
+      {
+        title: "Video details",
+        url: `${rootPath}/videos/details`,
+        icon: VideoIcon,
+      },
+      {
+        title: "Video by status",
+        url: `${rootPath}/videos/status`,
+        icon: Eye,
+      },
+      {
+        title: "Video by channel",
+        url: `${rootPath}/videos/channel`,
+        icon: Film,
+      },
+      {
+        title: "Blocked videos",
+        url: `${rootPath}/videos/blocked`,
+        icon: Ban,
+      },
+      {
+        title: "Pending videos",
+        url: `${rootPath}/videos/pending`,
+        icon: Hourglass,
+      },
+      {
+        title: "Deleted videos",
+        url: `${rootPath}/videos/deleted`,
+        icon: Trash,
+      },
+    ],
+  },
+  {
+    title: "Manage playlists",
+    icon: ListChecks,
+    isActive: false,
+    items: [
+      {
+        title: "Playlists stats",
+        url: `${rootPath}/playlists/stats`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "All playlists",
+        url: `${rootPath}/playlists`,
+        icon: ListVideo,
+      },
+      {
+        title: "Playlist details",
+        url: `${rootPath}/playlists/details`,
+        icon: VideoIcon,
+      },
+      {
+        title: "Blocked playlists",
+        url: `${rootPath}/playlists/blocked`,
+        icon: Ban,
+      },
+    ],
+  },
+  {
+    title: "Manage channels",
+    icon: RadioTower,
+    isActive: false,
+    items: [
+      {
+        title: "Channels stats",
+        url: `${rootPath}/channels/stats`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "All channels",
+        url: `${rootPath}/channels`,
+        icon: ListVideo,
+      },
+      {
+        title: "Channel details",
+        url: `${rootPath}/channels/details`,
+        icon: MonitorSpeaker,
+      },
+    ],
+  },
+  {
+    title: "Manage comments",
+    icon: MessageSquare,
+    isActive: false,
+    items: [
+      {
+        title: "Comments stats",
+        url: `${rootPath}/comments/stats`,
+        icon: LayoutDashboard,
+      },
+      {
+        title: "All comments",
+        url: `${rootPath}/comments`,
+        icon: MessageSquareText,
+      },
+      {
+        title: "Comments by video",
+        url: `${rootPath}/comments/video`,
+        icon: MessageCircle,
+      },
+      {
+        title: "Comments by user",
+        url: `${rootPath}/comments/user`,
+        icon: UserRound,
+      },
+      {
+        title: "Comments by status",
+        url: `${rootPath}/comments/status`,
+        icon: Eye,
+      },
+      {
+        title: "Blocked comments",
+        url: `${rootPath}/comments/blocked`,
+        icon: Ban,
+      },
+    ],
+  },
+];
+
+const SideNavItems = () => {
+  return (
+    <SidebarGroup>
+      <SidebarMenu>
+        {navMain.map((item) => (
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip={item.title}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.items?.map((subItem) => (
+                    <SidebarMenuSubItem key={subItem.title}>
+                      <SidebarMenuSubButton asChild>
+                        <Link href={subItem.url}>
+                          {subItem.icon && <subItem.icon />}
+                          <span>{subItem.title}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  );
+};
+
+export default SideNavItems;

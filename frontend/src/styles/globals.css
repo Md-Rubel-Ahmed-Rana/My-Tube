@@ -55,7 +55,6 @@
   border-bottom-right-radius: 10px !important;
 }
 
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
