@@ -18,7 +18,18 @@ const adminApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["admin"],
     }),
+    getAllAdmins: builder.query({
+      query: () => ({
+        method: "GET",
+        url: "/admin",
+      }),
+      providesTags: ["admin"],
+    }),
   }),
 });
 
-export const { useAdminLoginMutation, useGetLoggedInAdminQuery } = adminApi;
+export const {
+  useAdminLoginMutation,
+  useGetLoggedInAdminQuery,
+  useGetAllAdminsQuery,
+} = adminApi;
