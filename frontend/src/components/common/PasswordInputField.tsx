@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 
 type Props = {
   form: any;
@@ -37,6 +37,7 @@ const PasswordInputField = ({
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 {...field}
+                className="pl-10"
               />
               <button
                 type="button"
@@ -46,6 +47,7 @@ const PasswordInputField = ({
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             </div>
           </FormControl>
           {shouldShowDesc && (

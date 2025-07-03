@@ -13,15 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { loginSchema } from "@/schemas/login.schema";
 import { handleApiMutation } from "@/utils/handleApiMutation";
-import { useUserLoginMutation } from "@/features/auth";
 import PasswordInputField from "../common/PasswordInputField";
 import { useRouter } from "next/router";
-import GoogleSignInButton from "../common/GoogleSignInButton";
+import { useAdminLoginMutation } from "@/features/admin";
 import { Mail } from "lucide-react";
 
-const LoginForm = () => {
+const AdminLoginForm = () => {
   const router = useRouter();
   const redirectSource = router?.query?.source as string;
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -29,7 +29,9 @@ const LoginForm = () => {
       password: "",
     },
   });
-  const [login, { isLoading }] = useUserLoginMutation();
+
+  const [login, { isLoading }] = useAdminLoginMutation();
+
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
     await handleApiMutation(
       login,
@@ -37,11 +39,11 @@ const LoginForm = () => {
       200,
       {
         error: "Failed to login",
-        success: "User logged in successfully",
+        success: "Admin logged in successfully",
       },
       {
         isRedirect: true,
-        path: redirectSource || "/dashboard/videos",
+        path: redirectSource || "/admin/dashboard",
         router,
       }
     );
@@ -51,11 +53,17 @@ const LoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleLogin)}
-        className="space-y-4 px-3 py-5 rounded-lg border w-full"
+        className="space-y-6 w-full text-gray-700 dark:text-gray-200"
       >
-        <div className="text-center text-lg">
-          <h1>Welcome Back!</h1>
+        {/* Logo or Brand */}
+        <div className="text-center space-y-1">
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            Admin Panel
+          </h1>
+          <p className="text-sm ">Sign in to manage everything</p>
         </div>
+
+        {/* Email Field */}
         <FormField
           control={form.control}
           disabled={isLoading}
@@ -67,7 +75,7 @@ const LoginForm = () => {
                 <div className="relative">
                   <Input
                     {...field}
-                    placeholder="user123@gmail.com"
+                    placeholder="admin@example.com"
                     className="pl-10 bg-white/10 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
                   />
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -80,16 +88,20 @@ const LoginForm = () => {
 
         <PasswordInputField form={form} isLoading={isLoading} />
 
+        <div className="text-right">
+          <span className="text-sm text-gray-400 hover:underline cursor-pointer">
+            Forgot password?
+          </span>
+        </div>
+
         <div className="w-full text-center">
           <Button disabled={isLoading} className="w-full" type="submit">
             {isLoading ? "Logging..." : "Login"}
           </Button>
         </div>
-
-        <GoogleSignInButton />
       </form>
     </Form>
   );
 };
 
-export default LoginForm;
+export default AdminLoginForm;

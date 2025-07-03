@@ -86,6 +86,11 @@ const NavDropdown = () => {
                 Login
               </DropdownMenuItem>
             </Link>
+            <Link className="w-full" href={"/admin/login"}>
+              <DropdownMenuItem className="cursor-pointer">
+                Login as admin
+              </DropdownMenuItem>
+            </Link>
             <Link className="w-full" href={"/account/create"}>
               <DropdownMenuItem className="cursor-pointer">
                 Register

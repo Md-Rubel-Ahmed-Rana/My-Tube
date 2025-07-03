@@ -9,9 +9,9 @@ type Props = {
 
 const AdminDashboardLayout = ({ children }: Props) => {
   return (
-    <SidebarProvider className="bg-gray-800">
+    <SidebarProvider>
       <AdminSidebar />
-      <SidebarInset className="bg-gray-800">
+      <SidebarInset className="bg-gray-100 dark:bg-gray-800">
         {/* dashboard header  */}
         <AdminDashboardHeader />
         {/* dynamic content  */}
