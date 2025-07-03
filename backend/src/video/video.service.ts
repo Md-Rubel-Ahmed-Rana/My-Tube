@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -20,6 +21,7 @@ import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.d
 import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
 import { GetUserDto } from "src/user/dto/get-user.dto";
+import { VideoStatus } from "./dto/enums";
 
 @Injectable()
 export class VideoService {
@@ -189,7 +191,7 @@ export class VideoService {
     );
 
     const videos = await this.videoModel
-      .find({ _id: { $in: objectIds } })
+      .find({ _id: { $in: objectIds }, status: VideoStatus.PUBLISHED })
       .sort({ createdAt: -1 })
       .populate("owner", "-password");
 
@@ -216,7 +218,7 @@ export class VideoService {
 
   async getOwnerVideosForChannel(owner: Types.ObjectId) {
     const videos = await this.videoModel
-      .find({ owner: new Types.ObjectId(owner) })
+      .find({ owner: new Types.ObjectId(owner), status: VideoStatus.PUBLISHED })
       .sort({ createdAt: -1 })
       .populate("owner", "-password");
     return {
@@ -230,16 +232,12 @@ export class VideoService {
   async performBestVideosQuery(userId?: string) {
     let personalizedVideos: any[] = [];
 
-    console.log({ userId });
-
     if (userId) {
       const result = await this.channelService.getChannels(userId);
 
       const subscribedChannels = (result?.data as GetUserDto[])?.map(
         (c) => c.id || c._id
       );
-
-      console.log({ userId, subscribedChannels });
 
       if (subscribedChannels.length) {
         const subscribedVideos = await this.videoModel
@@ -253,13 +251,13 @@ export class VideoService {
     }
 
     const trendingVideos = await this.videoModel
-      .find({})
+      .find({ status: VideoStatus.PUBLISHED })
       .sort({ views: -1 })
       .limit(10)
       .populate("owner", "-password");
 
     const latestVideos = await this.videoModel
-      .find({})
+      .find({ status: VideoStatus.PUBLISHED })
       .sort({ createdAt: -1 })
       .limit(10)
       .populate("owner", "-password");
@@ -645,5 +643,164 @@ export class VideoService {
       const readableStream = Readable.from(file.buffer);
       readableStream.pipe(uploadStream);
     });
+  }
+
+  async blockAVideo(id: Types.ObjectId) {
+    await this.videoModel.findByIdAndUpdate(id, {
+      $set: { status: VideoStatus.BLOCKED },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "The video has been blocked successfully",
+      data: null,
+    };
+  }
+
+  async unblockAVideo(id: Types.ObjectId) {
+    await this.videoModel.findByIdAndUpdate(id, {
+      $set: { status: VideoStatus.PUBLISHED },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "The video has been unblocked successfully",
+      data: null,
+    };
+  }
+  async bulkDelete(ids: Types.ObjectId[]) {
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new BadRequestException("No video IDs provided.");
+    }
+
+    const invalidIds = ids.filter((id) => !Types.ObjectId.isValid(id));
+    if (invalidIds.length > 0) {
+      throw new BadRequestException(
+        `Invalid ObjectId(s): ${invalidIds.join(", ")}`
+      );
+    }
+
+    const result = await this.videoModel.deleteMany({ _id: { $in: ids } });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `${result.deletedCount} videos deleted successfully.`,
+      data: {
+        deletedCount: result.deletedCount,
+      },
+    };
+  }
+
+  async getVideosByStatus(status: string) {
+    const videos = await this.videoModel.find({ status });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "The video has been unblocked successfully",
+      data: videos,
+    };
+  }
+
+  async getStatsForVideoOwner(owner: Types.ObjectId) {
+    const stats = await this.videoModel.aggregate([
+      { $match: { owner } },
+      {
+        $facet: {
+          totalVideos: [{ $count: "count" }],
+          totalViews: [{ $group: { _id: null, views: { $sum: "$views" } } }],
+          totalLikes: [
+            { $project: { likesCount: { $size: "$likes" } } },
+            { $group: { _id: null, likes: { $sum: "$likesCount" } } },
+          ],
+          totalDislikes: [
+            { $project: { dislikesCount: { $size: "$dislikes" } } },
+            { $group: { _id: null, dislikes: { $sum: "$dislikesCount" } } },
+          ],
+          totalSize: [{ $group: { _id: null, size: { $sum: "$size" } } }],
+          videosByStatus: [{ $group: { _id: "$status", count: { $sum: 1 } } }],
+        },
+      },
+    ]);
+
+    const result = stats[0];
+
+    return {
+      totalVideos: result.totalVideos[0]?.count || 0,
+      totalViews: result.totalViews[0]?.views || 0,
+      totalLikes: result.totalLikes[0]?.likes || 0,
+      totalDislikes: result.totalDislikes[0]?.dislikes || 0,
+      totalSize: result.totalSize[0]?.size || 0,
+      videosByStatus: result.videosByStatus.reduce((acc, curr) => {
+        acc[curr._id] = curr.count;
+        return acc;
+      }, {}),
+    };
+  }
+
+  async getStatsForAdmin(query?: {
+    startDate?: string;
+    endDate?: string;
+    owner?: string;
+    status?: string;
+  }) {
+    const match: Record<string, any> = {};
+
+    if (query.startDate || query.endDate) {
+      match.createdAt = {};
+      if (query.startDate) {
+        match.createdAt.$gte = new Date(query.startDate);
+      }
+      if (query.endDate) {
+        match.createdAt.$lte = new Date(query.endDate);
+      }
+    }
+
+    if (query.owner) {
+      match.owner = new Types.ObjectId(query.owner); // Important!
+    }
+
+    if (query.status) {
+      match.status = query.status;
+    }
+
+    const stats = await this.videoModel.aggregate([
+      { $match: match },
+      {
+        $facet: {
+          totalVideos: [{ $count: "count" }],
+          totalViews: [{ $group: { _id: null, views: { $sum: "$views" } } }],
+          totalLikes: [
+            { $project: { likesCount: { $size: "$likes" } } },
+            { $group: { _id: null, likes: { $sum: "$likesCount" } } },
+          ],
+          totalDislikes: [
+            { $project: { dislikesCount: { $size: "$dislikes" } } },
+            { $group: { _id: null, dislikes: { $sum: "$dislikesCount" } } },
+          ],
+          totalSize: [{ $group: { _id: null, size: { $sum: "$size" } } }],
+          videosByStatus: [{ $group: { _id: "$status", count: { $sum: 1 } } }],
+        },
+      },
+    ]);
+
+    const result = stats[0];
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Videos stats analytics retrieved successfully",
+      data: {
+        totalVideos: result.totalVideos[0]?.count || 0,
+        totalViews: result.totalViews[0]?.views || 0,
+        totalLikes: result.totalLikes[0]?.likes || 0,
+        totalDislikes: result.totalDislikes[0]?.dislikes || 0,
+        totalSize: result.totalSize[0]?.size || 0,
+        videosByStatus: result.videosByStatus.reduce((acc, curr) => {
+          acc[curr._id] = curr.count;
+          return acc;
+        }, {}),
+      },
+    };
   }
 }
