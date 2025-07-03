@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateChannelDto } from "./dto/create-channel.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
 import { Model, Types } from "mongoose";
+import { QueryChannelDto } from "./dto/query-channel.dto";
 
 @Injectable()
 export class ChannelService {
@@ -25,7 +26,7 @@ export class ChannelService {
     }
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Channel subscribed successfully",
       data: null,
@@ -38,7 +39,7 @@ export class ChannelService {
       { $pull: { channels: data.channel } }
     );
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Channel unsubscribed successfully",
       data: null,
@@ -61,7 +62,7 @@ export class ChannelService {
       .lean();
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       success: true,
       message: result ? "Channel is subscribed" : "Channel is not subscribed",
       data: result,
@@ -97,7 +98,7 @@ export class ChannelService {
     );
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Fetched user channels",
       data: channelsWithSubscriptions,
@@ -119,10 +120,117 @@ export class ChannelService {
       ])
       .lean();
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "All channel subscriptions fetched",
       data: results,
+    };
+  }
+
+  async getAllChannels(queries: QueryChannelDto) {
+    const { searchQuery, page = 1, limit = 10 } = queries;
+
+    const filter: any = {};
+
+    if (searchQuery) {
+      filter.$or = [
+        { "user.username": { $regex: searchQuery, $options: "i" } },
+        { "user.email": { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+
+    const channels = await this.channelModel
+      .find(filter)
+      .populate("user", "username email slug")
+      .populate("channels", "username email slug")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const total = await this.channelModel.countDocuments(filter);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All channels retrieved",
+      data: channels,
+      pagination: {
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        total,
+      },
+    };
+  }
+
+  async getChannelById(id: string) {
+    const channel = await this.channelModel
+      .findById(id)
+      .populate("user", "username email slug")
+      .populate("channels", "username email slug");
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All channel subscriptions fetched",
+      data: channel,
+    };
+  }
+
+  async deleteChannel(id: string) {
+    await this.channelModel.findByIdAndDelete(id);
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Channel deleted successfully",
+      data: null,
+    };
+  }
+
+  async getChannelStats() {
+    const totalChannels = await this.channelModel.countDocuments();
+
+    const totalSubscribers = await this.channelModel.aggregate([
+      {
+        $project: {
+          subscriberCount: { $size: "$channels" },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$subscriberCount" },
+        },
+      },
+    ]);
+
+    const topChannels = await this.channelModel.aggregate([
+      {
+        $project: {
+          user: 1,
+          subscriberCount: { $size: "$channels" },
+        },
+      },
+      {
+        $sort: { subscriberCount: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `Channels analytics retrieved  successfully`,
+      data: {
+        totalChannels,
+        totalSubscribers: totalSubscribers[0]?.total || 0,
+        topChannels,
+      },
     };
   }
 }

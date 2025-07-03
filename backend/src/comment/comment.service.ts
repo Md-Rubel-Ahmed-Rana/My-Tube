@@ -34,7 +34,7 @@ export class CommentService {
 
   async findAllByVideo(videoId: Types.ObjectId) {
     const comments = await this.commentModel
-      .find({ video: videoId })
+      .find({ video: new Types.ObjectId(videoId) })
       .populate("user", "-password")
       .populate("video", "title");
     return {
