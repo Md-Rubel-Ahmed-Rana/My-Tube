@@ -1,5 +1,4 @@
 import { ChevronsUpDown, ImageIcon, KeyRound, UserCog } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -56,7 +55,7 @@ const NavUser = () => {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={admin?.photo} alt={admin?.name} />
                   <AvatarFallback className="rounded-lg">
-                    {admin.name
+                    {admin?.name
                       .split(" ")
                       .map((word) => word[0].toUpperCase())
                       .join("")}
