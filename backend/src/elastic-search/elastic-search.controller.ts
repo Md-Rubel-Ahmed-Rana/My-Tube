@@ -5,6 +5,16 @@ import { ElasticSearchService } from "./elastic-search.service";
 export class ElasticSearchController {
   constructor(private readonly elasticSearchService: ElasticSearchService) {}
 
+  @Get()
+  search(@Query("q") q: string) {
+    return this.elasticSearchService.search(q);
+  }
+
+  @Get("all")
+  getAllDocs(@Query("limit") limit: number, @Query("page") page: number) {
+    return this.elasticSearchService.getAllDocs(page, limit);
+  }
+
   @Get("create-index")
   createIndexIfNotExists() {
     return this.elasticSearchService.createIndexIfNotExists();
@@ -14,18 +24,8 @@ export class ElasticSearchController {
     return this.elasticSearchService.addFullDbDocs();
   }
 
-  @Get()
-  getAllDocs(@Query("limit") limit: number, @Query("page") page: number) {
-    return this.elasticSearchService.getAllDocs(page, limit);
-  }
-
   @Delete("all")
   deleteAllDocs() {
     return this.elasticSearchService.deleteAllDocs();
-  }
-
-  @Get()
-  search(@Query("q") q: string) {
-    return this.elasticSearchService.search(q);
   }
 }
