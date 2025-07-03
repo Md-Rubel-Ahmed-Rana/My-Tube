@@ -52,6 +52,18 @@ export class VideoController {
     return this.videoService.searchVideo(searchText);
   }
 
+  @Get("stats")
+  @UseGuards(AuthGuard)
+  stats(@Req() req: { user: { id: Types.ObjectId } }) {
+    return this.videoService.getStatsForVideoOwner(req.user.id);
+  }
+
+  @Get("status")
+  @UseGuards(AuthGuard)
+  getVideosByStatus(@Param("status") status: string) {
+    return this.videoService.getVideosByStatus(status);
+  }
+
   @Get(":id/related-videos")
   relatedVideos(@Param("id") id: Types.ObjectId) {
     return this.videoService.relatedVideos(id);
