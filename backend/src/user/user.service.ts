@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectModel } from "@nestjs/mongoose";
@@ -14,6 +19,9 @@ import { generateUsername } from "src/utils/generateUsername";
 import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
 import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
+import { UpdateUserStatusDto } from "./dto/update-user-status.dto";
+import { UserStatus } from "./enums";
+import { QueryUserDto } from "./dto/query-user.dto";
 
 @Injectable()
 export class UserService {
@@ -48,7 +56,45 @@ export class UserService {
     };
   }
 
+  async findAll(query: QueryUserDto) {
+    const { status, searchQuery, page = 1, limit = 20 } = query;
+
+    const filter: Record<string, any> = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (searchQuery) {
+      const regex = new RegExp(searchQuery, "i");
+      filter.$or = [
+        { name: { $regex: regex } },
+        { email: { $regex: regex } },
+        { username: { $regex: regex } },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+
+    const data = await this.userModel
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Users fetched successfully!",
+      data,
+    };
+  }
+
   async findById(id: Types.ObjectId) {
+    if (!id) {
+      throw new NotFoundException("User id not found");
+    }
+
     const user: any = await this.userModel.findById(id, "-password");
     const subscriptions = await this.channelService.getTotalSubscriptions(
       user?.id || user?._id
@@ -178,5 +224,37 @@ export class UserService {
       const readableStream = Readable.from(file.buffer);
       readableStream.pipe(uploadStream);
     });
+  }
+
+  async updateStatus(id: Types.ObjectId, status: string) {
+    await this.userModel.findByIdAndUpdate(id, { $set: { status } });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `User status updated to ${status} successfully!`,
+      data: null,
+    };
+  }
+
+  async softDelete(id: Types.ObjectId) {
+    await this.userModel.findByIdAndUpdate(id, {
+      $set: { status: UserStatus.DELETED },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `User soft deletion done successfully!`,
+      data: null,
+    };
+  }
+
+  async hardDelete(id: Types.ObjectId) {
+    await this.userModel.findByIdAndDelete(id);
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `User account deleted permanently!`,
+      data: null,
+    };
   }
 }

@@ -21,7 +21,7 @@ import { GetElasticSearchDto } from "src/elastic-search/dto/get-elastic-search.d
 import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
 import { GetUserDto } from "src/user/dto/get-user.dto";
-import { VideoStatus } from "./dto/enums";
+import { VideoStatus } from "./enums";
 
 @Injectable()
 export class VideoService {

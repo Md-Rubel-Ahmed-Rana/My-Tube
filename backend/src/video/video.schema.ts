@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { VideoStatus } from "./dto/enums";
+import { VideoStatus } from "./enums";
 
 @Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
 export class Video extends Document {
