@@ -38,7 +38,7 @@ const SEOHead = ({
 
       <meta
         name="keywords"
-        content="video streaming, upload videos, share videos, watch videos, video platform, youtube clone, mytube, modern video app, react video player"
+        content="video streaming, upload videos, share videos, watch videos, video platform, youtube clone, mytube, modern video app, react video player, youtube alternative"
       />
       <meta name="author" content="MyTube Team" />
       <meta name="robots" content="index, follow" />
