@@ -4,6 +4,7 @@ import { PlaylistController } from "./playlist.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Playlist, PlaylistSchema } from "./playlist.schema";
 import { ConfigService } from "@nestjs/config";
+import { AdminPlaylistController } from "./admin-playlist.controller";
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { ConfigService } from "@nestjs/config";
       { name: Playlist.name, schema: PlaylistSchema },
     ]),
   ],
-  controllers: [PlaylistController],
+  controllers: [PlaylistController, AdminPlaylistController],
   providers: [PlaylistService, ConfigService],
   exports: [MongooseModule],
 })

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
+import { PlaylistStatus } from "./enums";
 
 export type PlaylistDocument = HydratedDocument<Playlist>;
 
@@ -18,6 +19,13 @@ export class Playlist {
 
   @Prop({ index: true, required: true })
   slug: string;
+
+  @Prop({
+    type: String,
+    enum: PlaylistStatus,
+    default: PlaylistStatus.PUBLIC,
+  })
+  status: PlaylistStatus;
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: "Video", default: [] })
   videos: Types.ObjectId[];
