@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { VideoStatus } from "./dto/enums";
 
 @Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
 export class Video extends Document {
@@ -39,8 +40,8 @@ export class Video extends Document {
   @Prop({ default: null })
   duration: number;
 
-  @Prop({ default: null })
-  size: number;
+  @Prop({ enum: VideoStatus, default: VideoStatus.PENDING })
+  status: VideoStatus;
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
