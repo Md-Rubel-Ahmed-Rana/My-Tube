@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
+import { CommentStatus } from "./enums";
 
 export type CommentDocument = HydratedDocument<Comment>;
 
@@ -13,6 +14,9 @@ export class Comment {
 
   @Prop({ type: Types.ObjectId, ref: "Video", required: true })
   video: Types.ObjectId;
+
+  @Prop({ type: String, enum: CommentStatus, default: CommentStatus.ACTIVE })
+  status: CommentStatus;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
