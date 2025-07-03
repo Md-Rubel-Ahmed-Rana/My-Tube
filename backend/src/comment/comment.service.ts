@@ -3,6 +3,7 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { Comment } from "./comment.schema";
 import { Model, Types } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
+import { CommentStatus } from "./enums";
 
 @Injectable()
 export class CommentService {
@@ -45,6 +46,19 @@ export class CommentService {
     };
   }
 
+  async findAllByUser(userId: Types.ObjectId) {
+    const comments = await this.commentModel
+      .find({ user: new Types.ObjectId(userId) })
+      .populate("user", "-password")
+      .populate("video", "title");
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Comments by user retrieved successfully",
+      data: comments,
+    };
+  }
+
   async findOne(id: Types.ObjectId) {
     const comment = await this.commentModel
       .findById(id)
@@ -55,6 +69,46 @@ export class CommentService {
       success: true,
       message: "Comment retrieved successfully",
       data: comment,
+    };
+  }
+
+  async findAllWithFilters(query: any) {
+    await this.commentModel.updateMany(
+      {},
+      { $set: { status: CommentStatus.ACTIVE } }
+    );
+    const { page = 1, limit = 10, status, video, user, searchQuery } = query;
+
+    const filter: any = {};
+
+    if (searchQuery) {
+      filter.$or = [{ text: { $regex: searchQuery, $options: "i" } }];
+    }
+
+    if (status) filter.status = status;
+    if (video) filter.video = video;
+    if (user) filter.user = user;
+
+    const comments = await this.commentModel
+      .find(filter)
+      .populate("user", "name slug")
+      .populate("video", "title slug")
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 });
+
+    const total = await this.commentModel.countDocuments(filter);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Comments retrieved successfully",
+      data: comments,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+      },
     };
   }
 
@@ -75,6 +129,123 @@ export class CommentService {
       success: true,
       message: "Comment deleted successfully",
       data: null,
+    };
+  }
+
+  async blockAComment(id: string) {
+    await this.commentModel.findByIdAndUpdate(new Types.ObjectId(id), {
+      $set: { status: CommentStatus.BLOCKED },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Comment has been blocked successfully",
+      data: null,
+    };
+  }
+
+  async unblockAComment(id: string) {
+    await this.commentModel.findByIdAndUpdate(new Types.ObjectId(id), {
+      $set: { status: CommentStatus.ACTIVE },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Comment has been unblocked successfully",
+      data: null,
+    };
+  }
+
+  async getCommentsStatsAnalytics() {
+    const [totalCount, statusDistribution, topCommenters, mostCommentedVideos] =
+      await Promise.all([
+        this.commentModel.countDocuments(),
+
+        this.commentModel.aggregate([
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $project: {
+              status: "$_id",
+              count: 1,
+              _id: 0,
+            },
+          },
+        ]),
+
+        this.commentModel.aggregate([
+          {
+            $group: {
+              _id: "$user",
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { count: -1 } },
+          { $limit: 5 },
+          {
+            $lookup: {
+              from: "users",
+              localField: "_id",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          { $unwind: "$user" },
+          {
+            $project: {
+              id: "$user._id",
+              name: "$user.name",
+              slug: "$user.slug",
+              count: 1,
+            },
+          },
+        ]),
+
+        this.commentModel.aggregate([
+          {
+            $group: {
+              _id: "$video",
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { count: -1 } },
+          { $limit: 5 },
+          {
+            $lookup: {
+              from: "videos",
+              localField: "_id",
+              foreignField: "_id",
+              as: "video",
+            },
+          },
+          { $unwind: "$video" },
+          {
+            $project: {
+              id: "$video._id",
+              title: "$video.title",
+              slug: "$video.slug",
+              count: 1,
+            },
+          },
+        ]),
+      ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Comments analytics retrieved successfully",
+      data: {
+        totalCount,
+        statusDistribution,
+        topCommenters,
+        mostCommentedVideos,
+      },
     };
   }
 }
