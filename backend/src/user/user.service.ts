@@ -257,4 +257,90 @@ export class UserService {
       data: null,
     };
   }
+
+  async getUsersStats() {
+    const users = await this.userModel.aggregate([
+      {
+        $match: {
+          status: { $ne: "deleted" },
+        },
+      },
+      {
+        $lookup: {
+          from: "videos",
+          localField: "_id",
+          foreignField: "owner",
+          as: "videos",
+        },
+      },
+      {
+        $lookup: {
+          from: "playlists",
+          localField: "_id",
+          foreignField: "user",
+          as: "playlists",
+        },
+      },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "_id",
+          foreignField: "user",
+          as: "channelData",
+        },
+      },
+      {
+        $unwind: {
+          path: "$channelData",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "channels",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ["$$userId", "$channels"],
+                },
+              },
+            },
+          ],
+          as: "subscribers",
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          email: 1,
+          username: 1,
+          status: 1,
+          slug: 1,
+          totalVideos: { $size: "$videos" },
+          totalPlaylists: { $size: "$playlists" },
+          totalSubscribedChannels: {
+            $cond: {
+              if: { $isArray: "$channelData.channels" },
+              then: { $size: "$channelData.channels" },
+              else: 0,
+            },
+          },
+          totalSubscribers: { $size: "$subscribers" },
+          createdAt: 1,
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `User analytics retrieved successfully!`,
+      data: users,
+    };
+  }
 }

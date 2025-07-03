@@ -21,6 +21,10 @@ export class AdminController {
   async findAll(@Query() query: QueryUserDto) {
     return this.userService.findAll(query);
   }
+  @Get("stats")
+  async getUsersStats() {
+    return this.userService.getUsersStats();
+  }
 
   @Get(":id")
   async findOne(@Param("id") id: Types.ObjectId) {
