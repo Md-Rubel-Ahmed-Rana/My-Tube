@@ -19,7 +19,7 @@ const AdminDashboardHeader = () => {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
+        <SidebarTrigger className="-ml-1  text-gray-800 dark:text-gray-200" />
         <Separator
           orientation="vertical"
           className="mr-2 data-[orientation=vertical]:h-4"
@@ -27,9 +27,14 @@ const AdminDashboardHeader = () => {
         <Breadcrumb>
           <BreadcrumbList>
             {crumbs.map((label, index) => (
-              <BreadcrumbItem key={index} className="flex">
+              <BreadcrumbItem
+                key={index}
+                className="flex text-gray-800 dark:text-gray-200"
+              >
                 {index === crumbs.length - 1 ? (
-                  <BreadcrumbPage>{label}</BreadcrumbPage>
+                  <BreadcrumbPage className="text-gray-800 dark:text-gray-200">
+                    {label}
+                  </BreadcrumbPage>
                 ) : (
                   <>
                     <BreadcrumbLink href={pathname}>{label}</BreadcrumbLink>
