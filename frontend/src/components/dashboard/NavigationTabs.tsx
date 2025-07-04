@@ -12,7 +12,7 @@ const NavigationTabs = () => {
     pathname === path ? "!bg-blue-600 !text-white !hover:bg-blue-700" : "";
 
   return (
-    <div className="px-2 py-2 lg:px-4 flex items-center flex-wrap gap-2">
+    <div className="px-2 pt-3 lg:px-4 flex items-center flex-wrap gap-2">
       <Link href="/dashboard/videos">
         <Button className={isActive("/dashboard/videos")}>Videos</Button>
       </Link>

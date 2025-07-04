@@ -6,10 +6,13 @@ import { Button } from "../../ui/button";
 import { Plus } from "lucide-react";
 import { useGetVideosByOwnerQuery } from "@/features/videos";
 import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const MyVideos = () => {
   const { data, isLoading } = useGetVideosByOwnerQuery();
   const videos = (data?.data || []) as IVideo[];
+  const { open } = useSidebar();
+
   return (
     <div className="p-2 lg:p-4">
       {isLoading ? (
@@ -34,7 +37,11 @@ const MyVideos = () => {
               </div>
             </NoDataFound>
           ) : (
-            <div className="grid grid-cols-1 gap-2">
+            <div
+              className={`grid grid-cols-1 ${
+                !open ? " lg:grid-cols-2" : ""
+              } gap-2`}
+            >
               {videos.map((video) => (
                 <MyVideoCard video={video} key={video?.id} />
               ))}

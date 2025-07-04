@@ -41,7 +41,7 @@ const LoginForm = () => {
       },
       {
         isRedirect: true,
-        path: redirectSource || "/dashboard/videos",
+        path: redirectSource || "/dashboard",
         router,
       }
     );
