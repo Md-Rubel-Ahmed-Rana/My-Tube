@@ -1,12 +1,11 @@
 import SEOHead from "@/components/common/SEOHead";
 import UserDashboardLayout from "@/components/dashboard/UserDashboardLayout";
 import MyVideos from "@/components/dashboard/videos/MyVideos";
-import isAuthenticate from "@/middleware/ProtectRoute";
 
-const MyVideosPage = () => {
+const DashboardPage = () => {
   return (
     <>
-      <SEOHead title="My Videos - MyTube" />
+      <SEOHead title="Dashboard" />
       <UserDashboardLayout>
         <MyVideos />
       </UserDashboardLayout>
@@ -14,4 +13,5 @@ const MyVideosPage = () => {
   );
 };
 
-export default isAuthenticate(MyVideosPage);
+// export default isAuthenticate(DashboardPage);
+export default DashboardPage;
