@@ -53,7 +53,7 @@ const AdminLoginForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleLogin)}
-        className="space-y-6 w-full text-gray-700 dark:text-gray-200"
+        className="space-y-6 w-full text-gray-700 border px-5 py-10 rounded-2xl dark:text-gray-200"
       >
         {/* Logo or Brand */}
         <div className="text-center space-y-1">
