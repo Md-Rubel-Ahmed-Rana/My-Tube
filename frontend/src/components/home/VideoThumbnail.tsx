@@ -8,6 +8,8 @@ import "@vidstack/react/player/styles/default/theme.css";
 import "@vidstack/react/player/styles/default/layouts/video.css";
 import { useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import { useEffect, useRef } from "react";
+import type { MediaPlayerInstance } from "@vidstack/react";
 import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
@@ -18,6 +20,7 @@ type Props = {
 const VideoThumbnail = ({ video, isInView }: Props) => {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(video.duration);
 
   const [mute, setMute] = useState(true);
 
@@ -36,6 +39,25 @@ const VideoThumbnail = ({ video, isInView }: Props) => {
 
   const shouldPlay = isMobile ? isInView : isHovered;
 
+  const playerRef = useRef<MediaPlayerInstance>(null);
+
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    const handleTimeUpdate = () => {
+      const current = player.currentTime;
+      const total = player.duration;
+      setRemainingTime(Math.max(0, total - current));
+    };
+
+    player.addEventListener("time-update", handleTimeUpdate);
+
+    return () => {
+      player.removeEventListener("time-update", handleTimeUpdate);
+    };
+  }, [shouldPlay]);
+
   return (
     <div
       onClick={handleNavigate}
@@ -53,13 +75,14 @@ const VideoThumbnail = ({ video, isInView }: Props) => {
       />
 
       {/* Duration Tag */}
-      <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md z-10">
-        {formatDuration(video.duration)}
+      <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md z-50">
+        {formatDuration(shouldPlay ? remainingTime : video.duration)}
       </span>
 
       {shouldPlay && (
         <div className="absolute inset-0 z-20 pointer-events-none">
           <MediaPlayer
+            ref={playerRef}
             src={video.videoUrl}
             autoPlay
             muted={mute}
