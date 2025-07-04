@@ -10,6 +10,7 @@ import SaveToPlaylistModal from "../playlist-videos/SaveToPlaylistModal";
 import { useState } from "react";
 import { IVideo } from "@/types/video.type";
 import ShareVideo from "../video/ShareVideo";
+import WatchLaterAction from "./WatchLaterAction";
 
 type Props = {
   video: IVideo;
@@ -38,6 +39,7 @@ const VideoActions = ({ video }: Props) => {
           align="end"
           className="w-48 bg-gray-200 dark:bg-gray-700"
         >
+          <WatchLaterAction />
           <DropdownMenuItem
             className="cursor-pointer mb-2 bg-gray-200 dark:bg-gray-700 w-full hover:bg-gray-300 dark:hover:bg-gray-600"
             onClick={(e) => {

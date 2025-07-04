@@ -11,24 +11,22 @@ import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useAddNewCommentMutation } from "@/features/comment";
-import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  user: string;
+  userId: string;
+  videoId: string;
 };
 
-const AddCommentModal = ({ open, setOpen, user }: Props) => {
-  const { query } = useRouter();
-  const id = query?.id as string;
+const AddCommentModal = ({ open, setOpen, userId, videoId }: Props) => {
   const [text, setText] = useState("");
   const [addComment, { isLoading }] = useAddNewCommentMutation();
 
   const handleSubmit = async () => {
     await handleApiMutation(
       addComment,
-      { comment: { text, video: id, user } },
+      { comment: { text, video: videoId, user: userId } },
       201,
       {
         error: "Failed to add comment",
