@@ -5,7 +5,10 @@ export type IUser = {
   username: string;
   slug: string;
   subscriptions: number;
+  subscribers: number;
+  subscribed: number;
   photo: string;
+  coverImage: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
