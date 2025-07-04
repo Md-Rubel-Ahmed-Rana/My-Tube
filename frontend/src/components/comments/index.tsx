@@ -30,7 +30,7 @@ const Comments = () => {
           {comments?.length <= 0 ? (
             <NoCommentFound />
           ) : (
-            <CommentContainer comments={comments} />
+            <CommentContainer comments={comments} videoId={video?.id} />
           )}
         </div>
       )}

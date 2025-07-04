@@ -7,9 +7,10 @@ import AddCommentModal from "./AddCommentModal";
 
 type Props = {
   buttonSize?: "xs" | "default" | "sm" | "lg";
+  videoId: string;
 };
 
-const AddCommentButton = ({ buttonSize = "default" }: Props) => {
+const AddCommentButton = ({ buttonSize = "default", videoId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notLoggedIn, setNotLoggedIn] = useState(false);
   const { data } = useGetLoggedInUserQuery({});
@@ -45,7 +46,8 @@ const AddCommentButton = ({ buttonSize = "default" }: Props) => {
         <AddCommentModal
           open={isOpen}
           setOpen={setIsOpen}
-          user={currentUser?.id}
+          userId={currentUser?.id}
+          videoId={videoId}
         />
       )}
     </>
