@@ -2,7 +2,11 @@ import { MessageSquareOff } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import AddCommentButton from "./AddCommentButton";
 
-const NoCommentFound = () => {
+type Props = {
+  videoId: string;
+};
+
+const NoCommentFound = ({ videoId }: Props) => {
   return (
     <Card className="w-full text-center py-8 bg-gray-300 dark:bg-gray-700 mb-20">
       <CardContent className="flex flex-col items-center gap-4">
@@ -11,7 +15,7 @@ const NoCommentFound = () => {
         <p className="text-sm text-muted-foreground">
           Be the first one to share your thoughts!
         </p>
-        <AddCommentButton />
+        <AddCommentButton videoId={videoId} />
       </CardContent>
     </Card>
   );
