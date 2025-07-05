@@ -39,7 +39,8 @@ const VideoActions = ({ video }: Props) => {
           align="end"
           className="w-48 bg-gray-200 dark:bg-gray-700"
         >
-          <WatchLaterAction />
+          <WatchLaterAction videoId={video?.id} />
+
           <DropdownMenuItem
             className="cursor-pointer mb-2 bg-gray-200 dark:bg-gray-700 w-full hover:bg-gray-300 dark:hover:bg-gray-600"
             onClick={(e) => {
