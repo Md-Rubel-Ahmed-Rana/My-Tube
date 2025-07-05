@@ -100,29 +100,141 @@ export class UserService {
       throw new NotFoundException("User id not found");
     }
 
-    const user: any = await this.userModel.findById(id, "-password");
-    const subscriptions = await this.channelService.getTotalSubscriptions(
-      user?.id || user?._id
-    );
+    const user = await this.userModel.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "_id",
+          foreignField: "user",
+          as: "subscribedInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribed: {
+            $cond: [
+              { $gt: [{ $size: "$subscribedInfo" }, 0] },
+              { $size: { $first: "$subscribedInfo.channels" } },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "channels",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$$userId", "$channels"] },
+              },
+            },
+          ],
+          as: "subscriberInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribers: { $size: "$subscriberInfo" },
+        },
+      },
+
+      {
+        $project: {
+          id: { $toString: "$_id" },
+          name: 1,
+          username: 1,
+          slug: 1,
+          subscribers: 1,
+          subscribed: 1,
+          photo: 1,
+          coverImage: 1,
+          email: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    if (!user || user.length === 0) {
+      throw new NotFoundException("User not found");
+    }
 
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
+      data: user[0],
     };
   }
 
   async findBySlug(slug: string) {
-    const user: any = await this.userModel.findOne({ slug }, "-password");
-    const subscriptions = await this.channelService.getTotalSubscriptions(
-      user?.id || user?._id
-    );
+    const user = await this.userModel.aggregate([
+      { $match: { slug } },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "_id",
+          foreignField: "user",
+          as: "subscribedInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribed: {
+            $cond: [
+              { $gt: [{ $size: "$subscribedInfo" }, 0] },
+              { $size: { $first: "$subscribedInfo.channels" } },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "channels",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$$userId", "$channels"] },
+              },
+            },
+          ],
+          as: "subscriberInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribers: { $size: "$subscriberInfo" },
+        },
+      },
+
+      {
+        $project: {
+          id: { $toString: "$_id" },
+          name: 1,
+          username: 1,
+          slug: 1,
+          subscribers: 1,
+          subscribed: 1,
+          photo: 1,
+          coverImage: 1,
+          email: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
+      data: user,
     };
   }
 

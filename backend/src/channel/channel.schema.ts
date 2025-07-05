@@ -5,6 +5,7 @@ export type ChannelDocument = HydratedDocument<Channel>;
 
 @Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
 export class Channel {
+  // who subscribed
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: "User",
@@ -13,6 +14,7 @@ export class Channel {
   })
   user: Types.ObjectId;
 
+  // whose subscribed
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: "User", default: [] })
   channels: Types.ObjectId[];
 }
