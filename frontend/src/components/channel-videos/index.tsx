@@ -1,29 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetChannelVideosQuery } from "@/features/videos";
 import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 import { IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
-import ChannelInfo from "./ChannelInfo";
 import VideoCard from "../home/VideoCard";
 import { useGetUserBySlugQuery } from "@/features/user";
 import { IUser } from "@/types/user.type";
+import ChannelCoverImage from "./ChannelCoverImage";
+import UserChannel from "./UserChannel";
 
 const ChannelVideos = () => {
   const { query } = useRouter();
   const slug = query?.slug as string;
-  const { data: userData, isLoading: isChannelLoading } = useGetUserBySlugQuery(
-    { slug }
-  );
-  const user = userData?.data as IUser;
-  const { data, isLoading } = useGetChannelVideosQuery({ channelId: user?.id });
+  const { data: userData, isLoading: isChannelLoading }: any =
+    useGetUserBySlugQuery({ slug });
+  const user = (userData?.data[0] || userData?.data) as IUser;
+  const { data, isLoading } = useGetChannelVideosQuery({
+    channelId: user?.id || user?._id,
+  });
   const videos = (data?.data || []) as IVideo[];
 
   return (
     <div className="p-2 lg:p-4 flex flex-col gap-3">
-      <ChannelInfo
-        totalVideos={videos?.length || 0}
-        channel={user}
-        isLoading={isChannelLoading}
-      />
+      <ChannelCoverImage user={user} isLoading={isChannelLoading} />
+      <UserChannel user={user} isLoading={isChannelLoading} />
       {isLoading ? (
         <VideoLoadingSkeleton />
       ) : (

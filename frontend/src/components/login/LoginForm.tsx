@@ -41,10 +41,17 @@ const LoginForm = () => {
       },
       {
         isRedirect: true,
-        path: redirectSource || "/dashboard/videos",
+        path: redirectSource || "/dashboard",
         router,
       }
     );
+  };
+
+  const handleAutoLogin = () => {
+    handleLogin({
+      email: process.env.NEXT_PUBLIC_NEXT_USER_EMAIL as string,
+      password: process.env.NEXT_PUBLIC_NEXT_USER_PASS as string,
+    });
   };
 
   return (
@@ -53,8 +60,20 @@ const LoginForm = () => {
         onSubmit={form.handleSubmit(handleLogin)}
         className="space-y-4 px-3 py-5 rounded-lg border w-full"
       >
-        <div className="text-center text-lg">
-          <h1>Welcome Back!</h1>
+        <div className="flex flex-col gap-2 justify-center items-center">
+          <h1 className="text-center text-lg">Welcome Back!</h1>
+          <span className="text-xs text-center w-10/12">
+            Please ensure that third-party cookies are enabled in your browser
+            to log in successfully.
+          </span>
+          <Button
+            onClick={handleAutoLogin}
+            disabled={isLoading}
+            type="button"
+            size={"xs"}
+          >
+            Auto Login
+          </Button>
         </div>
         <FormField
           control={form.control}

@@ -20,6 +20,14 @@ const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["user"],
     }),
+    updateCoverImage: builder.mutation({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
+        method: "PATCH",
+        url: `user/${id}/cover-image`,
+        body: formData,
+      }),
+      invalidatesTags: ["user"],
+    }),
     getUserById: builder.query<IApiResponse<IUser>, { id: string }>({
       query: ({ id }) => ({
         url: `user/${id}`,
@@ -32,6 +40,18 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    getUserActivities: builder.query({
+      query: () => ({
+        url: `user-activity`,
+      }),
+      providesTags: ["user"],
+    }),
+    getUserWatchHistory: builder.query({
+      query: () => ({
+        url: `user-activity/watch-history`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -40,4 +60,7 @@ export const {
   useUpdateProfileImageMutation,
   useGetUserByIdQuery,
   useGetUserBySlugQuery,
+  useUpdateCoverImageMutation,
+  useGetUserActivitiesQuery,
+  useGetUserWatchHistoryQuery,
 } = userApi;
