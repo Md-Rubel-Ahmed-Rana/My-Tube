@@ -14,7 +14,11 @@ const NavigationTabs = () => {
   return (
     <div className="px-2 pt-3 lg:px-4 flex items-center flex-wrap gap-2">
       <Link href="/dashboard/videos">
-        <Button className={isActive("/dashboard/videos")}>Videos</Button>
+        <Button
+          className={isActive("/dashboard/videos") || isActive("/dashboard")}
+        >
+          Videos
+        </Button>
       </Link>
       <Link href="/dashboard/playlists">
         <Button className={isActive("/dashboard/playlists")}>Playlists</Button>

@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useUpdateProfileImageMutation } from "@/features/user";
+import { useUpdateCoverImageMutation } from "@/features/user";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 
 type Props = {
@@ -21,7 +21,7 @@ type Props = {
 };
 
 const UpdateCoverImageModal = ({ id, open, setOpen }: Props) => {
-  const [updateProfileImage, { isLoading }] = useUpdateProfileImageMutation();
+  const [updateCoverImage, { isLoading }] = useUpdateCoverImageMutation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -37,11 +37,11 @@ const UpdateCoverImageModal = ({ id, open, setOpen }: Props) => {
     if (!selectedFile) return;
 
     const formData = new FormData();
-    formData.append("photo", selectedFile);
+    formData.append("coverImage", selectedFile);
 
-    await handleApiMutation(updateProfileImage, { id, formData }, 200, {
-      success: "✅ Profile image updated successfully!",
-      error: "❌ Failed to update profile image.",
+    await handleApiMutation(updateCoverImage, { id, formData }, 200, {
+      success: "✅ Cover image updated successfully!",
+      error: "❌ Failed to update Cover image.",
     });
     setOpen(false);
   };
