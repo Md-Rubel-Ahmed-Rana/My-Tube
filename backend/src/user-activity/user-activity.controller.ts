@@ -11,4 +11,10 @@ export class UserActivityController {
   findActivityForAUser(@Req() req: { user: { id: string } }) {
     return this.userActivityService.findActivityForAUser(req?.user?.id);
   }
+
+  @UseGuards(AuthGuard)
+  @Get("watch-history")
+  getUserWatchHistory(@Req() req: { user: { id: string } }) {
+    return this.userActivityService.getUserWatchHistory(req?.user?.id);
+  }
 }
