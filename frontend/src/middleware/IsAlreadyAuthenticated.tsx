@@ -14,7 +14,7 @@ const IsAlreadyAuthenticated = (WrappedComponent: any) => {
 
     useEffect(() => {
       if (!isLoading && user) {
-        router.push("/dashboard/videos");
+        router.push("/dashboard");
       }
     }, [isLoading, user, router]);
 

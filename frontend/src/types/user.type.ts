@@ -13,3 +13,18 @@ export type IUser = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+type WatchTrendEntry = {
+  date: string;
+  minutes: number;
+};
+
+export type IUserActivityStats = {
+  commentsMade: number;
+  likesGiven: number;
+  minutesWatched: number;
+  subscribers: number;
+  videosUploaded: number;
+  videosWatched: number;
+  watchTrend: WatchTrendEntry[];
+};
