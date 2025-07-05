@@ -15,6 +15,7 @@ import { ChannelModule } from "./channel/channel.module";
 import { AdminModule } from "./admin/admin.module";
 import { UserActivityModule } from "./user-activity/user-activity.module";
 import { CoreModule } from "./core/core.module";
+import { WatchLaterModule } from './watch-later/watch-later.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CoreModule } from "./core/core.module";
     ChannelModule,
     AdminModule,
     UserActivityModule,
+    WatchLaterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
