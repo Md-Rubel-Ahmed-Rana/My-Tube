@@ -13,6 +13,7 @@ import { CommentModule } from './comment/comment.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { ChannelModule } from './channel/channel.module';
 import { AdminModule } from './admin/admin.module';
+import { UserActivityModule } from './user-activity/user-activity.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AdminModule } from './admin/admin.module';
     PlaylistModule,
     ChannelModule,
     AdminModule,
+    UserActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
