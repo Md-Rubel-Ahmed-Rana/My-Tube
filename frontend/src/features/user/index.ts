@@ -40,6 +40,12 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    getUserActivities: builder.query({
+      query: () => ({
+        url: `user-activity`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -49,4 +55,5 @@ export const {
   useGetUserByIdQuery,
   useGetUserBySlugQuery,
   useUpdateCoverImageMutation,
+  useGetUserActivitiesQuery,
 } = userApi;

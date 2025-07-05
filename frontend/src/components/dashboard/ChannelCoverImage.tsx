@@ -25,7 +25,7 @@ const ChannelCoverImage = ({
   return (
     <>
       {isLoading ? (
-        <Skeleton className="h-[60vh] w-full bg-gray-700 rounded-none" />
+        <Skeleton className="h-[60vh] w-full bg-gray-300 dark:bg-gray-700 rounded-none" />
       ) : (
         <div className="h-[60vh] w-full relative">
           <img
