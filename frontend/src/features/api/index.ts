@@ -16,6 +16,7 @@ const apiSlice = createApi({
     "playlist",
     "channel",
     "admin",
+    "watch-later",
   ],
   endpoints: () => ({}),
 });
