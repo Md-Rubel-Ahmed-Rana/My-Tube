@@ -64,35 +64,17 @@ const NavDropdown = () => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="flex flex-col items-center">
-          <Link
-            href={`/profile/${user.slug || user.username}?name=${user.name}`}
-            className="w-full"
-          >
+          <Link href={`/dashboard`} className="w-full">
             <DropdownMenuItem className="w-full cursor-pointer">
-              Profile
+              Dashboard
             </DropdownMenuItem>
           </Link>
-
           <Link href="/dashboard/videos" className="w-full">
-            <DropdownMenuItem className="w-full cursor-pointer">
+            <DropdownMenuItem className="w-full mb-2 cursor-pointer">
               My Videos
             </DropdownMenuItem>
           </Link>
-
-          <Link href="/dashboard/playlists" className="w-full">
-            <DropdownMenuItem className="w-full cursor-pointer">
-              My Playlists
-            </DropdownMenuItem>
-          </Link>
-
-          <Link href="/video/upload" className="w-full">
-            <DropdownMenuItem className="w-full cursor-pointer">
-              Upload Video
-            </DropdownMenuItem>
-          </Link>
-
           <LogoutButton />
-
           <DropdownMenuItem className="w-full block lg:hidden">
             <ModeToggle />
           </DropdownMenuItem>
