@@ -13,9 +13,11 @@ import { VideoUpdateElastic } from "./video-update.elastic.event";
 import { PlaylistService } from "src/playlist/playlist.service";
 import { PlaylistModule } from "src/playlist/playlist.module";
 import { NewVideoUploadPlaylist } from "./new-video-upload.playlist.event";
+import { UserActivityEventService } from "./user-activity.event";
+import { UserActivityModule } from "src/user-activity/user-activity.module";
 
 @Module({
-  imports: [VideoModule, PlaylistModule],
+  imports: [VideoModule, PlaylistModule, UserActivityModule],
   providers: [
     VideoDeleteCloudinary,
     ConfigService,
@@ -28,6 +30,7 @@ import { NewVideoUploadPlaylist } from "./new-video-upload.playlist.event";
     VideoUpdateElastic,
     PlaylistService,
     NewVideoUploadPlaylist,
+    UserActivityEventService,
   ],
 })
 export class EventModule {}

@@ -15,6 +15,16 @@ import { AuthGuard } from "src/auth/auth.guard";
 export class ChannelController {
   constructor(private readonly channelService: ChannelService) {}
 
+  @Get()
+  findAll() {
+    return this.channelService.findAll();
+  }
+
+  @Get("top")
+  getTopChannels() {
+    return this.channelService.getTopChannels();
+  }
+
   @Patch("subscribe")
   @UseGuards(AuthGuard)
   subscribe(
@@ -52,10 +62,5 @@ export class ChannelController {
     @Param("channelId") channelId: string
   ) {
     return this.channelService.isSubscribed(req?.user?.id, channelId);
-  }
-
-  @Get()
-  findAll() {
-    return this.channelService.findAll();
   }
 }

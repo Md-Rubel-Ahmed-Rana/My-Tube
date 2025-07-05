@@ -19,9 +19,9 @@ import { generateUsername } from "src/utils/generateUsername";
 import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
 import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
-import { UpdateUserStatusDto } from "./dto/update-user-status.dto";
 import { UserStatus } from "./enums";
 import { QueryUserDto } from "./dto/query-user.dto";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class UserService {
@@ -29,7 +29,8 @@ export class UserService {
     private config: ConfigService,
     private channelService: ChannelService,
     @InjectModel(User.name) private userModel: Model<User>,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
+    private readonly emitter: TypedEventEmitter
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -47,7 +48,11 @@ export class UserService {
       createUserDto.username
     );
 
-    await this.userModel.create(createUserDto);
+    const user: any = await this.userModel.create(createUserDto);
+
+    // fire event to initiate user activity
+    this.emitter.emit("user-activity.created", user._id as string);
+
     return {
       statusCode: HttpStatus.CREATED,
       success: true,
@@ -95,29 +100,141 @@ export class UserService {
       throw new NotFoundException("User id not found");
     }
 
-    const user: any = await this.userModel.findById(id, "-password");
-    const subscriptions = await this.channelService.getTotalSubscriptions(
-      user?.id || user?._id
-    );
+    const user = await this.userModel.aggregate([
+      { $match: { _id: new Types.ObjectId(id) } },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "_id",
+          foreignField: "user",
+          as: "subscribedInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribed: {
+            $cond: [
+              { $gt: [{ $size: "$subscribedInfo" }, 0] },
+              { $size: { $first: "$subscribedInfo.channels" } },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "channels",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$$userId", "$channels"] },
+              },
+            },
+          ],
+          as: "subscriberInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribers: { $size: "$subscriberInfo" },
+        },
+      },
+
+      {
+        $project: {
+          id: { $toString: "$_id" },
+          name: 1,
+          username: 1,
+          slug: 1,
+          subscribers: 1,
+          subscribed: 1,
+          photo: 1,
+          coverImage: 1,
+          email: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
+
+    if (!user || user.length === 0) {
+      throw new NotFoundException("User not found");
+    }
 
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
+      data: user[0],
     };
   }
 
   async findBySlug(slug: string) {
-    const user: any = await this.userModel.findOne({ slug }, "-password");
-    const subscriptions = await this.channelService.getTotalSubscriptions(
-      user?.id || user?._id
-    );
+    const user = await this.userModel.aggregate([
+      { $match: { slug } },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "_id",
+          foreignField: "user",
+          as: "subscribedInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribed: {
+            $cond: [
+              { $gt: [{ $size: "$subscribedInfo" }, 0] },
+              { $size: { $first: "$subscribedInfo.channels" } },
+              0,
+            ],
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "channels",
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$$userId", "$channels"] },
+              },
+            },
+          ],
+          as: "subscriberInfo",
+        },
+      },
+      {
+        $addFields: {
+          subscribers: { $size: "$subscriberInfo" },
+        },
+      },
+
+      {
+        $project: {
+          id: { $toString: "$_id" },
+          name: 1,
+          username: 1,
+          slug: 1,
+          subscribers: 1,
+          subscribed: 1,
+          photo: 1,
+          coverImage: 1,
+          email: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+    ]);
     return {
       statusCode: HttpStatus.OK,
       success: true,
       message: "User fetched successfully!",
-      data: { ...user._doc, subscriptions, id: user?.id || user?._id },
+      data: user,
     };
   }
 
@@ -214,6 +331,61 @@ export class UserService {
             reject(
               new HttpException(
                 "Failed to update user photo",
+                HttpStatus.INTERNAL_SERVER_ERROR
+              )
+            );
+          }
+        }
+      );
+
+      const readableStream = Readable.from(file.buffer);
+      readableStream.pipe(uploadStream);
+    });
+  }
+  async updateCoverImage(id: Types.ObjectId, file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+          folder: "my-tube/cover-images",
+        },
+        async (error, result) => {
+          if (error) return reject(error);
+
+          try {
+            const user = await this.userModel.findById(id);
+            if (!user) {
+              throw new HttpException(
+                "User was not found!",
+                HttpStatus.NOT_FOUND
+              );
+            }
+            await this.userModel.findByIdAndUpdate(id, {
+              $set: { coverImage: result?.secure_url },
+            });
+
+            if (user?.coverImage) {
+              const publicId = extractPublicId(user.coverImage);
+
+              if (publicId) {
+                this.eventEmitter.emit("user-cover-image.deleted", publicId);
+              }
+            }
+
+            resolve({
+              statusCode: HttpStatus.OK,
+              success: true,
+              message: "Your channel cover image updated successfully",
+              data: null,
+            });
+          } catch (dbError) {
+            reject(
+              new HttpException(
+                "Failed to update cover image",
                 HttpStatus.INTERNAL_SERVER_ERROR
               )
             );

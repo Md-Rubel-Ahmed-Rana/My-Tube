@@ -1,11 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Schema as MongooseSchema, Types } from "mongoose";
 
-export type ChannelDocument = HydratedDocument<Channel>;
+export type WatchLaterDocument = HydratedDocument<WatchLater>;
 
 @Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
-export class Channel {
-  // who subscribed
+export class WatchLater {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: "User",
@@ -14,9 +13,8 @@ export class Channel {
   })
   user: Types.ObjectId;
 
-  // whose subscribed
-  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: "User", default: [] })
-  channels: Types.ObjectId[];
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: "Video", default: null })
+  video: Types.ObjectId;
 }
 
-export const ChannelSchema = SchemaFactory.createForClass(Channel);
+export const WatchLaterSchema = SchemaFactory.createForClass(WatchLater);

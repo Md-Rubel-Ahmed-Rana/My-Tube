@@ -4,11 +4,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
 import { Model, Types } from "mongoose";
 import { QueryChannelDto } from "./dto/query-channel.dto";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class ChannelService {
   constructor(
-    @InjectModel(Channel.name) private channelModel: Model<Channel>
+    @InjectModel(Channel.name) private channelModel: Model<Channel>,
+    private readonly emitter: TypedEventEmitter
   ) {}
 
   async subscribe(data: CreateChannelDto) {
@@ -25,6 +27,13 @@ export class ChannelService {
       });
     }
 
+    // fire event to increase subscribers on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: data?.channel,
+      type: "subscribed",
+      action: "increase",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -38,6 +47,14 @@ export class ChannelService {
       { user: data.user },
       { $pull: { channels: data.channel } }
     );
+
+    // fire event to increase subscribers on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: data?.channel,
+      type: "subscribed",
+      action: "decrease",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -231,6 +248,97 @@ export class ChannelService {
         totalSubscribers: totalSubscribers[0]?.total || 0,
         topChannels,
       },
+    };
+  }
+
+  async getTopChannels() {
+    const topChannels = await this.channelModel.aggregate([
+      { $unwind: "$channels" },
+      {
+        $group: {
+          _id: "$channels",
+          subscriberCount: { $sum: 1 },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "videos",
+          localField: "_id",
+          foreignField: "owner",
+          as: "videos",
+        },
+      },
+      {
+        $addFields: {
+          videoCount: { $size: "$videos" },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "comments",
+          let: { videoIds: "$videos._id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$video", "$$videoIds"] },
+              },
+            },
+          ],
+          as: "comments",
+        },
+      },
+      {
+        $addFields: {
+          commentCount: { $size: "$comments" },
+        },
+      },
+      {
+        $addFields: {
+          score: {
+            $add: [
+              "$subscriberCount",
+              { $multiply: ["$videoCount", 2] },
+              { $multiply: ["$commentCount", 0.5] },
+            ],
+          },
+        },
+      },
+
+      { $sort: { score: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          username: "$user.username",
+          email: "$user.email",
+          name: "$user.name",
+          photo: "$user.photo",
+          slug: "$user.slug",
+          subscriberCount: 1,
+          videoCount: 1,
+          commentCount: 1,
+          score: 1,
+        },
+      },
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `Top channels retrieved  successfully`,
+      data: topChannels,
     };
   }
 }

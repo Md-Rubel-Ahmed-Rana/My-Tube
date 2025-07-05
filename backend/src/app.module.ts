@@ -8,14 +8,18 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { EventModule } from "./events/event.module";
-import { ElasticSearchModule } from './elastic-search/elastic-search.module';
-import { CommentModule } from './comment/comment.module';
-import { PlaylistModule } from './playlist/playlist.module';
-import { ChannelModule } from './channel/channel.module';
-import { AdminModule } from './admin/admin.module';
+import { ElasticSearchModule } from "./elastic-search/elastic-search.module";
+import { CommentModule } from "./comment/comment.module";
+import { PlaylistModule } from "./playlist/playlist.module";
+import { ChannelModule } from "./channel/channel.module";
+import { AdminModule } from "./admin/admin.module";
+import { UserActivityModule } from "./user-activity/user-activity.module";
+import { CoreModule } from "./core/core.module";
+import { WatchLaterModule } from './watch-later/watch-later.module';
 
 @Module({
   imports: [
+    CoreModule,
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot(),
     MongooseModule.forRootAsync({
@@ -43,6 +47,8 @@ import { AdminModule } from './admin/admin.module';
     PlaylistModule,
     ChannelModule,
     AdminModule,
+    UserActivityModule,
+    WatchLaterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
