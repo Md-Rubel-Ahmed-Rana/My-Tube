@@ -19,9 +19,9 @@ import { generateUsername } from "src/utils/generateUsername";
 import { GoogleLoginDto } from "src/auth/dto/google-login.dto";
 import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
-import { UpdateUserStatusDto } from "./dto/update-user-status.dto";
 import { UserStatus } from "./enums";
 import { QueryUserDto } from "./dto/query-user.dto";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class UserService {
@@ -29,7 +29,8 @@ export class UserService {
     private config: ConfigService,
     private channelService: ChannelService,
     @InjectModel(User.name) private userModel: Model<User>,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
+    private readonly emitter: TypedEventEmitter
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -47,7 +48,11 @@ export class UserService {
       createUserDto.username
     );
 
-    await this.userModel.create(createUserDto);
+    const user: any = await this.userModel.create(createUserDto);
+
+    // fire event to initiate user activity
+    this.emitter.emit("user-activity.created", user._id as string);
+
     return {
       statusCode: HttpStatus.CREATED,
       success: true,

@@ -4,11 +4,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Channel } from "./channel.schema";
 import { Model, Types } from "mongoose";
 import { QueryChannelDto } from "./dto/query-channel.dto";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class ChannelService {
   constructor(
-    @InjectModel(Channel.name) private channelModel: Model<Channel>
+    @InjectModel(Channel.name) private channelModel: Model<Channel>,
+    private readonly emitter: TypedEventEmitter
   ) {}
 
   async subscribe(data: CreateChannelDto) {
@@ -25,6 +27,13 @@ export class ChannelService {
       });
     }
 
+    // fire event to increase subscribers on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: data?.channel,
+      type: "subscribed",
+      action: "increase",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -38,6 +47,14 @@ export class ChannelService {
       { user: data.user },
       { $pull: { channels: data.channel } }
     );
+
+    // fire event to increase subscribers on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: data?.channel,
+      type: "subscribed",
+      action: "decrease",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,

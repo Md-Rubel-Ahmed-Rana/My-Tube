@@ -13,5 +13,6 @@ import { ConfigService } from "@nestjs/config";
   ],
   controllers: [UserActivityController],
   providers: [UserActivityService, ConfigService],
+  exports: [UserActivityService],
 })
 export class UserActivityModule {}

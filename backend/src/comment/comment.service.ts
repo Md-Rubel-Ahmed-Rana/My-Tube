@@ -4,14 +4,24 @@ import { Comment } from "./comment.schema";
 import { Model, Types } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { CommentStatus } from "./enums";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(Comment.name) private commentModel: Model<Comment>
+    @InjectModel(Comment.name) private commentModel: Model<Comment>,
+    private readonly emitter: TypedEventEmitter
   ) {}
   async create(createCommentDto: CreateCommentDto) {
     await this.commentModel.create(createCommentDto);
+
+    // fire event to increase comment on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: createCommentDto.user.toString(),
+      type: "comment",
+      action: "increase",
+    });
+
     return {
       statusCode: HttpStatus.CREATED,
       success: true,
@@ -124,6 +134,13 @@ export class CommentService {
 
   async remove(id: Types.ObjectId) {
     await this.commentModel.findByIdAndDelete(id);
+
+    // fire event to increase comment on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: id.toString(),
+      type: "comment",
+      action: "decrease",
+    });
     return {
       statusCode: HttpStatus.OK,
       success: true,
