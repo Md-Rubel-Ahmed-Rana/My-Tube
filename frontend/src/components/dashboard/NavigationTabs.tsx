@@ -15,24 +15,29 @@ const NavigationTabs = () => {
     <div className="px-2 pt-3 lg:px-4 flex items-center flex-wrap gap-2">
       <Link href="/dashboard/videos">
         <Button
+          size={"sm"}
           className={isActive("/dashboard/videos") || isActive("/dashboard")}
         >
           Videos
         </Button>
       </Link>
       <Link href="/dashboard/playlists">
-        <Button className={isActive("/dashboard/playlists")}>Playlists</Button>
+        <Button size={"sm"} className={isActive("/dashboard/playlists")}>
+          Playlists
+        </Button>
       </Link>
       <Link href="/dashboard/channels">
-        <Button className={isActive("/dashboard/channels")}>Channels</Button>
+        <Button size={"sm"} className={isActive("/dashboard/channels")}>
+          Channels
+        </Button>
       </Link>
       <Link href="/dashboard/watch-later">
-        <Button className={isActive("/dashboard/watch-later")}>
+        <Button size={"sm"} className={isActive("/dashboard/watch-later")}>
           Watch later
         </Button>
       </Link>
       {pathname === "/dashboard/playlists" && (
-        <Button onClick={() => setOpen(true)} variant="outline">
+        <Button size={"sm"} onClick={() => setOpen(true)} variant="outline">
           Create Playlist
         </Button>
       )}

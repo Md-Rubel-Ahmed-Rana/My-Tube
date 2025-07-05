@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Upload,
   Users,
+  Home,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -22,6 +23,7 @@ import { ModeToggle } from "../common/ModeToggle";
 import { useGetUserActivitiesQuery } from "@/features/user";
 import { IUserActivityStats } from "@/types/user.type";
 import UserActivityLoadingSkeleton from "@/skeletons/UserActivityLoading.skeleton";
+import Link from "next/link";
 
 const StatCard = ({ icon: Icon, label, value }: any) => (
   <Card className="flex items-center justify-center bg-gray-200 dark:bg-gray-700 gap-3 px-0 py-1 shadow-sm rounded-xl">
@@ -38,9 +40,12 @@ const UserActivities = () => {
   const activities = response?.data as IUserActivityStats;
   return (
     <div className="space-y-2">
-      <div className="flex justify-between">
-        <h3 className="text-lg font-bold">Your Activity</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-sm font-bold">Your Activity</h3>
         <div className="flex items-center gap-2">
+          <Link href={"/"}>
+            <Home className="h-5 w-5" />
+          </Link>
           <ModeToggle />
           <SidebarTrigger />
         </div>

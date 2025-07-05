@@ -19,12 +19,11 @@ const UserChannel = ({ isLoading, user }: Props) => {
   return (
     <>
       <div className="relative w-full border-b-2">
-        {/* Channel Info */}
-        <div className="px-4 lg:px-10 mt-[-2rem] pb-4 flex flex-col sm:flex-row items-center sm:items-end gap-4">
-          {isLoading ? (
-            <UserChannelSkeleton />
-          ) : (
-            <>
+        {isLoading ? (
+          <UserChannelSkeleton />
+        ) : (
+          <div className="px-4 mt-[-2rem] pb-4 flex flex-col md:flex-row gap-4">
+            <div className="w-full flex flex-col md:flex-row lg:items-end justify-between gap-4">
               {/* Profile Image */}
               <div className="relative">
                 <img
@@ -66,9 +65,9 @@ const UserChannel = ({ isLoading, user }: Props) => {
                   <Button>Upload Video</Button>
                 </Link>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {isNameUpdate && (

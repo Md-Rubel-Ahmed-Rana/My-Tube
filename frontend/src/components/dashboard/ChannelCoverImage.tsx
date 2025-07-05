@@ -43,7 +43,7 @@ const ChannelCoverImage = ({
           {!open && (
             <SidebarTrigger
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="absolute z-50 top-2 left-2"
+              className="absolute z-50 top-2 bg-gray-600 text-white left-2"
             />
           )}
         </div>
