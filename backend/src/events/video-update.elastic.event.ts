@@ -1,5 +1,4 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { OnEvent } from "@nestjs/event-emitter";
 import { CreateElasticSearchDto } from "src/elastic-search/dto/create-elastic-search.dto";
 import { ElasticSearchService } from "src/elastic-search/elastic-search.service";

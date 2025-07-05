@@ -22,6 +22,7 @@ import { Slugify } from "src/utils/slugify";
 import { ChannelService } from "src/channel/channel.service";
 import { GetUserDto } from "src/user/dto/get-user.dto";
 import { VideoStatus } from "./enums";
+import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 
 @Injectable()
 export class VideoService {
@@ -30,7 +31,8 @@ export class VideoService {
     private config: ConfigService,
     private channelService: ChannelService,
     @InjectModel(Video.name) private videoModel: Model<Video>,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
+    private readonly emitter: TypedEventEmitter
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -430,7 +432,7 @@ export class VideoService {
     };
   }
 
-  async findOneBySlug(slug: string) {
+  async findOneBySlug(slug: string, viewer: string) {
     const video: any = await this.videoModel
       .findOne({ slug })
       .populate("owner", "-password");
@@ -438,6 +440,12 @@ export class VideoService {
     const subscriptions = await this.channelService.getTotalSubscriptions(
       video.owner?.id
     );
+
+    // event fire to decrease like on user activity
+    this.emitter.emit("user-activity-watch-history", {
+      userId: viewer,
+      video: { videoId: video._id, duration: video?.duration || 0 },
+    });
 
     return {
       statusCode: HttpStatus.OK,
@@ -544,6 +552,13 @@ export class VideoService {
 
     await video.save();
 
+    // event fire to increase like on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: likerIdStr,
+      type: "like",
+      action: "increase",
+    });
+
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -579,6 +594,13 @@ export class VideoService {
     }
 
     await video.save();
+
+    // event fire to decrease like on user activity
+    this.emitter.emit("user-activity-like-comment-subscribe", {
+      userId: likerIdStr,
+      type: "like",
+      action: "decrease",
+    });
 
     return {
       statusCode: HttpStatus.OK,

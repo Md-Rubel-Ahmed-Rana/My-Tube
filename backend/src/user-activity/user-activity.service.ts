@@ -5,6 +5,7 @@ import { UserActivity } from "./user-activity.schema";
 import { Model, Types } from "mongoose";
 import { orderWatchTrend } from "src/utils/orderWatchTrend";
 import { UpdateWatchHistory } from "./dto/update-watch-history.activity";
+import { calculateVideoDurationToMinutes } from "src/utils/calculateVideoDurationToMinutes";
 
 @Injectable()
 export class UserActivityService {
@@ -14,10 +15,10 @@ export class UserActivityService {
     private userActivityModel: Model<UserActivity>
   ) {}
   // it will perform when user register via event-fire
-  async create(createUserActivityDto: CreateUserActivityDto) {
+  async initiateUserActivity(createUserActivityDto: CreateUserActivityDto) {
     await this.userActivityModel.create(createUserActivityDto);
     this.logger.log(
-      `User activity initiated for '${createUserActivityDto.user}' user`
+      `User activity initiated for user:'${createUserActivityDto.user}'`
     );
   }
 
@@ -122,34 +123,42 @@ export class UserActivityService {
     };
   }
 
+  // it will perform when user register via event-fire
   async performWatchHistory(userId: string, video: UpdateWatchHistory) {
-    const durationInMinutes = calculateVideoDurationToMinutes(video.duration);
-    const videoId = new Types.ObjectId(video.videoId);
-    const watchedAt = new Date();
+    if (userId) {
+      const durationInMinutes = calculateVideoDurationToMinutes(
+        video?.duration || 0
+      );
+      const videoId = new Types.ObjectId(video?.videoId || "");
+      const watchedAt = new Date();
 
-    await this.userActivityModel.updateOne(
-      { user: new Types.ObjectId(userId) },
-      {
-        $push: {
-          watchHistory: {
-            video: videoId,
-            watchedAt,
-            duration: video.duration,
+      await this.userActivityModel.updateOne(
+        { user: new Types.ObjectId(userId) },
+        {
+          $push: {
+            watchHistory: {
+              video: videoId,
+              watchedAt,
+              duration: video.duration,
+            },
+          },
+          $inc: {
+            videosWatched: 1,
+            minutesWatched: durationInMinutes,
           },
         },
-        $inc: {
-          videosWatched: 1,
-          minutesWatched: durationInMinutes,
-        },
-      },
-      { upsert: true }
-    );
+        { upsert: true }
+      );
 
-    this.logger.log(
-      `Increment watch related history for user:${userId} and video:${video.videoId}`
-    );
+      this.logger.log(
+        `Increment watch related history for user:${userId} and video:${video.videoId}`
+      );
+    } else {
+      this.logger.log(`User is watching video without login`);
+    }
   }
 
+  // it will perform when user register via event-fire
   async performMultiFields(
     userId: string,
     type: "like" | "comment" | "subscribed",
