@@ -26,15 +26,15 @@ const VideoCard = ({ video }: Props) => {
         className="relative w-full h-52 cursor-pointer rounded-md overflow-hidden"
       >
         <Image
-          src={video.thumbnailUrl}
-          alt={video.title}
+          src={video?.thumbnailUrl}
+          alt={video?.title}
           fill
           className={`object-cover transition-opacity duration-300 opacity-100`}
         />
 
         {/* Duration Tag */}
         <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md z-50">
-          {formatDuration(video.duration)}
+          {formatDuration(video?.duration || 0)}
         </span>
       </div>
 
@@ -43,7 +43,7 @@ const VideoCard = ({ video }: Props) => {
           onClick={handleNavigate}
           className="text-base font-semibold truncate w-full"
         >
-          {video.title}
+          {video?.title}
         </h2>
         <div className="flex justify-between items-center gap-2">
           <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ const VideoCard = ({ video }: Props) => {
               <Link
                 href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
               >
-                {video.owner.name}
+                {video?.owner?.name}
               </Link>
             </p>
           </div>
