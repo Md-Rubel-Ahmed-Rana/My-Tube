@@ -46,6 +46,12 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    getUserWatchHistory: builder.query({
+      query: () => ({
+        url: `user-activity/watch-history`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -56,4 +62,5 @@ export const {
   useGetUserBySlugQuery,
   useUpdateCoverImageMutation,
   useGetUserActivitiesQuery,
+  useGetUserWatchHistoryQuery,
 } = userApi;

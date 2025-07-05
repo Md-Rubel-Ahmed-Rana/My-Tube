@@ -50,64 +50,72 @@ const UserActivities = () => {
         <UserActivityLoadingSkeleton />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-1">
-            <StatCard
-              icon={Eye}
-              label="Videos Watched"
-              value={activities?.videosWatched || 0}
-            />
-            <StatCard
-              icon={Clock}
-              label="Minutes Watched"
-              value={activities?.minutesWatched || 0}
-            />
-            <StatCard
-              icon={ThumbsUp}
-              label="Likes Given"
-              value={activities?.likesGiven || 0}
-            />
-            <StatCard
-              icon={MessageCircle}
-              label="Comments"
-              value={activities?.commentsMade || 0}
-            />
-            <StatCard
-              icon={Upload}
-              label="Uploads"
-              value={activities?.videosUploaded || 0}
-            />
-            <StatCard
-              icon={Users}
-              label="Subscribers"
-              value={activities?.subscribers || 0}
-            />
-          </div>
-          <Card className="py-2 px-1  bg-gray-200 dark:bg-gray-700  ">
-            <CardHeader>
-              <CardTitle className="text-xs">
-                Watch Time (Last 7 Days)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="h-[200px] p-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={activities?.watchTrend || []}
-                  margin={{ top: 0, right: 5, left: -30, bottom: 0 }}
-                >
-                  <XAxis dataKey="date" fontSize={10} />
-                  <YAxis fontSize={10} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="minutes"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          {!activities ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <span className="text-sm">No activities</span>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-1">
+                <StatCard
+                  icon={Eye}
+                  label="Videos Watched"
+                  value={activities?.videosWatched || 0}
+                />
+                <StatCard
+                  icon={Clock}
+                  label="Minutes Watched"
+                  value={activities?.minutesWatched || 0}
+                />
+                <StatCard
+                  icon={ThumbsUp}
+                  label="Likes Given"
+                  value={activities?.likesGiven || 0}
+                />
+                <StatCard
+                  icon={MessageCircle}
+                  label="Comments"
+                  value={activities?.commentsMade || 0}
+                />
+                <StatCard
+                  icon={Upload}
+                  label="Uploads"
+                  value={activities?.videosUploaded || 0}
+                />
+                <StatCard
+                  icon={Users}
+                  label="Subscribers"
+                  value={activities?.subscribers || 0}
+                />
+              </div>
+              <Card className="py-2 px-1  bg-gray-200 dark:bg-gray-700  ">
+                <CardHeader>
+                  <CardTitle className="text-xs">
+                    Watch Time (Last 7 Days)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="h-[200px] p-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={activities?.watchTrend || []}
+                      margin={{ top: 0, right: 5, left: -30, bottom: 0 }}
+                    >
+                      <XAxis dataKey="date" fontSize={10} />
+                      <YAxis fontSize={10} />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="minutes"
+                        stroke="#3b82f6"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </>
       )}
     </div>
