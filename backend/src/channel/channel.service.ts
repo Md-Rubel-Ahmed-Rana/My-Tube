@@ -250,4 +250,95 @@ export class ChannelService {
       },
     };
   }
+
+  async getTopChannels() {
+    const topChannels = await this.channelModel.aggregate([
+      { $unwind: "$channels" },
+      {
+        $group: {
+          _id: "$channels",
+          subscriberCount: { $sum: 1 },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "videos",
+          localField: "_id",
+          foreignField: "owner",
+          as: "videos",
+        },
+      },
+      {
+        $addFields: {
+          videoCount: { $size: "$videos" },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "comments",
+          let: { videoIds: "$videos._id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$video", "$$videoIds"] },
+              },
+            },
+          ],
+          as: "comments",
+        },
+      },
+      {
+        $addFields: {
+          commentCount: { $size: "$comments" },
+        },
+      },
+      {
+        $addFields: {
+          score: {
+            $add: [
+              "$subscriberCount",
+              { $multiply: ["$videoCount", 2] },
+              { $multiply: ["$commentCount", 0.5] },
+            ],
+          },
+        },
+      },
+
+      { $sort: { score: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          username: "$user.username",
+          email: "$user.email",
+          name: "$user.name",
+          photo: "$user.photo",
+          slug: "$user.slug",
+          subscriberCount: 1,
+          videoCount: 1,
+          commentCount: 1,
+          score: 1,
+        },
+      },
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `Top channels retrieved  successfully`,
+      data: topChannels,
+    };
+  }
 }
