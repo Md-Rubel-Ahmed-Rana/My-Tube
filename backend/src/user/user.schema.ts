@@ -21,6 +21,9 @@ export class User {
   @Prop()
   photo: string;
 
+  @Prop()
+  coverImage: string;
+
   @Prop({ enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
 

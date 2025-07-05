@@ -230,6 +230,61 @@ export class UserService {
       readableStream.pipe(uploadStream);
     });
   }
+  async updateCoverImage(id: Types.ObjectId, file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+    }
+
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+          folder: "my-tube/cover-images",
+        },
+        async (error, result) => {
+          if (error) return reject(error);
+
+          try {
+            const user = await this.userModel.findById(id);
+            if (!user) {
+              throw new HttpException(
+                "User was not found!",
+                HttpStatus.NOT_FOUND
+              );
+            }
+            await this.userModel.findByIdAndUpdate(id, {
+              $set: { coverImage: result?.secure_url },
+            });
+
+            if (user?.coverImage) {
+              const publicId = extractPublicId(user.coverImage);
+
+              if (publicId) {
+                this.eventEmitter.emit("user-cover-image.deleted", publicId);
+              }
+            }
+
+            resolve({
+              statusCode: HttpStatus.OK,
+              success: true,
+              message: "Your channel cover image updated successfully",
+              data: null,
+            });
+          } catch (dbError) {
+            reject(
+              new HttpException(
+                "Failed to update cover image",
+                HttpStatus.INTERNAL_SERVER_ERROR
+              )
+            );
+          }
+        }
+      );
+
+      const readableStream = Readable.from(file.buffer);
+      readableStream.pipe(uploadStream);
+    });
+  }
 
   async updateStatus(id: Types.ObjectId, status: string) {
     await this.userModel.findByIdAndUpdate(id, { $set: { status } });
