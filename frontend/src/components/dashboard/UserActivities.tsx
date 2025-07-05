@@ -18,6 +18,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { ModeToggle } from "../common/ModeToggle";
 
 const data = {
   videosWatched: 152,
@@ -52,7 +53,10 @@ const UserActivities = () => {
     <div className="space-y-2">
       <div className="flex justify-between">
         <h3 className="text-lg font-bold">Your Activity</h3>
-        <SidebarTrigger />
+        <div className="flex items-center gap-2">
+          <ModeToggle />
+          <SidebarTrigger />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-1">

@@ -34,7 +34,10 @@ const ChannelCoverImage = ({
             className="object-cover h-full w-full"
           />
 
-          <Button className="absolute z-50 bottom-2 right-2">
+          <Button
+            onClick={() => setIsCoverImageChange(true)}
+            className="absolute z-50 bottom-2 right-2"
+          >
             Change cover image
           </Button>
           {!open && (
