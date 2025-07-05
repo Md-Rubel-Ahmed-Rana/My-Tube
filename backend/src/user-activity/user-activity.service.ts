@@ -22,7 +22,7 @@ export class UserActivityService {
     );
   }
 
-  // rest api get get activity
+  // rest api get activity
   async findActivityForAUser(userId: string) {
     const objectId = new Types.ObjectId(userId);
     const result = await this.userActivityModel.aggregate([
@@ -120,6 +120,21 @@ export class UserActivityService {
       data: activity
         ? { ...activity, watchTrend: orderWatchTrend(activity?.watchTrend) }
         : {},
+    };
+  }
+
+  // rest api get watch history
+  async getUserWatchHistory(userId: string) {
+    const activity = await this.userActivityModel
+      .findOne({
+        user: new Types.ObjectId(userId),
+      })
+      .populate("watchHistory.video", "title thumbnailUrl slug views likes");
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "User watch history retrieved successfully",
+      data: activity?.watchHistory || [],
     };
   }
 
