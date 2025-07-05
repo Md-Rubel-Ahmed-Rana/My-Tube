@@ -1,3 +1,5 @@
+import { IVideo } from "./video.type";
+
 export type IUser = {
   _id: string;
   id: string;
@@ -27,4 +29,12 @@ export type IUserActivityStats = {
   videosUploaded: number;
   videosWatched: number;
   watchTrend: WatchTrendEntry[];
+};
+
+export type IUserWatchHistory = {
+  id: string;
+  _id: string;
+  duration: number;
+  watchedAt: Date;
+  video: IVideo;
 };
