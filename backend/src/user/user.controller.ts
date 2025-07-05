@@ -52,4 +52,14 @@ export class UserController {
   ) {
     return this.userService.updateProfilePhoto(req.user?.id, file);
   }
+
+  @Patch(":id/cover-image")
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FileInterceptor("coverImage"))
+  updateCoverImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: { user: { id: Types.ObjectId } }
+  ) {
+    return this.userService.updateCoverImage(req.user?.id, file);
+  }
 }
