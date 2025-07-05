@@ -8,7 +8,16 @@ const watchLaterApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["watch-later"],
     }),
+    addToWatchLater: build.mutation({
+      query: ({ videoId }: { videoId: string }) => ({
+        url: "watch-later",
+        method: "POST",
+        body: { video: videoId },
+      }),
+      invalidatesTags: ["watch-later"],
+    }),
   }),
 });
 
-export const { useGetUserWatchLaterQuery } = watchLaterApi;
+export const { useGetUserWatchLaterQuery, useAddToWatchLaterMutation } =
+  watchLaterApi;
