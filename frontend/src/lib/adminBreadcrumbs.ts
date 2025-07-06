@@ -12,6 +12,7 @@ export const adminBreadcrumbMap: Record<string, string[]> = {
   "/admin/dashboard/videos": ["Manage Videos", "All Videos"],
   "/admin/dashboard/videos/stats": ["Manage Videos", "Video Stats"],
   "/admin/dashboard/videos/details": ["Manage Videos", "Video Details"],
+  "/admin/dashboard/videos/details/:slug": ["Manage Videos", "Video Details"],
   "/admin/dashboard/videos/status": ["Manage Videos", "Video by Status"],
   "/admin/dashboard/videos/channel": ["Manage Videos", "Video by Channel"],
   "/admin/dashboard/videos/blocked": ["Manage Videos", "Blocked Videos"],

@@ -1,4 +1,3 @@
-// components/admin/videos/VideoActions.tsx
 import {
   DropdownMenu,
   DropdownMenuContent,

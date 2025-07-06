@@ -1,6 +1,7 @@
 import AdminDashboardLayout from "@/components/admin-dashboard-layout";
 import { VideosAnalytics } from "@/components/admin-dashboard/analytics";
 import SEOHead from "@/components/common/SEOHead";
+import AdminAuthGuard from "@/middleware/AdminAuthGuard";
 import React from "react";
 
 const VideosStatsPage = () => {
@@ -16,4 +17,4 @@ const VideosStatsPage = () => {
   );
 };
 
-export default VideosStatsPage;
+export default AdminAuthGuard(VideosStatsPage);

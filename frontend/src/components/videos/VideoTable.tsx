@@ -12,6 +12,7 @@ import { IVideo } from "@/types/video.type";
 import VideoLoadingTableSkeleton from "@/skeletons/VideoLoadingTable.skeleton";
 import { formatDuration } from "@/utils/formatDuration";
 import { formatBytes } from "@/utils/formatBytes";
+import Link from "next/link";
 
 type Props = {
   videos: IVideo[];
@@ -62,9 +63,13 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
                     {formatBytes(video?.size || 0)}
                   </TableCell>
                   <TableCell className="text-center space-x-2">
-                    <Button size="sm" variant="outline">
-                      Details
-                    </Button>
+                    <Link
+                      href={`/admin/dashboard/videos/details/${video?.slug}?title=${video?.title}`}
+                    >
+                      <Button size="sm" variant="outline">
+                        Details
+                      </Button>
+                    </Link>
                     <VideoActions videoId={video.id} />
                   </TableCell>
                 </TableRow>
