@@ -1,5 +1,4 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -36,7 +35,6 @@ const Admins = () => {
                   <th className="py-2 px-4">Photo</th>
                   <th className="py-2 px-4">Name</th>
                   <th className="py-2 px-4">Email</th>
-                  <th className="py-2 px-4">Role</th>
                   <th className="py-2 px-4 text-right">Joined</th>
                 </tr>
               </thead>
@@ -60,9 +58,6 @@ const Admins = () => {
                       {admin?.name || ""}
                     </td>
                     <td className="py-2 px-4">{admin?.email || ""}</td>
-                    <td className="py-2 px-4">
-                      <Badge variant="secondary">{admin?.role || ""}</Badge>
-                    </td>
                     <td className="py-2 px-4 text-right">
                       {admin?.createdAt
                         ? new Date(admin?.createdAt).toLocaleDateString()

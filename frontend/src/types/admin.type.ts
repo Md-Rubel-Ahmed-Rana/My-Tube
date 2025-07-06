@@ -8,3 +8,9 @@ export type IAdmin = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type ICreateAdmin = {
+  name: string;
+  email: string;
+  password: string;
+};

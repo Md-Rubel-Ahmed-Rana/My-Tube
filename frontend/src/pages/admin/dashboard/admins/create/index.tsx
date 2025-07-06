@@ -1,16 +1,16 @@
 import AdminDashboardLayout from "@/components/admin-dashboard-layout";
-import Admins from "@/components/admins";
+import CreateAdmin from "@/components/admins/CreateAdmin";
 import SEOHead from "@/components/common/SEOHead";
 
-const AdminDashboardPage = () => {
+const CreateAdminPage = () => {
   return (
     <>
-      <SEOHead title="Admins - MyTube" />
+      <SEOHead title="Create admin - MyTube" />
       <AdminDashboardLayout>
-        <Admins />
+        <CreateAdmin />
       </AdminDashboardLayout>
     </>
   );
 };
 
-export default AdminDashboardPage;
+export default CreateAdminPage;
