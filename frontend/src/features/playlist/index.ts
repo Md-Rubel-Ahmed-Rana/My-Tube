@@ -87,6 +87,20 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["playlist"],
     }),
+
+    // admin APIs
+    getPlaylistsByAdmin: builder.query({
+      query: () => ({
+        url: `/admin/playlists`,
+      }),
+      providesTags: ["playlist"],
+    }),
+    getPlaylistDetailsAdmin: builder.query({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/playlists/${id}`,
+      }),
+      providesTags: ["playlist"],
+    }),
   }),
 });
 
@@ -100,4 +114,6 @@ export const {
   useAddVideoToPlaylistMutation,
   useGetPlaylistVideosBySlugQuery,
   useReorderPlaylistVideosMutation,
+  useGetPlaylistsByAdminQuery,
+  useGetPlaylistDetailsAdminQuery,
 } = playlistApi;

@@ -1,14 +1,10 @@
 import {
   ChevronRight,
   Users,
-  UserCheck,
   UsersRound,
-  Trash2,
   Video,
   VideoIcon,
   Eye,
-  Hourglass,
-  Trash,
   LayoutDashboard,
   ListVideo,
   ListChecks,
@@ -16,8 +12,6 @@ import {
   Film,
   UserCog,
   UserPlus2,
-  MonitorSpeaker,
-  RadioTower,
   UserRound,
   MessageCircle,
   MessageSquareText,
@@ -39,6 +33,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const rootPath = "/admin/dashboard";
 
@@ -75,16 +70,6 @@ const navMain = [
         url: `${rootPath}/users`,
         icon: UsersRound,
       },
-      {
-        title: "Users by status",
-        url: `${rootPath}/users/status`,
-        icon: UserCheck,
-      },
-      {
-        title: "Delete users",
-        url: `${rootPath}/users/deleted`,
-        icon: Trash2,
-      },
     ],
   },
   {
@@ -117,21 +102,6 @@ const navMain = [
         url: `${rootPath}/videos/channel`,
         icon: Film,
       },
-      {
-        title: "Blocked videos",
-        url: `${rootPath}/videos/blocked`,
-        icon: Ban,
-      },
-      {
-        title: "Pending videos",
-        url: `${rootPath}/videos/pending`,
-        icon: Hourglass,
-      },
-      {
-        title: "Deleted videos",
-        url: `${rootPath}/videos/deleted`,
-        icon: Trash,
-      },
     ],
   },
   {
@@ -139,11 +109,6 @@ const navMain = [
     icon: ListChecks,
     isActive: false,
     items: [
-      {
-        title: "Playlists stats",
-        url: `${rootPath}/playlists/stats`,
-        icon: LayoutDashboard,
-      },
       {
         title: "All playlists",
         url: `${rootPath}/playlists`,
@@ -153,33 +118,6 @@ const navMain = [
         title: "Playlist details",
         url: `${rootPath}/playlists/details`,
         icon: VideoIcon,
-      },
-      {
-        title: "Blocked playlists",
-        url: `${rootPath}/playlists/blocked`,
-        icon: Ban,
-      },
-    ],
-  },
-  {
-    title: "Manage channels",
-    icon: RadioTower,
-    isActive: false,
-    items: [
-      {
-        title: "Channels stats",
-        url: `${rootPath}/channels/stats`,
-        icon: LayoutDashboard,
-      },
-      {
-        title: "All channels",
-        url: `${rootPath}/channels`,
-        icon: ListVideo,
-      },
-      {
-        title: "Channel details",
-        url: `${rootPath}/channels/details`,
-        icon: MonitorSpeaker,
       },
     ],
   },
@@ -223,41 +161,61 @@ const navMain = [
 ];
 
 const SideNavItems = () => {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {navMain.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
-                          {subItem.icon && <subItem.icon />}
-                          <span>{subItem.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
+        {navMain.map((item) => {
+          const isSectionActive = item.items?.some((subItem) =>
+            pathname.startsWith(subItem.url)
+          );
+
+          return (
+            <Collapsible
+              key={item.title}
+              asChild
+              defaultOpen={isSectionActive}
+              className="group/collapsible mb-3"
+            >
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    {item.items?.map((subItem) => {
+                      const isActive = pathname === subItem.url;
+
+                      return (
+                        <SidebarMenuSubItem
+                          className="mb-2"
+                          key={subItem.title}
+                        >
+                          <SidebarMenuSubButton asChild>
+                            <Link
+                              href={subItem.url}
+                              className={
+                                isActive ? "text-primary font-medium" : ""
+                              }
+                            >
+                              {subItem.icon && <subItem.icon />}
+                              <span>{subItem.title}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      );
+                    })}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );

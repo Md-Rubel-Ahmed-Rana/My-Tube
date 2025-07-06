@@ -5,7 +5,7 @@ import SEOHead from "@/components/common/SEOHead";
 const AdminDashboardPage = () => {
   return (
     <>
-      <SEOHead title="All admins - MyTube" />
+      <SEOHead title="Admins - MyTube" />
       <AdminDashboardLayout>
         <Admins />
       </AdminDashboardLayout>

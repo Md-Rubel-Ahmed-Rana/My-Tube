@@ -1,4 +1,4 @@
-import { IEditVideo, IVideo } from "@/types/video.type";
+import { IEditVideo, IVideo, VideoStatus } from "@/types/video.type";
 import apiSlice from "../api";
 import { IApiResponse } from "@/types/common";
 
@@ -132,6 +132,32 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getAllVideosByAdmin: build.query({
+      query: ({
+        page = 1,
+        limit = 10,
+        searchText = "",
+      }: {
+        page: number;
+        limit: number;
+        searchText?: string;
+      }) => ({
+        url: `admin/videos?page=${page}&limit=${limit}&searchText=${searchText}`,
+      }),
+      providesTags: ["video"],
+    }),
+    getVideosByStatus: build.query({
+      query: ({ status = VideoStatus.PUBLISHED }: { status: VideoStatus }) => ({
+        url: `/admin/videos/by-status?status=${status}`,
+      }),
+      providesTags: ["video"],
+    }),
+    getVideosByChannel: build.query({
+      query: ({ channelId }: { channelId: string }) => ({
+        url: `/admin/videos/channel/${channelId}`,
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
@@ -152,4 +178,7 @@ export const {
   useDislikeAVideoMutation,
   useGetHomeFeedVideosQuery,
   useGetVideosStatsQuery,
+  useGetAllVideosByAdminQuery,
+  useGetVideosByStatusQuery,
+  useGetVideosByChannelQuery,
 } = videoApi;

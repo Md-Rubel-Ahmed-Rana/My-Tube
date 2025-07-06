@@ -59,6 +59,33 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    getAllUserByAdmin: builder.query({
+      query: ({
+        searchQuery,
+        status,
+      }: {
+        searchQuery?: string;
+        status?: string;
+      }) => {
+        let url = "/admin/users";
+        const params = new URLSearchParams();
+
+        if (searchQuery && searchQuery.trim() !== "") {
+          params.append("searchQuery", searchQuery);
+        }
+
+        if (status && status.trim() !== "") {
+          params.append("status", status);
+        }
+
+        if ([...params].length > 0) {
+          url += `?${params.toString()}`;
+        }
+
+        return { url };
+      },
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -71,4 +98,5 @@ export const {
   useGetUserActivitiesQuery,
   useGetUserWatchHistoryQuery,
   useGetUserStatsQuery,
+  useGetAllUserByAdminQuery,
 } = userApi;
