@@ -1,4 +1,4 @@
-import { IEditVideo, IVideo } from "@/types/video.type";
+import { IEditVideo, IVideo, VideoStatus } from "@/types/video.type";
 import apiSlice from "../api";
 import { IApiResponse } from "@/types/common";
 
@@ -146,6 +146,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getVideosByStatus: build.query({
+      query: ({ status = VideoStatus.PUBLISHED }: { status: VideoStatus }) => ({
+        url: `/admin/videos/by-status?status=${status}`,
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
@@ -167,4 +173,5 @@ export const {
   useGetHomeFeedVideosQuery,
   useGetVideosStatsQuery,
   useGetAllVideosByAdminQuery,
+  useGetVideosByStatusQuery,
 } = videoApi;
