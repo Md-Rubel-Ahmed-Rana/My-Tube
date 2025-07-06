@@ -6,16 +6,19 @@ import { useGetPlaylistDetailsAdminQuery } from "@/features/playlist";
 import { IPlaylist } from "@/types/playlist.type";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import SelectPlaylist from "./SelectPlaylist";
 
 const PlaylistDetails = () => {
   const { query } = useRouter();
   const id = query?.id as string;
-  const { data, isLoading } = useGetPlaylistDetailsAdminQuery({ id });
+  const { data, isLoading, isFetching } = useGetPlaylistDetailsAdminQuery({
+    id,
+  });
   const playlist = data?.data as IPlaylist;
 
-  if (isLoading || !playlist) {
+  if (isLoading || isFetching || !playlist) {
     return (
-      <div className="grid gap-4">
+      <div className="grid gap-4 p-2 lg:p-4">
         <Skeleton className="h-8 w-1/3" />
         <Skeleton className="h-6 w-1/4" />
         <Skeleton className="h-48 w-full rounded-xl" />
@@ -25,6 +28,7 @@ const PlaylistDetails = () => {
 
   return (
     <div className="space-y-3 p-2 lg:p-4">
+      <SelectPlaylist shouldShowNoData={false} />
       {/* Playlist Info */}
       <Card className="bg-gray-100 dark:bg-gray-800 px-0">
         <CardHeader>
