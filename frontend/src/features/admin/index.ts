@@ -1,5 +1,6 @@
 import { ILogin } from "@/types/auth.type";
 import apiSlice from "../api";
+import { ICreateAdmin } from "@/types/admin.type";
 
 const adminApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,6 +11,14 @@ const adminApi = apiSlice.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["user"],
+    }),
+    createAdmin: builder.mutation({
+      query: (data: ICreateAdmin) => ({
+        method: "POST",
+        url: "/admin",
+        body: data,
+      }),
+      invalidatesTags: ["user", "admin"],
     }),
     getLoggedInAdmin: builder.query({
       query: () => ({
@@ -32,4 +41,5 @@ export const {
   useAdminLoginMutation,
   useGetLoggedInAdminQuery,
   useGetAllAdminsQuery,
+  useCreateAdminMutation,
 } = adminApi;
