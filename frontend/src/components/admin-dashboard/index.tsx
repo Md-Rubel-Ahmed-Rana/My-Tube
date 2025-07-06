@@ -1,4 +1,9 @@
-import { CommentsAnalytics, UserAnalytics, VideosAnalytics } from "./analytics";
+import {
+  ChannelsAnalytics,
+  CommentsAnalytics,
+  UserAnalytics,
+  VideosAnalytics,
+} from "./analytics";
 import { Separator } from "@/components/ui/separator";
 
 const AdminDashboard = () => {
@@ -9,6 +14,8 @@ const AdminDashboard = () => {
       <VideosAnalytics />
       <Separator />
       <CommentsAnalytics />
+      <Separator />
+      <ChannelsAnalytics />
     </div>
   );
 };

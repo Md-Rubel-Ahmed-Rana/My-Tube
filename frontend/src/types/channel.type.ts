@@ -10,3 +10,13 @@ export type ITopChannel = {
   subscriberCount: number;
   videoCount: number;
 };
+
+export type IChannelStats = {
+  totalChannels: number;
+  totalSubscribers: number;
+  topChannels: {
+    _id: string;
+    name: string;
+    subscriberCount: number;
+  }[];
+};
