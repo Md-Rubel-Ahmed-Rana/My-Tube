@@ -6,6 +6,7 @@ import WatchHistory from "./WatchHistory";
 
 type Props = {
   setIsSidebarOpen: (value: boolean) => void;
+  setIsMobileDevice: (value: boolean) => void;
 };
 
 const UserSidebar = ({ setIsSidebarOpen }: Props) => {
