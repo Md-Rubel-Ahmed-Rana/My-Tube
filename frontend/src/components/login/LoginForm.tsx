@@ -62,7 +62,7 @@ const LoginForm = () => {
       >
         <div className="flex flex-col gap-2 justify-center items-center">
           <h1 className="text-center text-lg">Welcome Back!</h1>
-          <span className="text-xs text-center w-10/12">
+          <span className="text-xs text-muted-foreground w-10/12">
             Please ensure that third-party cookies are enabled in your browser
             to log in successfully.
           </span>
@@ -105,7 +105,7 @@ const LoginForm = () => {
           </Button>
         </div>
 
-        <GoogleSignInButton />
+        <GoogleSignInButton isDisabled={isLoading} />
       </form>
     </Form>
   );

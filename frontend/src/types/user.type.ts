@@ -38,3 +38,18 @@ export type IUserWatchHistory = {
   watchedAt: Date;
   video: IVideo;
 };
+
+export type IUserStat = {
+  id: string;
+  _id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+  username: string;
+  slug: string;
+  status: string;
+  totalVideos: number;
+  totalPlaylists: number;
+  totalSubscribedChannels: number;
+  totalSubscribers: number;
+};

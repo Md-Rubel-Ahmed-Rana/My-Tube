@@ -4,7 +4,11 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { baseApi } from "@/features/api";
 
-const GoogleSignInButton = () => {
+type Props = {
+  isDisabled?: boolean;
+};
+
+const GoogleSignInButton = ({ isDisabled = false }: Props) => {
   const [loading, setLoading] = useState(false);
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -30,7 +34,7 @@ const GoogleSignInButton = () => {
       </div>
       <Button
         onClick={handleGoogleSignIn}
-        disabled={loading}
+        disabled={loading || isDisabled}
         type="button"
         className="w-full flex items-center gap-2 bg-gray-200 dark:bg-gray-700"
       >
