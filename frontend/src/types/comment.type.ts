@@ -14,3 +14,25 @@ export type IAddComment = {
   video: string;
   user: string;
 };
+
+export type ICommentStats = {
+  totalCount: number;
+  statusDistribution: {
+    count: number;
+    status: string;
+  }[];
+  topCommenters: {
+    _id: string;
+    count: number;
+    id: string;
+    name: string;
+    slug: string;
+  }[];
+  mostCommentedVideos: {
+    _id: string;
+    count: number;
+    id: string;
+    title: string;
+    slug: string;
+  }[];
+};
