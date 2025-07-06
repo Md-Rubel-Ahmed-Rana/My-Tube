@@ -39,7 +39,7 @@ const MyVideos = () => {
           ) : (
             <div
               className={`grid grid-cols-1 ${
-                !open ? " lg:grid-cols-2" : ""
+                !open ? "lg:grid-cols-2" : ""
               } gap-2`}
             >
               {videos.map((video) => (

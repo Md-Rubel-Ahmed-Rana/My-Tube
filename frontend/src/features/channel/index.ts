@@ -36,6 +36,13 @@ export const channelApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["channel", "video"],
     }),
+    // admin endpoints
+    getChannelsStats: build.query({
+      query: () => ({
+        url: `/admin/channels/stats`,
+      }),
+      providesTags: ["channel", "video"],
+    }),
   }),
 });
 
@@ -45,4 +52,5 @@ export const {
   useUnsubscribeChannelMutation,
   useMyChannelsQuery,
   useGetTopChannelsQuery,
+  useGetChannelsStatsQuery,
 } = channelApi;

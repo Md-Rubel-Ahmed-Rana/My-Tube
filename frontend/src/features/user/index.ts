@@ -52,6 +52,13 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    // Admin endpoints
+    getUserStats: builder.query({
+      query: () => ({
+        url: `/admin/users/stats`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -63,4 +70,5 @@ export const {
   useUpdateCoverImageMutation,
   useGetUserActivitiesQuery,
   useGetUserWatchHistoryQuery,
+  useGetUserStatsQuery,
 } = userApi;

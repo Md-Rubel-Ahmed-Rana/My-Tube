@@ -11,7 +11,7 @@ const Admins = () => {
   const admins: IAdmin[] = Array.isArray(data?.data) ? data.data : [];
 
   return (
-    <Card className="w-full bg-gray-100 dark:bg-gray-800 rounded-sm p-0">
+    <Card className="w-full bg-gray-100 dark:bg-gray-800 rounded-sm py-2">
       <CardHeader className="py-0">
         <CardTitle className="text-xl font-bold">Manage admins</CardTitle>
       </CardHeader>
