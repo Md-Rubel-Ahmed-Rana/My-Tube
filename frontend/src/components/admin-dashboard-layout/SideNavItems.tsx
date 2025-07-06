@@ -12,8 +12,6 @@ import {
   Film,
   UserCog,
   UserPlus2,
-  MonitorSpeaker,
-  RadioTower,
   UserRound,
   MessageCircle,
   MessageSquareText,
@@ -112,11 +110,6 @@ const navMain = [
     isActive: false,
     items: [
       {
-        title: "Playlists stats",
-        url: `${rootPath}/playlists/stats`,
-        icon: LayoutDashboard,
-      },
-      {
         title: "All playlists",
         url: `${rootPath}/playlists`,
         icon: ListVideo,
@@ -125,33 +118,6 @@ const navMain = [
         title: "Playlist details",
         url: `${rootPath}/playlists/details`,
         icon: VideoIcon,
-      },
-      {
-        title: "Blocked playlists",
-        url: `${rootPath}/playlists/blocked`,
-        icon: Ban,
-      },
-    ],
-  },
-  {
-    title: "Manage channels",
-    icon: RadioTower,
-    isActive: false,
-    items: [
-      {
-        title: "Channels stats",
-        url: `${rootPath}/channels/stats`,
-        icon: LayoutDashboard,
-      },
-      {
-        title: "All channels",
-        url: `${rootPath}/channels`,
-        icon: ListVideo,
-      },
-      {
-        title: "Channel details",
-        url: `${rootPath}/channels/details`,
-        icon: MonitorSpeaker,
       },
     ],
   },
