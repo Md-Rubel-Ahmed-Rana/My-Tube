@@ -59,6 +59,12 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    getAllUserByAdmin: builder.query({
+      query: () => ({
+        url: `/admin/users`,
+      }),
+      providesTags: ["user"],
+    }),
   }),
 });
 
@@ -71,4 +77,5 @@ export const {
   useGetUserActivitiesQuery,
   useGetUserWatchHistoryQuery,
   useGetUserStatsQuery,
+  useGetAllUserByAdminQuery,
 } = userApi;

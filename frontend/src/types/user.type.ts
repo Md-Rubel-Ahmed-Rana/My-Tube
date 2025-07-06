@@ -1,5 +1,13 @@
 import { IVideo } from "./video.type";
 
+export enum UserStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  PENDING = "pending",
+  BANNED = "banned",
+  DELETED = "deleted",
+}
+
 export type IUser = {
   _id: string;
   id: string;
@@ -10,6 +18,7 @@ export type IUser = {
   subscribers: number;
   subscribed: number;
   photo: string;
+  status: UserStatus;
   coverImage: string;
   email: string;
   createdAt: Date;
