@@ -1,6 +1,6 @@
 import AdminDashboardLayout from "@/components/admin-dashboard-layout";
 import SEOHead from "@/components/common/SEOHead";
-import AdminVideos from "@/components/videos";
+import VideoSelect from "@/components/video-details";
 import AdminAuthGuard from "@/middleware/AdminAuthGuard";
 
 const VideosPage = () => {
@@ -8,7 +8,7 @@ const VideosPage = () => {
     <>
       <SEOHead title="Videos - MyTube" />
       <AdminDashboardLayout>
-        <AdminVideos />
+        <VideoSelect />
       </AdminDashboardLayout>
     </>
   );
