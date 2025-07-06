@@ -125,6 +125,13 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    // admin endpoints
+    getVideosStats: build.query({
+      query: () => ({
+        url: `admin/videos/stats`,
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
@@ -144,4 +151,5 @@ export const {
   useLikeToAVideoMutation,
   useDislikeAVideoMutation,
   useGetHomeFeedVideosQuery,
+  useGetVideosStatsQuery,
 } = videoApi;

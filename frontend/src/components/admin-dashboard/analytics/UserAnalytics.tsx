@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-
 import { useEffect, useState } from "react";
 import { useGetUserStatsQuery } from "@/features/user";
 import { IUserStat } from "@/types/user.type";

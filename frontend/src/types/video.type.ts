@@ -23,3 +23,14 @@ export type IEditVideo = {
   description: string;
   tags: string[];
 };
+
+export type IVideoStats = {
+  totalVideos: number;
+  totalViews: number;
+  totalLikes: number;
+  totalDislikes: number;
+  totalSize: number;
+  videosByStatus: {
+    [key: string]: number;
+  };
+};
