@@ -1,76 +1,43 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { IUser } from "@/types/user.type";
+import { IUser, UserStatus } from "@/types/user.type";
 import { useGetAllUserByAdminQuery } from "@/features/user";
 
-import UsersActions from "./UsersActions";
+import UserSearchFilters from "./UserSearchFilters";
+import UserTable from "./UserTable";
+import { useState } from "react";
 
 const UsersList = () => {
-  const { data, isLoading } = useGetAllUserByAdminQuery({});
+  const [queryArgs, setQueryArgs] = useState<{
+    searchQuery?: string;
+    status?: UserStatus;
+  }>({});
+
+  const { data, isLoading } = useGetAllUserByAdminQuery(queryArgs, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  console.log(queryArgs);
+
   const users = (data?.data || []) as IUser[];
 
   return (
     <Card className="bg-gray-100 dark:bg-gray-800 py-2 border-0">
       <CardHeader>
-        <CardTitle>Total Users ({users?.length || 0})</CardTitle>
+        <UserSearchFilters refetch={setQueryArgs} />
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="space-y-4">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-10 w-full rounded-lg" />
+              <Skeleton
+                key={i}
+                className="h-10 w-full bg-gray-300 dark:bg-gray-700 rounded-lg"
+              />
             ))}
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Username</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Joined</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={user.photo} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{user.name}</span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>@{user.username}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">Active</Badge>
-                  </TableCell>
-                  <UsersActions user={user} />
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <UserTable users={users} />
         )}
       </CardContent>
     </Card>
