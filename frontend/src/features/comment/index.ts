@@ -41,6 +41,12 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["comment"],
     }),
+    getCommentsStats: build.query({
+      query: () => ({
+        url: `/admin/comments/stats`,
+      }),
+      providesTags: ["comment"],
+    }),
   }),
 });
 
@@ -49,4 +55,5 @@ export const {
   useAddNewCommentMutation,
   useEditCommentMutation,
   useDeleteCommentMutation,
+  useGetCommentsStatsQuery,
 } = commentApi;
