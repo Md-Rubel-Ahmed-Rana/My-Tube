@@ -1,9 +1,7 @@
 import {
   ChevronRight,
   Users,
-  UserCheck,
   UsersRound,
-  Trash2,
   Video,
   VideoIcon,
   Eye,
@@ -75,16 +73,6 @@ const navMain = [
         title: "All users",
         url: `${rootPath}/users`,
         icon: UsersRound,
-      },
-      {
-        title: "Users by status",
-        url: `${rootPath}/users/status`,
-        icon: UserCheck,
-      },
-      {
-        title: "Delete users",
-        url: `${rootPath}/users/deleted`,
-        icon: Trash2,
       },
     ],
   },
