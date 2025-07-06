@@ -49,7 +49,9 @@ const UserAnalytics = () => {
 
   return (
     <div>
-      <h1 className="lg:text-2xl font-semibold my-2">Users Statistics</h1>
+      <h1 className="lg:text-2xl text-gray-800 dark:text-gray-200 font-semibold my-2">
+        Users Statistics
+      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Table */}

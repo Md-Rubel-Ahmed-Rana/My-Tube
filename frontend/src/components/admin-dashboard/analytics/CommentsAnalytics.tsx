@@ -36,7 +36,9 @@ const CommentsAnalytics = () => {
 
   return (
     <div>
-      <h1 className="lg:text-2xl font-semibold my-2">Comments Statistics</h1>
+      <h1 className="lg:text-2xl  text-gray-800 dark:text-gray-200 font-semibold my-2">
+        Comments Statistics
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Total Comments */}
         <Card className="bg-gray-100 dark:bg-gray-800">
