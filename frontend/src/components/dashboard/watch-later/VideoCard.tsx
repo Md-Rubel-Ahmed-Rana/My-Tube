@@ -51,7 +51,7 @@ const VideoCard = ({ video }: Props) => {
               href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src={video.owner?.photo} alt="profile image" />
+                <AvatarImage src={video?.owner?.photo} alt="profile image" />
                 <AvatarFallback>
                   {formatNameForImageFallback(video?.owner?.name)}
                 </AvatarFallback>
