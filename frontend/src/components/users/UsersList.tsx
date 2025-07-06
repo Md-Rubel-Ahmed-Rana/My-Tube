@@ -17,8 +17,6 @@ const UsersList = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  console.log(queryArgs);
-
   const users = (data?.data || []) as IUser[];
 
   return (

@@ -152,6 +152,12 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    getVideosByChannel: build.query({
+      query: ({ channelId }: { channelId: string }) => ({
+        url: `/admin/videos/channel/${channelId}`,
+      }),
+      providesTags: ["video"],
+    }),
   }),
 });
 
@@ -174,4 +180,5 @@ export const {
   useGetVideosStatsQuery,
   useGetAllVideosByAdminQuery,
   useGetVideosByStatusQuery,
+  useGetVideosByChannelQuery,
 } = videoApi;
