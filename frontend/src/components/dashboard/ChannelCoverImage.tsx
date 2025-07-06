@@ -5,6 +5,7 @@ import UpdateCoverImageModal from "./UpdateCoverImageModal";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { SquarePen } from "lucide-react";
 
 type Props = {
   user: IUser;
@@ -20,14 +21,14 @@ const ChannelCoverImage = ({
   isSidebarOpen,
 }: Props) => {
   const [isCoverImageChange, setIsCoverImageChange] = useState(false);
-  const { open } = useSidebar();
+  const { open, isMobile } = useSidebar();
 
   return (
     <>
       {isLoading ? (
-        <Skeleton className="h-[60vh] w-full bg-gray-300 dark:bg-gray-700 rounded-none" />
+        <Skeleton className="lg:h-[60vh] h-[30vh] w-full bg-gray-300 dark:bg-gray-700 rounded-none" />
       ) : (
-        <div className="h-[60vh] w-full relative">
+        <div className="lg:h-[60vh] h-[30vh] w-full relative">
           <img
             src={user?.coverImage || "/ChannelCoverImage.jpg"}
             alt="channel cover image"
@@ -38,9 +39,9 @@ const ChannelCoverImage = ({
             onClick={() => setIsCoverImageChange(true)}
             className="absolute z-50 bottom-2 right-2"
           >
-            Change cover image
+            {isMobile ? <SquarePen /> : <small>Change cover image</small>}
           </Button>
-          {!open && (
+          {(!open || isMobile) && (
             <SidebarTrigger
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="absolute z-50 top-2 bg-gray-600 text-white left-2"

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const UserChannelSkeleton = () => {
   return (
-    <div className="flex items-end justify-between w-full">
+    <div className="flex items-end justify-between w-full py-4">
       <div className="flex items-center gap-4">
         <Skeleton className="w-32 h-32 bg-gray-600 rounded-full" />
         <div className="mt-10 flex flex-col gap-2">

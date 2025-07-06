@@ -25,7 +25,7 @@ const UserChannel = ({ isLoading, user }: Props) => {
           <div className="px-4 mt-[-2rem] pb-4 flex flex-col md:flex-row gap-4">
             <div className="w-full flex flex-col md:flex-row lg:items-end justify-between gap-4">
               {/* Profile Image */}
-              <div className="relative">
+              <div className="relative w-32 h-32">
                 <img
                   src={user?.photo}
                   alt={user?.name || "profile"}

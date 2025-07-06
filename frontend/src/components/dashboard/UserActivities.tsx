@@ -38,6 +38,7 @@ const StatCard = ({ icon: Icon, label, value }: any) => (
 const UserActivities = () => {
   const { data: response, isLoading } = useGetUserActivitiesQuery({});
   const activities = response?.data as IUserActivityStats;
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
