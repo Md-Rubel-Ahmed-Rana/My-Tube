@@ -8,7 +8,7 @@ const VideosPage = () => {
     <>
       <SEOHead title="Videos - MyTube" />
       <AdminDashboardLayout>
-        <VideoSelect />
+        <VideoSelect shouldShowNoData={true} />
       </AdminDashboardLayout>
     </>
   );
