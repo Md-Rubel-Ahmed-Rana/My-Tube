@@ -49,6 +49,13 @@ const AdminLoginForm = () => {
     );
   };
 
+  const handleAutoLogin = () => {
+    handleLogin({
+      email: process.env.NEXT_PUBLIC_NEXT_USER_EMAIL as string,
+      password: process.env.NEXT_PUBLIC_NEXT_USER_PASS as string,
+    });
+  };
+
   return (
     <Form {...form}>
       <form
@@ -56,11 +63,24 @@ const AdminLoginForm = () => {
         className="space-y-6 w-full text-gray-700 border px-5 py-10 rounded-2xl dark:text-gray-200"
       >
         {/* Logo or Brand */}
-        <div className="text-center space-y-1">
+        <div className="text-center flex flex-col justify-center items-center gap-2">
           <h1 className="text-3xl font-extrabold tracking-tight">
             Admin Panel
           </h1>
-          <p className="text-sm ">Sign in to manage everything</p>
+          <p className="text-sm">Sign in to manage everything</p>
+          <span className="text-xs text-muted-foreground text-start">
+            Please ensure that third-party cookies are enabled in your browser
+            to log in successfully.
+          </span>
+          <Button
+            onClick={handleAutoLogin}
+            disabled={isLoading}
+            type="button"
+            size={"xs"}
+            className="w-24"
+          >
+            Auto Login
+          </Button>
         </div>
 
         {/* Email Field */}
