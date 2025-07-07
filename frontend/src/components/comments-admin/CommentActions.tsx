@@ -1,40 +1,56 @@
 import { TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Ban, ShieldCheck, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { CommentStatus, IComment } from "@/types/comment.type";
+import {
+  useDeleteCommentPermanentlyMutation,
+  useUpdateCommentStatusByAdminMutation,
+} from "@/features/comment";
+import { handleApiMutation } from "@/utils/handleApiMutation";
 
 type Props = {
   comment: IComment;
 };
 
 const CommentActions = ({ comment }: Props) => {
-  const handleDelete = (comment: IComment) => {
-    console.log("Delete", comment.id);
+  const [updateStatus, { isLoading }] = useUpdateCommentStatusByAdminMutation();
+  const [deleteComment, { isLoading: isDeleting }] =
+    useDeleteCommentPermanentlyMutation();
+
+  const handleDelete = async () => {
+    await handleApiMutation(deleteComment, { id: comment?.id }, 200);
   };
 
-  const toggleStatus = (comment: IComment) => {
-    console.log("Toggle status", comment.id);
+  const handleUpdateStatus = async () => {
+    await handleApiMutation(
+      updateStatus,
+      {
+        id: comment?.id,
+        status:
+          comment?.status === CommentStatus.ACTIVE
+            ? CommentStatus.BLOCKED
+            : CommentStatus.ACTIVE,
+      },
+      200
+    );
   };
   return (
     <TableCell className="text-right space-x-2">
       <Button
+        disabled={isDeleting || isLoading}
         variant="destructive"
-        size="icon"
-        onClick={() => handleDelete(comment)}
+        size="xs"
+        onClick={handleDelete}
       >
         <Trash2 className="w-4 h-4" />
       </Button>
       <Button
-        variant="secondary"
-        size="icon"
-        onClick={() => toggleStatus(comment)}
-        title="Toggle Status"
+        disabled={isDeleting || isLoading}
+        variant="default"
+        size="xs"
+        onClick={handleUpdateStatus}
       >
-        {comment?.status === CommentStatus.ACTIVE ? (
-          <Ban className="w-4 h-4 text-red-500" />
-        ) : (
-          <ShieldCheck className="w-4 h-4 text-green-600" />
-        )}
+        {comment?.status === CommentStatus.ACTIVE ? "Block" : "Active"}
       </Button>
     </TableCell>
   );
