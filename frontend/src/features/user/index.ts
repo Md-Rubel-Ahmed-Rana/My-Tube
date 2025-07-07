@@ -1,6 +1,6 @@
 import { IApiResponse } from "@/types/common";
 import apiSlice from "../api";
-import { IUser } from "@/types/user.type";
+import { IUser, UserStatus } from "@/types/user.type";
 
 const userApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -86,6 +86,21 @@ const userApi = apiSlice.injectEndpoints({
       },
       providesTags: ["user"],
     }),
+    updateUserAccountStatus: builder.mutation({
+      query: ({ id, status }: { id: string; status: UserStatus }) => ({
+        url: `/admin/users/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["user"],
+    }),
+    deleteUserAccount: builder.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/users/${id}/permanent`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -99,4 +114,6 @@ export const {
   useGetUserWatchHistoryQuery,
   useGetUserStatsQuery,
   useGetAllUserByAdminQuery,
+  useUpdateUserAccountStatusMutation,
+  useDeleteUserAccountMutation,
 } = userApi;
