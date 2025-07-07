@@ -1,15 +1,15 @@
-import { useGetAllCommentsByVideoQuery } from "@/features/comment";
+import { useGetAllCommentsByUserQuery } from "@/features/comment";
 import { IComment } from "@/types/comment.type";
 import { useRouter } from "next/router";
 import React from "react";
 import CommentsTable from "./CommentsTable";
-import VideosList from "./VideosList";
+import UsersList from "./UsersList";
 
-const CommentsByVideo = () => {
+const CommentsByUser = () => {
   const { query } = useRouter();
   const id = query?.id as string;
-  const title = query?.title as string;
-  const { data, isLoading, isFetching } = useGetAllCommentsByVideoQuery({ id });
+  const title = query?.name as string;
+  const { data, isLoading, isFetching } = useGetAllCommentsByUserQuery({ id });
   const comments = (data?.data || []) as IComment[];
   return (
     <div className="p-2 lg:p-4">
@@ -23,7 +23,7 @@ const CommentsByVideo = () => {
               </span>{" "}
             </p>
           </div>
-          <VideosList />
+          <UsersList />
           <CommentsTable
             comments={comments}
             isLoading={isLoading || isFetching}
@@ -31,9 +31,9 @@ const CommentsByVideo = () => {
         </div>
       ) : (
         <div className="flex flex-col justify-center items-center gap-2">
-          <VideosList />
+          <UsersList />
           <p className="text-gray-800 dark:text-gray-200">
-            You did not select any video please select first
+            You did not select any user. Please select first
           </p>
         </div>
       )}
@@ -41,4 +41,4 @@ const CommentsByVideo = () => {
   );
 };
 
-export default CommentsByVideo;
+export default CommentsByUser;

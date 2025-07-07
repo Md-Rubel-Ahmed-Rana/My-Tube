@@ -60,6 +60,12 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["comment"],
     }),
+    getAllCommentsByUser: build.query({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/comments/user/${id}`,
+      }),
+      providesTags: ["comment"],
+    }),
   }),
 });
 
@@ -71,4 +77,5 @@ export const {
   useGetCommentsStatsQuery,
   useGetAllCommentsByAdminQuery,
   useGetAllCommentsByVideoQuery,
+  useGetAllCommentsByUserQuery,
 } = commentApi;
