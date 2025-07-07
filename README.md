@@ -3,16 +3,11 @@
 A full-featured YouTube-like video platform built using **Next.js**, **NestJS**, **MongoDB**, and **Cloudinary**. Users can upload, stream, like, and comment on videos. Admins can manage the platform via a dedicated dashboard.
 
 🔴 **Live Website**: [https://my-tubes.vercel.app](https://my-tubes.vercel.app)  
-📦 **GitHub Repo**: [https://github.com/Md-Rubel-Ahmed-Rana/My-Tube](https://github.com/Md-Rubel-Ahmed-Rana/My-Tube)
-
 ---
 
 ## 🔐 Credentials for both user and admin
-Email: mdrubelahmedrana521@gmail.com
-Password: Rubel49882
-
-
-Use this to test both **admin** and **user** views.
+- Email: mdrubelahmedrana521@gmail.com
+- Password: Rubel49882
 
 ---
 
