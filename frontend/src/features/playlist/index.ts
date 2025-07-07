@@ -1,6 +1,6 @@
 import { IApiResponse } from "@/types/common";
 import apiSlice from "../api";
-import { IPlaylist } from "@/types/playlist.type";
+import { IPlaylist, PlaylistStatus } from "@/types/playlist.type";
 
 export const playlistApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -101,6 +101,21 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["playlist"],
     }),
+    updatePlaylistStatusByAdmin: builder.mutation({
+      query: ({ id, status }: { id: string; status: PlaylistStatus }) => ({
+        url: `/admin/playlists/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["playlist"],
+    }),
+    deletePlaylistPermanently: builder.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/playlists/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["playlist"],
+    }),
   }),
 });
 
@@ -116,4 +131,6 @@ export const {
   useReorderPlaylistVideosMutation,
   useGetPlaylistsByAdminQuery,
   useGetPlaylistDetailsAdminQuery,
+  useUpdatePlaylistStatusByAdminMutation,
+  useDeletePlaylistPermanentlyMutation,
 } = playlistApi;
