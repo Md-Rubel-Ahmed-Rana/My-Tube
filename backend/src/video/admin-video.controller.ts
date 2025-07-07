@@ -6,8 +6,6 @@ import {
   Patch,
   Delete,
   Body,
-  HttpCode,
-  HttpStatus,
   Post,
 } from "@nestjs/common";
 import { VideoService } from "./video.service";
@@ -56,7 +54,6 @@ export class AdminVideoController {
   }
 
   @Delete(":id")
-  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param("id") id: Types.ObjectId) {
     return this.videoService.remove(id);
   }
@@ -72,7 +69,6 @@ export class AdminVideoController {
   }
 
   @Post("bulk-delete")
-  @HttpCode(HttpStatus.NO_CONTENT)
   bulkDelete(@Body() body: { ids: Types.ObjectId[] }) {
     return this.videoService.bulkDelete(body.ids);
   }
