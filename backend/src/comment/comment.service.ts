@@ -34,7 +34,8 @@ export class CommentService {
     const comments = await this.commentModel
       .find({})
       .populate("user", "-password")
-      .populate("video", "title");
+      .populate("video", "title")
+      .sort({ createdAt: -1 });
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -47,7 +48,8 @@ export class CommentService {
     const comments = await this.commentModel
       .find({ video: new Types.ObjectId(videoId) })
       .populate("user", "-password")
-      .populate("video", "title");
+      .populate("video", "title")
+      .sort({ createdAt: -1 });
     return {
       statusCode: HttpStatus.OK,
       success: true,
@@ -60,7 +62,8 @@ export class CommentService {
     const comments = await this.commentModel
       .find({ user: new Types.ObjectId(userId) })
       .populate("user", "-password")
-      .populate("video", "title");
+      .populate("video", "title")
+      .sort({ createdAt: -1 });
     return {
       statusCode: HttpStatus.OK,
       success: true,
