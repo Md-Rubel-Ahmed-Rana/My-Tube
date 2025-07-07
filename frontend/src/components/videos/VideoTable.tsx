@@ -13,6 +13,7 @@ import VideoLoadingTableSkeleton from "@/skeletons/VideoLoadingTable.skeleton";
 import { formatDuration } from "@/utils/formatDuration";
 import { formatBytes } from "@/utils/formatBytes";
 import Link from "next/link";
+import { truncateText } from "@/utils/truncateText";
 
 type Props = {
   videos: IVideo[];
@@ -41,6 +42,9 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
                 Size
               </TableHead>
               <TableHead className="text-center dark:text-gray-200 text-gray-800">
+                Status
+              </TableHead>
+              <TableHead className="text-center dark:text-gray-200 text-gray-800">
                 Actions
               </TableHead>
             </TableRow>
@@ -59,10 +63,10 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
               videos.map((video) => (
                 <TableRow key={video.id}>
                   <TableCell
-                    className="max-w-[250px] truncate font-medium"
+                    className="truncate font-medium"
                     title={video?.title}
                   >
-                    {video?.title}
+                    {truncateText(video?.title)}
                   </TableCell>
 
                   <TableCell>{video?.owner?.name || "Unknown"}</TableCell>
@@ -72,13 +76,14 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
                   <TableCell className="text-center">
                     {formatBytes(video?.size || 0)}
                   </TableCell>
+                  <TableCell className="text-center">{video?.status}</TableCell>
                   <TableCell className="text-center space-x-2">
                     <Link
                       href={`/admin/dashboard/videos/details/${video?.slug}?title=${video?.title}`}
                     >
                       <Button size="sm">Details</Button>
                     </Link>
-                    <VideoActions videoId={video.id} />
+                    <VideoActions video={video} />
                   </TableCell>
                 </TableRow>
               ))

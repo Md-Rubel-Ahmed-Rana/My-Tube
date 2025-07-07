@@ -4,6 +4,7 @@ export type IVideo = {
   title: string;
   description: string;
   slug: string;
+  status: VideoStatus;
   tags: string[];
   videoUrl: string;
   thumbnailUrl: string;

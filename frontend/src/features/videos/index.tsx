@@ -158,6 +158,21 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
+    updateVideoStatusByAdmin: build.mutation({
+      query: ({ id, status }: { id: string; status: VideoStatus }) => ({
+        url: `/admin/videos/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["video"],
+    }),
+    deleteVideoPermanently: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/videos/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["video"],
+    }),
   }),
 });
 
@@ -181,4 +196,6 @@ export const {
   useGetAllVideosByAdminQuery,
   useGetVideosByStatusQuery,
   useGetVideosByChannelQuery,
+  useUpdateVideoStatusByAdminMutation,
+  useDeleteVideoPermanentlyMutation,
 } = videoApi;
