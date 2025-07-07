@@ -27,9 +27,12 @@ const VideosList = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center w-full">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger
+          className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-gray-800 max-w-[400px] w-full"
+          asChild
+        >
           <Button
             variant="outline"
             role="combobox"
@@ -57,7 +60,7 @@ const VideosList = () => {
                       key={video?.id}
                       href={`/admin/dashboard/comments/video/?id=${video?.id}&title=${video?.title}`}
                     >
-                      <CommandItem className="cursor-pointer">
+                      <CommandItem className="cursor-pointer dark:text-gray-200 text-gray-800">
                         <Check />
                         <span className="w-full truncate">{video?.title}</span>
                       </CommandItem>

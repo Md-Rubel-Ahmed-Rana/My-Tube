@@ -27,7 +27,7 @@ const VideosByChannel = () => {
   return (
     <div className="space-y-4 p-2 lg:p-4">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h2 className="text-2xl font-semibold">
+        <h2 className="text-2xl font-semibold dark:text-gray-200 text-gray-800">
           Total Videos: {videos?.length || 0}
         </h2>
 
@@ -36,7 +36,7 @@ const VideosByChannel = () => {
             value={selectedChannel}
             onValueChange={(value: string) => setSelectedChannel(value)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full dark:text-gray-200 text-gray-800">
               <SelectValue placeholder="Select channel" />
             </SelectTrigger>
             <SelectContent>

@@ -69,7 +69,7 @@ const UserSearchFilters = ({ refetch }: Props) => {
 
       <div className="flex gap-2 mt-3">
         <Button type="submit">Apply</Button>
-        <Button type="button" variant="outline" onClick={handleReset}>
+        <Button type="button" onClick={handleReset}>
           Reset
         </Button>
       </div>

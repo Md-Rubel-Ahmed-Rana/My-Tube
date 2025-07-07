@@ -40,14 +40,24 @@ const CommentsTable = ({ comments = [], isLoading }: Props) => {
             </div>
           ) : (
             <TooltipProvider>
-              <Table>
+              <Table className="dark:text-gray-200 text-gray-800">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Comment</TableHead>
-                    <TableHead>User</TableHead>
-                    <TableHead>Video</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="dark:text-gray-200 text-gray-800">
+                      Comment
+                    </TableHead>
+                    <TableHead className="dark:text-gray-200 text-gray-800">
+                      User
+                    </TableHead>
+                    <TableHead className="dark:text-gray-200 text-gray-800">
+                      Video
+                    </TableHead>
+                    <TableHead className="dark:text-gray-200 text-gray-800">
+                      Status
+                    </TableHead>
+                    <TableHead className="text-right dark:text-gray-200 text-gray-800">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

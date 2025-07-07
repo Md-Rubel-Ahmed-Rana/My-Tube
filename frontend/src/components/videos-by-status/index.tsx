@@ -22,7 +22,7 @@ const VideosByStatus = () => {
   const videos = data?.data as IVideo[];
 
   return (
-    <div className="space-y-4 p-2 lg:p-4">
+    <div className="space-y-4 p-2 lg:p-4 dark:text-gray-200 text-gray-800">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h2 className="text-2xl font-semibold">
           Total Videos: {videos?.length || 0}

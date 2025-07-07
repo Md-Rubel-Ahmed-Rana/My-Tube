@@ -21,12 +21,24 @@ const UserTable = ({ users = [] }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>User</TableHead>
-          <TableHead>Username</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Joined</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
+          <TableHead className="text-gray-800 dark:text-gray-200">
+            User
+          </TableHead>
+          <TableHead className="text-gray-800 dark:text-gray-200">
+            Username
+          </TableHead>
+          <TableHead className="text-gray-800 dark:text-gray-200">
+            Email
+          </TableHead>
+          <TableHead className="text-gray-800 dark:text-gray-200">
+            Joined
+          </TableHead>
+          <TableHead className="text-gray-800 dark:text-gray-200">
+            Status
+          </TableHead>
+          <TableHead className="text-right text-gray-800 dark:text-gray-200">
+            Actions
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -55,7 +67,7 @@ const UserTable = ({ users = [] }: Props) => {
                   {new Date(user.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">Active</Badge>
+                  <Badge>Active</Badge>
                 </TableCell>
                 <UsersActions user={user} />
               </TableRow>

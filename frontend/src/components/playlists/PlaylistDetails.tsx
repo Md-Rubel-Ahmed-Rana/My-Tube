@@ -36,29 +36,33 @@ const PlaylistDetails = () => {
         </CardHeader>
         <CardContent className="grid gap-2 text-sm text-muted-foreground">
           <div>
-            <span className="font-medium text-foreground">Slug:</span>{" "}
+            <span className="font-medium text-muted-foreground">Slug:</span>{" "}
             {playlist?.slug}
           </div>
           <div>
-            <span className="font-medium text-foreground">Status:</span>{" "}
-            <Badge variant="outline" className="capitalize">
-              {playlist?.status}
-            </Badge>
+            <span className="font-medium text-muted-foreground">Status:</span>{" "}
+            <Badge className="capitalize">{playlist?.status}</Badge>
           </div>
           <div>
-            <span className="font-medium text-foreground">Video Count:</span>{" "}
+            <span className="font-medium text-muted-foreground">
+              Video Count:
+            </span>{" "}
             {playlist?.videoCount}
           </div>
           <div>
-            <span className="font-medium text-foreground">Created At:</span>{" "}
+            <span className="font-medium text-muted-foreground">
+              Created At:
+            </span>{" "}
             {new Date(playlist.createdAt).toLocaleString()}
           </div>
           <div>
-            <span className="font-medium text-foreground">Updated At:</span>{" "}
+            <span className="font-medium text-muted-foreground">
+              Updated At:
+            </span>{" "}
             {new Date(playlist.updatedAt).toLocaleString()}
           </div>
           <div>
-            <span className="font-medium text-foreground">User:</span>{" "}
+            <span className="font-medium text-muted-foreground">User:</span>{" "}
             {playlist?.user?.name || "unknown"}
           </div>
         </CardContent>
