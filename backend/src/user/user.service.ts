@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -22,6 +23,7 @@ import { ChannelService } from "src/channel/channel.service";
 import { UserStatus } from "./enums";
 import { QueryUserDto } from "./dto/query-user.dto";
 import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
+import { UpdatePasswordDto } from "src/admin/dto/update-password.dto";
 
 @Injectable()
 export class UserService {
@@ -513,6 +515,31 @@ export class UserService {
       success: true,
       message: `User analytics retrieved successfully!`,
       data: users,
+    };
+  }
+
+  async updatePassword(id: string, data: UpdatePasswordDto) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new NotFoundException("User was not found");
+    }
+    const isMatched = await bcrypt.compare(data.oldPassword, user.password);
+    if (!isMatched) {
+      throw new BadRequestException(
+        "Incorrect password, Please provide your correct old password"
+      );
+    }
+    const newPassword = await bcrypt.hash(data.newPassword, 12);
+    await this.userModel.findByIdAndUpdate(id, {
+      $set: { password: newPassword },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message:
+        "Your password has been changed. Please login again with new credentials.",
+      data: null,
     };
   }
 }

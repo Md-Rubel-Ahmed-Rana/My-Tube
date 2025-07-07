@@ -19,6 +19,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Response } from "express";
 import { cookieOptions } from "src/utils/cookieOptions";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Controller("admin")
 export class AdminController {
@@ -64,6 +65,17 @@ export class AdminController {
   @UseGuards(AuthGuard)
   update(@Param("id") id: string, @Body() updateAdminDto: UpdateAdminDto) {
     return this.adminService.update(id, updateAdminDto);
+  }
+
+  @Patch(":id/password")
+  @UseGuards(AuthGuard)
+  updatePassword(
+    @Param("id") id: string,
+    @Body() updateAdminDto: UpdatePasswordDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    res.clearCookie("my_tube_access_token", cookieOptions);
+    return this.adminService.updatePassword(id, updateAdminDto);
   }
 
   @Patch("photo")

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   Req,
   UploadedFile,
+  Res,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -16,6 +17,9 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Types } from "mongoose";
 import { AuthGuard } from "src/auth/auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { UpdatePasswordDto } from "src/admin/dto/update-password.dto";
+import { Response } from "express";
+import { cookieOptions } from "src/utils/cookieOptions";
 
 @Controller("user")
 export class UserController {
@@ -43,6 +47,7 @@ export class UserController {
   ) {
     return this.userService.update(id, updateUserDto);
   }
+
   @Patch(":id/photo")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("photo"))
@@ -51,6 +56,17 @@ export class UserController {
     @Req() req: { user: { id: Types.ObjectId } }
   ) {
     return this.userService.updateProfilePhoto(req.user?.id, file);
+  }
+
+  @Patch(":id/password")
+  @UseGuards(AuthGuard)
+  updatePassword(
+    @Param("id") id: string,
+    @Body() updateAdminDto: UpdatePasswordDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    res.clearCookie("my_tube_access_token", cookieOptions);
+    return this.userService.updatePassword(id, updateAdminDto);
   }
 
   @Patch(":id/cover-image")
