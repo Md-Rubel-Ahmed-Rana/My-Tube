@@ -67,25 +67,31 @@ const PlaylistDetails = () => {
       {/* Videos List */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Videos in this Playlist</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {playlist.videos.map((video) => (
-            <Card className="bg-gray-100 dark:bg-gray-800 p-0" key={video.id}>
-              <CardContent className="p-0">
-                <AspectRatio ratio={16 / 9}>
-                  <Image
-                    src={video.thumbnailUrl}
-                    alt={video.title}
-                    fill
-                    className="rounded-t-xl object-cover"
-                  />
-                </AspectRatio>
-              </CardContent>
-              <CardHeader>
-                <CardTitle className="text-base">{video.title}</CardTitle>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+        {playlist?.videos?.length <= 0 ? (
+          <p className="text-muted-foreground">
+            No videos found for this playlist
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {playlist.videos.map((video) => (
+              <Card className="bg-gray-100 dark:bg-gray-800 p-0" key={video.id}>
+                <CardContent className="p-0">
+                  <AspectRatio ratio={16 / 9}>
+                    <Image
+                      src={video.thumbnailUrl}
+                      alt={video.title}
+                      fill
+                      className="rounded-t-xl object-cover"
+                    />
+                  </AspectRatio>
+                </CardContent>
+                <CardHeader>
+                  <CardTitle className="text-base">{video.title}</CardTitle>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
