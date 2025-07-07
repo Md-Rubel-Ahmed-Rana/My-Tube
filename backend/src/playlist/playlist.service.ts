@@ -53,8 +53,14 @@ export class PlaylistService {
         path: "videos",
         populate: {
           path: "owner",
+          model: "User",
           select: "-password",
         },
+      },
+      {
+        path: "user",
+        model: "User",
+        select: "-password",
       },
     ]);
 

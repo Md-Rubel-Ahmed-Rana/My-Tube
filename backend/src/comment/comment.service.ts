@@ -86,10 +86,6 @@ export class CommentService {
   }
 
   async findAllWithFilters(query: any) {
-    await this.commentModel.updateMany(
-      {},
-      { $set: { status: CommentStatus.ACTIVE } }
-    );
     const { page = 1, limit = 10, status, video, user, searchQuery } = query;
 
     const filter: any = {};
