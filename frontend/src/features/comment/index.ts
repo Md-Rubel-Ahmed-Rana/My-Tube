@@ -1,4 +1,4 @@
-import { IAddComment, IComment } from "@/types/comment.type";
+import { CommentStatus, IAddComment, IComment } from "@/types/comment.type";
 import apiSlice from "../api";
 import { IApiResponse } from "@/types/common";
 
@@ -66,6 +66,23 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["comment"],
     }),
+    updateCommentStatusByAdmin: build.mutation({
+      query: ({ id, status }: { id: string; status: CommentStatus }) => ({
+        url: `/admin/comments/${id}/${
+          status === CommentStatus.ACTIVE ? "block" : "unblock"
+        }`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["comment"],
+    }),
+    deleteCommentPermanently: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/comments/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["comment"],
+    }),
   }),
 });
 
@@ -78,4 +95,6 @@ export const {
   useGetAllCommentsByAdminQuery,
   useGetAllCommentsByVideoQuery,
   useGetAllCommentsByUserQuery,
+  useUpdateCommentStatusByAdminMutation,
+  useDeleteCommentPermanentlyMutation,
 } = commentApi;
