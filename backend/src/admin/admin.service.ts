@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateAdminDto } from "./dto/create-admin.dto";
 import { UpdateAdminDto } from "./dto/update-admin.dto";
 import { InjectModel } from "@nestjs/mongoose";
@@ -11,6 +17,7 @@ import { ConfigService } from "@nestjs/config";
 import { extractPublicId } from "src/utils/extractPublicId";
 import { Readable } from "stream";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { UpdatePasswordDto } from "./dto/update-password.dto";
 
 @Injectable()
 export class AdminService {
@@ -147,5 +154,30 @@ export class AdminService {
       const readableStream = Readable.from(file.buffer);
       readableStream.pipe(uploadStream);
     });
+  }
+
+  async updatePassword(id: string, data: UpdatePasswordDto) {
+    const admin = await this.adminModel.findById(id);
+    if (!admin) {
+      throw new NotFoundException("Admin was not found");
+    }
+    const isMatched = await bcrypt.compare(data.oldPassword, admin.password);
+    if (!isMatched) {
+      throw new BadRequestException(
+        "Incorrect password, Please provide your correct old password"
+      );
+    }
+    const newPassword = await bcrypt.hash(data.newPassword, 12);
+    await this.adminModel.findByIdAndUpdate(id, {
+      $set: { password: newPassword },
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message:
+        "Your password has been changed. Please login again with new credentials.",
+      data: null,
+    };
   }
 }
