@@ -715,7 +715,9 @@ export class VideoService {
   }
 
   async getVideosByStatus(status: string) {
-    const videos = await this.videoModel.find({ status });
+    const videos = await this.videoModel
+      .find({ status })
+      .populate("owner", "-password");
     return {
       statusCode: HttpStatus.OK,
       success: true,
