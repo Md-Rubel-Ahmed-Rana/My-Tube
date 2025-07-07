@@ -38,4 +38,4 @@ A full-featured YouTube-like video platform built using **Next.js**, **NestJS**,
 - **MongoDB** (Mongoose)
 - **Cloudinary** (video storage & streaming)
 - **JWT & Passport** authentication
-- ** Elastic Search** full-text and advanced searching
+- **Elastic Search** full-text and advanced searching
