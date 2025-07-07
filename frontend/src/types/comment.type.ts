@@ -1,10 +1,12 @@
 import { IUser } from "./user.type";
+import { IVideo } from "./video.type";
 
 export type IComment = {
   id: string;
   text: string;
   user: IUser;
-  video: { id: string; title: string };
+  video: IVideo;
+  status: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -36,3 +38,8 @@ export type ICommentStats = {
     slug: string;
   }[];
 };
+
+export enum CommentStatus {
+  ACTIVE = "active",
+  BLOCKED = "blocked",
+}
