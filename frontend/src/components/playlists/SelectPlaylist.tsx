@@ -29,9 +29,12 @@ const SelectPlaylist = ({ shouldShowNoData = true }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center mt-3">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger
+          className="dark:text-gray-200 text-gray-800 bg-gray-100 dark:bg-gray-800"
+          asChild
+        >
           <Button
             variant="outline"
             role="combobox"
@@ -42,7 +45,7 @@ const SelectPlaylist = ({ shouldShowNoData = true }: Props) => {
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="max-w-[500px] w-full  bg-gray-100 dark:bg-gray-800 p-0">
+        <PopoverContent className="max-w-[500px] w-full   bg-gray-100 dark:bg-gray-800 p-0">
           <Command className="bg-gray-100 dark:bg-gray-800 max-h-[300] h-full overflow-y-auto">
             <CommandInput placeholder="Search videos..." />
             <CommandEmpty>No playlist found.</CommandEmpty>
@@ -59,7 +62,7 @@ const SelectPlaylist = ({ shouldShowNoData = true }: Props) => {
                       key={playlist?.id}
                       href={`/admin/dashboard/playlists/details/${playlist?.id}?name=${playlist?.name}`}
                     >
-                      <CommandItem className="cursor-pointer">
+                      <CommandItem className="cursor-pointer dark:text-gray-200 text-gray-800">
                         <Check />
                         <span className="w-full truncate">
                           {playlist?.name}

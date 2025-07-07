@@ -28,14 +28,24 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead className="text-center">Duration</TableHead>
-              <TableHead className="text-center">Size</TableHead>
-              <TableHead className="text-center">Actions</TableHead>
+              <TableHead className="dark:text-gray-200 text-gray-800">
+                Title
+              </TableHead>
+              <TableHead className="dark:text-gray-200 text-gray-800">
+                Owner
+              </TableHead>
+              <TableHead className="text-center dark:text-gray-200 text-gray-800">
+                Duration
+              </TableHead>
+              <TableHead className="text-center dark:text-gray-200 text-gray-800">
+                Size
+              </TableHead>
+              <TableHead className="text-center dark:text-gray-200 text-gray-800">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="dark:text-gray-200 text-gray-800">
             {videos.length === 0 ? (
               <TableRow>
                 <TableCell
@@ -66,9 +76,7 @@ const VideoTable = ({ videos = [], isLoading }: Props) => {
                     <Link
                       href={`/admin/dashboard/videos/details/${video?.slug}?title=${video?.title}`}
                     >
-                      <Button size="sm" variant="outline">
-                        Details
-                      </Button>
+                      <Button size="sm">Details</Button>
                     </Link>
                     <VideoActions videoId={video.id} />
                   </TableCell>

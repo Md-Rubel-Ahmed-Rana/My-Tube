@@ -15,15 +15,10 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { useGetAllVideosByAdminQuery } from "@/features/videos";
 import { IVideo } from "@/types/video.type";
-import NoDataFound from "../common/NoDataFound";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type Props = {
-  shouldShowNoData: boolean;
-};
-
-const VideoSelect = ({ shouldShowNoData = true }: Props) => {
+const VideosList = () => {
   const { data, isLoading } = useGetAllVideosByAdminQuery(
     { page: 1, limit: 10000 },
     { refetchOnMountOrArgChange: true }
@@ -32,10 +27,10 @@ const VideoSelect = ({ shouldShowNoData = true }: Props) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center mt-2">
+    <div className="flex flex-col justify-center items-center w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
-          className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-gray-800"
+          className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-gray-800 max-w-[400px] w-full"
           asChild
         >
           <Button
@@ -63,7 +58,7 @@ const VideoSelect = ({ shouldShowNoData = true }: Props) => {
                     <Link
                       onClick={() => setOpen(false)}
                       key={video?.id}
-                      href={`/admin/dashboard/videos/details/${video?.slug}?title=${video?.title}`}
+                      href={`/admin/dashboard/comments/video/?id=${video?.id}&title=${video?.title}`}
                     >
                       <CommandItem className="cursor-pointer dark:text-gray-200 text-gray-800">
                         <Check />
@@ -75,18 +70,8 @@ const VideoSelect = ({ shouldShowNoData = true }: Props) => {
           </Command>
         </PopoverContent>
       </Popover>
-
-      {!isLoading && (
-        <>
-          {shouldShowNoData && (
-            <NoDataFound message="No video found">
-              <p>You haven&apos;t selected any video yet</p>
-            </NoDataFound>
-          )}
-        </>
-      )}
     </div>
   );
 };
 
-export default VideoSelect;
+export default VideosList;

@@ -13,45 +13,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
-import { useGetAllVideosByAdminQuery } from "@/features/videos";
-import { IVideo } from "@/types/video.type";
-import NoDataFound from "../common/NoDataFound";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetAllUserByAdminQuery } from "@/features/user";
+import { IUser } from "@/types/user.type";
 
-type Props = {
-  shouldShowNoData: boolean;
-};
-
-const VideoSelect = ({ shouldShowNoData = true }: Props) => {
-  const { data, isLoading } = useGetAllVideosByAdminQuery(
-    { page: 1, limit: 10000 },
-    { refetchOnMountOrArgChange: true }
-  );
-  const videos = (data?.data?.videos || data?.data || []) as IVideo[];
+const UsersList = () => {
+  const { data, isLoading } = useGetAllUserByAdminQuery({});
+  const users = (data?.data || []) as IUser[];
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-col justify-center items-center mt-2">
+    <div className="flex flex-col justify-center items-center w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
-          className="bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-gray-800"
+          className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 max-w-[400px] w-full"
           asChild
         >
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="max-w-[500px] w-full justify-between"
+            className="w-full justify-between"
           >
-            Select a video...
+            Select an user...
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="max-w-[500px] w-full  bg-gray-100 dark:bg-gray-800 p-0">
           <Command className="bg-gray-100 dark:bg-gray-800 max-h-[300] h-full overflow-y-auto">
-            <CommandInput placeholder="Search videos..." />
-            <CommandEmpty>No video found.</CommandEmpty>
+            <CommandInput placeholder="Search user..." />
+            <CommandEmpty>No user found.</CommandEmpty>
             <CommandGroup className="h-96 overflow-auto">
               {isLoading
                 ? Array.from({ length: 10 }).map((_, idx) => (
@@ -59,15 +51,15 @@ const VideoSelect = ({ shouldShowNoData = true }: Props) => {
                       <Skeleton className="h-4 w-full bg-gray-300 dark:bg-gray-700  rounded" />
                     </div>
                   ))
-                : videos.map((video) => (
+                : users.map((user) => (
                     <Link
                       onClick={() => setOpen(false)}
-                      key={video?.id}
-                      href={`/admin/dashboard/videos/details/${video?.slug}?title=${video?.title}`}
+                      key={user?.id}
+                      href={`/admin/dashboard/comments/user/?id=${user?.id}&name=${user?.name}`}
                     >
-                      <CommandItem className="cursor-pointer dark:text-gray-200 text-gray-800">
+                      <CommandItem className="cursor-pointer text-gray-800 dark:text-gray-200">
                         <Check />
-                        <span className="w-full truncate">{video?.title}</span>
+                        <span className="w-full truncate">{user?.name}</span>
                       </CommandItem>
                     </Link>
                   ))}
@@ -75,18 +67,8 @@ const VideoSelect = ({ shouldShowNoData = true }: Props) => {
           </Command>
         </PopoverContent>
       </Popover>
-
-      {!isLoading && (
-        <>
-          {shouldShowNoData && (
-            <NoDataFound message="No video found">
-              <p>You haven&apos;t selected any video yet</p>
-            </NoDataFound>
-          )}
-        </>
-      )}
     </div>
   );
 };
 
-export default VideoSelect;
+export default UsersList;

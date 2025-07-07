@@ -41,9 +41,28 @@ export const commentApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["comment"],
     }),
+    // admin routes
     getCommentsStats: build.query({
       query: () => ({
         url: `/admin/comments/stats`,
+      }),
+      providesTags: ["comment"],
+    }),
+    getAllCommentsByAdmin: build.query({
+      query: () => ({
+        url: `/admin/comments`,
+      }),
+      providesTags: ["comment"],
+    }),
+    getAllCommentsByVideo: build.query({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/comments/video/${id}`,
+      }),
+      providesTags: ["comment"],
+    }),
+    getAllCommentsByUser: build.query({
+      query: ({ id }: { id: string }) => ({
+        url: `/admin/comments/user/${id}`,
       }),
       providesTags: ["comment"],
     }),
@@ -56,4 +75,7 @@ export const {
   useEditCommentMutation,
   useDeleteCommentMutation,
   useGetCommentsStatsQuery,
+  useGetAllCommentsByAdminQuery,
+  useGetAllCommentsByVideoQuery,
+  useGetAllCommentsByUserQuery,
 } = commentApi;
