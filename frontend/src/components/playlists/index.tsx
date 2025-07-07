@@ -15,6 +15,7 @@ import { useGetPlaylistsByAdminQuery } from "@/features/playlist";
 import { IPlaylist, PlaylistStatus } from "@/types/playlist.type";
 import PlaylistActions from "./PlaylistActions";
 import Link from "next/link";
+import { truncateText } from "@/utils/truncateText";
 
 const statusColorMap: Record<PlaylistStatus, string> = {
   [PlaylistStatus.PUBLIC]: "bg-green-100 text-green-700",
@@ -28,78 +29,82 @@ const AdminPlaylists = () => {
   const playlists = (data?.data || []) as IPlaylist[];
 
   return (
-    <Card className="bg-gray-100 dark:bg-gray-800">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">
-          Total Playlists: {playlists?.length || 0}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-gray-800 dark:text-gray-200">
-                  Name
-                </TableHead>
-                <TableHead className="text-gray-800 dark:text-gray-200">
-                  Status
-                </TableHead>
-                <TableHead className="text-gray-800 dark:text-gray-200">
-                  Videos
-                </TableHead>
-                <TableHead className="text-gray-800 dark:text-gray-200">
-                  Owner
-                </TableHead>
-                <TableHead className="text-right text-gray-800 dark:text-gray-200">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                <>
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <TableRow key={index}>
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <TableCell key={index}>
-                          <Skeleton className="h-4 bg-gray-300 dark:bg-gray-700 w-full" />
-                        </TableCell>
-                      ))}
+    <div className="p-2 lg:p-4">
+      <Card className="bg-gray-100 dark:bg-gray-800 px-0">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">
+            Total Playlists: {playlists?.length || 0}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-gray-800 dark:text-gray-200">
+                    Name
+                  </TableHead>
+                  <TableHead className="text-gray-800 dark:text-gray-200">
+                    Videos
+                  </TableHead>
+                  <TableHead className="text-gray-800 dark:text-gray-200">
+                    Owner
+                  </TableHead>
+                  <TableHead className="text-gray-800 dark:text-gray-200">
+                    Status
+                  </TableHead>
+                  <TableHead className="text-right text-gray-800 dark:text-gray-200">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <>
+                    {Array.from({ length: 6 }).map((_, index) => (
+                      <TableRow key={index}>
+                        {Array.from({ length: 6 }).map((_, index) => (
+                          <TableCell key={index}>
+                            <Skeleton className="h-4 bg-gray-300 dark:bg-gray-700 w-full" />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </>
+                ) : (
+                  playlists.map((playlist) => (
+                    <TableRow key={playlist?.id}>
+                      <TableCell>{truncateText(playlist?.name)}</TableCell>
+
+                      <TableCell>{playlist?.videoCount}</TableCell>
+                      <TableCell>{playlist?.user?.name}</TableCell>
+                      <TableCell>
+                        <span
+                          className={`px-2 py-1 text-xs rounded-md font-medium ${
+                            statusColorMap[playlist?.status as PlaylistStatus]
+                          }`}
+                        >
+                          {playlist?.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right flex items-center gap-2 justify-end">
+                        <Link
+                          href={`/admin/dashboard/playlists/details/${playlist?.id}?name=${playlist?.name}`}
+                        >
+                          <Button size={"xs"}>Details</Button>
+                        </Link>
+
+                        <PlaylistActions playlist={playlist} />
+                      </TableCell>
                     </TableRow>
-                  ))}
-                </>
-              ) : (
-                playlists.map((playlist) => (
-                  <TableRow key={playlist?.id}>
-                    <TableCell>{playlist?.name}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`px-2 py-1 text-xs rounded-md font-medium ${
-                          statusColorMap[playlist?.status as PlaylistStatus]
-                        }`}
-                      >
-                        {playlist?.status}
-                      </span>
-                    </TableCell>
-                    <TableCell>{playlist?.videoCount}</TableCell>
-                    <TableCell>{playlist?.user?.name}</TableCell>
-                    <TableCell className="text-right flex items-center gap-2 justify-end">
-                      <Link
-                        href={`/admin/dashboard/playlists/details/${playlist?.id}?name=${playlist?.name}`}
-                      >
-                        <Button size={"xs"}>Details</Button>
-                      </Link>
-                      <PlaylistActions status={playlist?.status} />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
