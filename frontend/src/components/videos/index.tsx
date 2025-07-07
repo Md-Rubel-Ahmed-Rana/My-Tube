@@ -19,7 +19,7 @@ const AdminVideos = () => {
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-2 lg:p-4 space-y-2">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Total Videos : {total}</h2>
         <div className="text-sm text-muted-foreground">

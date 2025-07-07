@@ -18,9 +18,7 @@ const VideoSearchForm = ({ setSearchText }: Props) => {
   }, [input]);
 
   useEffect(() => {
-    if (debouncedInput) {
-      setSearchText(debouncedInput);
-    }
+    setSearchText(debouncedInput);
   }, [debouncedInput, setSearchText]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
