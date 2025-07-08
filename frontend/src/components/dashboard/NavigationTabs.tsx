@@ -3,6 +3,7 @@ import Link from "next/link";
 import CreatePlaylist from "./playlist/CreatePlaylist";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import styles from "./NavigateTabs.module.css";
 
 const NavigationTabs = () => {
   const [open, setOpen] = useState(false);
@@ -12,7 +13,9 @@ const NavigationTabs = () => {
     pathname === path ? "!bg-blue-600 !text-white !hover:bg-blue-700" : "";
 
   return (
-    <div className="px-2 pt-3 lg:px-4 flex items-center flex-wrap gap-2">
+    <div
+      className={`px-2 pt-3 lg:px-4 pb-3 flex items-center w-full gap-2 overflow-x-auto ${styles["custom-scroll-hide"]}`}
+    >
       <Link href="/dashboard/videos">
         <Button
           size={"sm"}
@@ -37,10 +40,10 @@ const NavigationTabs = () => {
         </Button>
       </Link>
       <Link href={"/video/upload"}>
-        <Button>Upload Video</Button>
+        <Button size={"sm"}>Upload Video</Button>
       </Link>
       {pathname === "/dashboard/playlists" && (
-        <Button size={"sm"} onClick={() => setOpen(true)} variant="outline">
+        <Button size={"sm"} onClick={() => setOpen(true)}>
           Create Playlist
         </Button>
       )}
