@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import { passwordChangeSchema } from "@/schemas/password-change.schema";
+import { useRouter } from "next/router";
 
 type Props = {
   id: string;
@@ -23,6 +24,7 @@ type Props = {
   isUpdating: boolean;
   setOpen: (value: boolean) => void;
   open: boolean;
+  redirectTo: "/account/login" | "/admin/login";
 };
 
 type FormData = z.infer<typeof passwordChangeSchema>;
@@ -33,6 +35,7 @@ const ChangePasswordModal = ({
   open,
   reduxMutation,
   isUpdating,
+  redirectTo,
 }: Props) => {
   const {
     register,
@@ -42,7 +45,7 @@ const ChangePasswordModal = ({
   } = useForm<FormData>({
     resolver: zodResolver(passwordChangeSchema),
   });
-
+  const router = useRouter();
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -55,7 +58,8 @@ const ChangePasswordModal = ({
       {
         success: "Your password has been updated successfully",
         error: "Failed to update password",
-      }
+      },
+      { isRedirect: true, path: redirectTo, router }
     );
     reset();
     setOpen(false);
