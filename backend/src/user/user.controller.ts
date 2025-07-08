@@ -20,6 +20,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { UpdatePasswordDto } from "src/admin/dto/update-password.dto";
 import { Response } from "express";
 import { cookieOptions } from "src/utils/cookieOptions";
+import { ValidateObjectIdPipe } from "src/validations/validate-object-id.pipe";
 
 @Controller("user")
 export class UserController {
@@ -31,7 +32,7 @@ export class UserController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: Types.ObjectId) {
+  findOne(@Param("id", ValidateObjectIdPipe) id: Types.ObjectId) {
     return this.userService.findById(id);
   }
 
@@ -42,7 +43,7 @@ export class UserController {
 
   @Patch(":id")
   update(
-    @Param("id") id: Types.ObjectId,
+    @Param("id", ValidateObjectIdPipe) id: Types.ObjectId,
     @Body() updateUserDto: UpdateUserDto
   ) {
     return this.userService.update(id, updateUserDto);
@@ -53,15 +54,15 @@ export class UserController {
   @UseInterceptors(FileInterceptor("photo"))
   updateProfilePhoto(
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: { user: { id: Types.ObjectId } }
+    @Param("id", ValidateObjectIdPipe) id: Types.ObjectId
   ) {
-    return this.userService.updateProfilePhoto(req.user?.id, file);
+    return this.userService.updateProfilePhoto(id, file);
   }
 
   @Patch(":id/password")
   @UseGuards(AuthGuard)
   updatePassword(
-    @Param("id") id: string,
+    @Param("id", ValidateObjectIdPipe) id: string,
     @Body() updateAdminDto: UpdatePasswordDto,
     @Res({ passthrough: true }) res: Response
   ) {
@@ -74,8 +75,8 @@ export class UserController {
   @UseInterceptors(FileInterceptor("coverImage"))
   updateCoverImage(
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: { user: { id: Types.ObjectId } }
+    @Param("id", ValidateObjectIdPipe) id: Types.ObjectId
   ) {
-    return this.userService.updateCoverImage(req.user?.id, file);
+    return this.userService.updateCoverImage(id, file);
   }
 }
