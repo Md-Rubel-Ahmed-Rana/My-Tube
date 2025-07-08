@@ -15,11 +15,12 @@ import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUpdateAdminProfileImageMutation } from "@/features/admin";
 
 type Props = {
+  id: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
-const UpdateAdminProfileImageModal = ({ open, setOpen }: Props) => {
+const UpdateAdminProfileImageModal = ({ id, open, setOpen }: Props) => {
   const [updateProfileImage, { isLoading }] =
     useUpdateAdminProfileImageMutation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -39,7 +40,7 @@ const UpdateAdminProfileImageModal = ({ open, setOpen }: Props) => {
     const formData = new FormData();
     formData.append("photo", selectedFile);
 
-    await handleApiMutation(updateProfileImage, { formData }, 200, {
+    await handleApiMutation(updateProfileImage, { id, formData }, 200, {
       success: "✅ Profile image updated successfully!",
       error: "❌ Failed to update profile image.",
     });
