@@ -10,7 +10,7 @@ const adminApi = apiSlice.injectEndpoints({
         url: "/admin/login",
         body: data,
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: ["admin"],
     }),
     createAdmin: builder.mutation({
       query: (data: ICreateAdmin) => ({
@@ -18,7 +18,7 @@ const adminApi = apiSlice.injectEndpoints({
         url: "/admin",
         body: data,
       }),
-      invalidatesTags: ["user", "admin"],
+      invalidatesTags: ["admin"],
     }),
     getLoggedInAdmin: builder.query({
       query: () => ({
@@ -34,6 +34,38 @@ const adminApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["admin"],
     }),
+    updateAdminProfileImage: builder.mutation({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
+        method: "PATCH",
+        url: `admin/${id}/photo`,
+        body: formData,
+      }),
+      invalidatesTags: ["admin"],
+    }),
+    updateAdminName: builder.mutation({
+      query: ({ id, name }: { id: string; name: string }) => ({
+        method: "PATCH",
+        url: `admin/${id}`,
+        body: { name },
+      }),
+      invalidatesTags: ["admin"],
+    }),
+    updateAdminPassword: builder.mutation({
+      query: ({
+        id,
+        oldPassword,
+        newPassword,
+      }: {
+        id: string;
+        oldPassword: string;
+        newPassword: string;
+      }) => ({
+        method: "PATCH",
+        url: `admin/${id}/password`,
+        body: { oldPassword, newPassword },
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -42,4 +74,7 @@ export const {
   useGetLoggedInAdminQuery,
   useGetAllAdminsQuery,
   useCreateAdminMutation,
+  useUpdateAdminProfileImageMutation,
+  useUpdateAdminNameMutation,
+  useUpdateAdminPasswordMutation,
 } = adminApi;

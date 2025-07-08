@@ -36,6 +36,9 @@ const NavigationTabs = () => {
           Watch later
         </Button>
       </Link>
+      <Link href={"/video/upload"}>
+        <Button>Upload Video</Button>
+      </Link>
       {pathname === "/dashboard/playlists" && (
         <Button size={"sm"} onClick={() => setOpen(true)} variant="outline">
           Create Playlist
