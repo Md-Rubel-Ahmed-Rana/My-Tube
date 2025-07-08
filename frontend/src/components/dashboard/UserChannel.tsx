@@ -1,22 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { Button } from "@/components/ui/button";
 import { IUser } from "@/types/user.type";
-import { Camera, EllipsisVertical } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useState } from "react";
-import NameUpdateForm from "./NameUpdateForm";
-import UpdateProfileImageModal from "./UpdateProfileImageModal";
 import UserChannelSkeleton from "@/skeletons/UserChannelSkeleton";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import ChangePasswordModal from "../common/ChangePasswordModal";
-import { useUpdateUserPasswordMutation } from "@/features/user";
-import LogoutButton from "../common/LogoutButton";
+import UserChannelActions from "./UserChannelActions";
 
 type Props = {
   user: IUser;
@@ -24,11 +11,7 @@ type Props = {
 };
 
 const UserChannel = ({ isLoading, user }: Props) => {
-  const [isNameUpdate, setIsNameUpdate] = useState(false);
   const [isPhotoChange, setIsPhotoChange] = useState(false);
-  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
-  const [changePassword, { isLoading: isUpdating }] =
-    useUpdateUserPasswordMutation();
   return (
     <>
       <div className="relative w-full border-b-2">
@@ -53,9 +36,18 @@ const UserChannel = ({ isLoading, user }: Props) => {
 
               {/* Channel Text Info */}
               <div className="flex-1">
-                <h1 className="text-xl font-bold mt-2 sm:mt-0">
-                  {user?.name || ""}
-                </h1>
+                <div className="flex justify-between">
+                  <h1 className="lg:text-xl text-lg font-bold mt-2 sm:mt-0">
+                    {user?.name || ""}
+                  </h1>
+                  <div className="block lg:hidden">
+                    <UserChannelActions
+                      user={user}
+                      isPhotoChange={isPhotoChange}
+                      setIsPhotoChange={setIsPhotoChange}
+                    />
+                  </div>
+                </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   @{user?.username || ""}
                 </p>
@@ -67,74 +59,17 @@ const UserChannel = ({ isLoading, user }: Props) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 flex-wrap mt-2 sm:mt-0">
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      variant={"ghost"}
-                      size={"icon"}
-                      className="border bg-gray-300 dark:bg-gray-700"
-                    >
-                      <EllipsisVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => setIsNameUpdate(true)}
-                    >
-                      Change name
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => setIsPhotoChange(true)}
-                    >
-                      Change profile image
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => setIsUpdatePassword(true)}
-                    >
-                      Change password
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <LogoutButton />
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <div className="lg:block hidden">
+                <UserChannelActions
+                  user={user}
+                  isPhotoChange={isPhotoChange}
+                  setIsPhotoChange={setIsPhotoChange}
+                />
               </div>
             </div>
           </div>
         )}
       </div>
-
-      {isNameUpdate && (
-        <NameUpdateForm
-          id={user?.id}
-          name={user?.name}
-          setOpen={setIsNameUpdate}
-          open={isNameUpdate}
-        />
-      )}
-      {isPhotoChange && (
-        <UpdateProfileImageModal
-          id={user?.id}
-          open={isPhotoChange}
-          setOpen={setIsPhotoChange}
-        />
-      )}
-      {isUpdatePassword && (
-        <ChangePasswordModal
-          id={user?.id || user?._id}
-          isUpdating={isUpdating}
-          reduxMutation={changePassword}
-          open={isUpdatePassword}
-          setOpen={setIsUpdatePassword}
-          redirectTo="/account/login"
-        />
-      )}
     </>
   );
 };

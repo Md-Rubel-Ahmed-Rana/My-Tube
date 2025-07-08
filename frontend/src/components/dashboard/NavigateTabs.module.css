@@ -1,0 +1,18 @@
+/* NavigationTabs.module.css */
+.custom-scroll-hide {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.custom-scroll-hide::-webkit-scrollbar {
+    height: 2px;
+}
+
+.custom-scroll-hide::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scroll-hide::-webkit-scrollbar-thumb {
+    background-color: #94a3b8;
+    border-radius: 9999px;
+}
