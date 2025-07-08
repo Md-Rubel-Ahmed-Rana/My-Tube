@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 import Image from "next/image";
 import { formatDuration } from "@/utils/formatDuration";
+import RemoveWatchLaterVideo from "./RemoveWatchLaterVideo";
 
 type Props = {
   video: IVideo;
@@ -45,25 +46,28 @@ const VideoCard = ({ video }: Props) => {
         >
           {video?.title}
         </h2>
-        <div className="flex justify-between items-center gap-2">
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={video?.owner?.photo} alt="profile image" />
-                <AvatarFallback>
-                  {formatNameForImageFallback(video?.owner?.name)}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-            <p className="text-sm text-muted-foreground line-clamp-1">
+        <div className="flex justify-between items-center gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 w-full">
+            <div className="flex items-center gap-2">
               <Link
                 href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
               >
-                {video?.owner?.name}
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={video?.owner?.photo} alt="profile image" />
+                  <AvatarFallback>
+                    {formatNameForImageFallback(video?.owner?.name)}
+                  </AvatarFallback>
+                </Avatar>
               </Link>
-            </p>
+              <p className="text-sm text-muted-foreground line-clamp-1">
+                <Link
+                  href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
+                >
+                  {video?.owner?.name}
+                </Link>
+              </p>
+            </div>
+            <RemoveWatchLaterVideo id={video?.id} />
           </div>
         </div>
       </CardContent>

@@ -28,7 +28,7 @@ const WatchLaterVideos = () => {
             <div
               className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${
                 open ? 3 : 4
-              }`}
+              } gap-2`}
             >
               {videos?.map((video) => (
                 <VideoCard key={video?.id || video?.slug} video={video} />
