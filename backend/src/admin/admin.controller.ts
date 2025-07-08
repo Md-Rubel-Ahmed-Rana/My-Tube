@@ -78,13 +78,13 @@ export class AdminController {
     return this.adminService.updatePassword(id, updateAdminDto);
   }
 
-  @Patch("photo")
+  @Patch(":id/photo")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("photo"))
   updateProfilePhoto(
     @UploadedFile() file: Express.Multer.File,
-    @Req() req: { user: { id: string } }
+    @Param("id") id: string
   ) {
-    return this.adminService.updateProfilePhoto(req.user?.id, file);
+    return this.adminService.updateProfilePhoto(id, file);
   }
 }

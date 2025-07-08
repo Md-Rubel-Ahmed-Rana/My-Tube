@@ -71,7 +71,7 @@ export class AdminService {
   async findAll() {
     const admins = await this.adminModel.find({}).select("-password");
     return {
-      statusCode: HttpStatus.CREATED,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Admins retrieved successful!",
       data: admins,
@@ -81,7 +81,7 @@ export class AdminService {
   async findOne(id: string) {
     const admin = await this.adminModel.findById(id).select("-password");
     return {
-      statusCode: HttpStatus.CREATED,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Admin retrieved successful!",
       data: admin,
@@ -93,7 +93,7 @@ export class AdminService {
       $set: { ...updateAdminDto },
     });
     return {
-      statusCode: HttpStatus.CREATED,
+      statusCode: HttpStatus.OK,
       success: true,
       message: "Admin updated successful!",
       data: null,
