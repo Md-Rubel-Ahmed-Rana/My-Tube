@@ -21,12 +21,14 @@ import AdminLogout from "./AdminLogout";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useState } from "react";
 import UpdateAdminProfileImageModal from "./UpdateAdminProfileImageModal";
+import UpdateNameModal from "./UpdateNameModal";
 
 const NavUser = () => {
   const { isMobile } = useSidebar();
   const { data } = useGetLoggedInAdminQuery({});
   const admin = data?.data as IAdmin;
   const [isProfileImageUpdate, setIsProfileImageUpdate] = useState(false);
+  const [isNameUpdate, setIsNameUpdate] = useState(false);
   return (
     <>
       <SidebarMenu className="p-2 border-t">
@@ -74,13 +76,16 @@ const NavUser = () => {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem
+                  onClick={() => setIsNameUpdate(true)}
                   className="cursor-pointer"
-                  onClick={() => setIsProfileImageUpdate(true)}
                 >
                   <UserCog className="mr-2 h-4 w-4" />
-                  Update profile
+                  Update name
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  onClick={() => setIsProfileImageUpdate(true)}
+                  className="cursor-pointer"
+                >
                   <ImageIcon className="mr-2 h-4 w-4" />
                   Change photo
                 </DropdownMenuItem>
@@ -102,6 +107,14 @@ const NavUser = () => {
         <UpdateAdminProfileImageModal
           open={isProfileImageUpdate}
           setOpen={setIsProfileImageUpdate}
+        />
+      )}
+      {isNameUpdate && (
+        <UpdateNameModal
+          id={admin?.id || admin?._id}
+          name={admin?.name}
+          open={isNameUpdate}
+          setOpen={setIsNameUpdate}
         />
       )}
     </>
