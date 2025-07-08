@@ -35,9 +35,9 @@ const adminApi = apiSlice.injectEndpoints({
       providesTags: ["admin"],
     }),
     updateAdminProfileImage: builder.mutation({
-      query: ({ formData }: { formData: FormData }) => ({
+      query: ({ id, formData }: { id: string; formData: FormData }) => ({
         method: "PATCH",
-        url: `admin/photo`,
+        url: `admin/${id}/photo`,
         body: formData,
       }),
       invalidatesTags: ["admin"],

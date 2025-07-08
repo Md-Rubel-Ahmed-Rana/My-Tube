@@ -1,12 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/button";
 import { IUser } from "@/types/user.type";
-import { Camera } from "lucide-react";
-import Link from "next/link";
+import { Camera, EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 import NameUpdateForm from "./NameUpdateForm";
 import UpdateProfileImageModal from "./UpdateProfileImageModal";
 import UserChannelSkeleton from "@/skeletons/UserChannelSkeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import ChangePasswordModal from "../common/ChangePasswordModal";
+import { useUpdateUserPasswordMutation } from "@/features/user";
+import LogoutButton from "../common/LogoutButton";
 
 type Props = {
   user: IUser;
@@ -16,6 +26,9 @@ type Props = {
 const UserChannel = ({ isLoading, user }: Props) => {
   const [isNameUpdate, setIsNameUpdate] = useState(false);
   const [isPhotoChange, setIsPhotoChange] = useState(false);
+  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
+  const [changePassword, { isLoading: isUpdating }] =
+    useUpdateUserPasswordMutation();
   return (
     <>
       <div className="relative w-full border-b-2">
@@ -55,15 +68,42 @@ const UserChannel = ({ isLoading, user }: Props) => {
 
               {/* Action Buttons */}
               <div className="flex gap-2 flex-wrap mt-2 sm:mt-0">
-                <Button
-                  onClick={() => setIsNameUpdate(true)}
-                  variant="secondary"
-                >
-                  Edit Channel
-                </Button>
-                <Link href={"/video/upload"}>
-                  <Button>Upload Video</Button>
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button
+                      variant={"ghost"}
+                      size={"icon"}
+                      className="border bg-gray-300 dark:bg-gray-700"
+                    >
+                      <EllipsisVertical />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => setIsNameUpdate(true)}
+                    >
+                      Change name
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => setIsPhotoChange(true)}
+                    >
+                      Change profile image
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => setIsUpdatePassword(true)}
+                    >
+                      Change password
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer">
+                      <LogoutButton />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -83,6 +123,16 @@ const UserChannel = ({ isLoading, user }: Props) => {
           id={user?.id}
           open={isPhotoChange}
           setOpen={setIsPhotoChange}
+        />
+      )}
+      {isUpdatePassword && (
+        <ChangePasswordModal
+          id={user?.id || user?._id}
+          isUpdating={isUpdating}
+          reduxMutation={changePassword}
+          open={isUpdatePassword}
+          setOpen={setIsUpdatePassword}
+          redirectTo="/account/login"
         />
       )}
     </>

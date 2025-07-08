@@ -52,6 +52,22 @@ const userApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["user"],
     }),
+    updateUserPassword: builder.mutation({
+      query: ({
+        id,
+        oldPassword,
+        newPassword,
+      }: {
+        id: string;
+        oldPassword: string;
+        newPassword: string;
+      }) => ({
+        method: "PATCH",
+        url: `user/${id}/password`,
+        body: { oldPassword, newPassword },
+      }),
+      invalidatesTags: ["user"],
+    }),
     // Admin endpoints
     getUserStats: builder.query({
       query: () => ({
@@ -116,4 +132,5 @@ export const {
   useGetAllUserByAdminQuery,
   useUpdateUserAccountStatusMutation,
   useDeleteUserAccountMutation,
+  useUpdateUserPasswordMutation,
 } = userApi;

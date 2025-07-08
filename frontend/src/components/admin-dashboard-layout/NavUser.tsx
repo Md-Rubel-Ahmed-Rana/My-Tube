@@ -116,6 +116,7 @@ const NavUser = () => {
         <UpdateAdminProfileImageModal
           open={isProfileImageUpdate}
           setOpen={setIsProfileImageUpdate}
+          id={admin?.id || admin?._id}
         />
       )}
       {isNameUpdate && (
@@ -133,6 +134,7 @@ const NavUser = () => {
           reduxMutation={changePassword}
           open={isUpdatePassword}
           setOpen={setIsUpdatePassword}
+          redirectTo="/admin/login"
         />
       )}
     </>
