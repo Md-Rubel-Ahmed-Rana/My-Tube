@@ -42,6 +42,14 @@ const adminApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    updateAdminName: builder.mutation({
+      query: ({ id, name }: { id: string; name: string }) => ({
+        method: "PATCH",
+        url: `admin/${id}`,
+        body: { name },
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -51,4 +59,5 @@ export const {
   useGetAllAdminsQuery,
   useCreateAdminMutation,
   useUpdateAdminProfileImageMutation,
+  useUpdateAdminNameMutation,
 } = adminApi;
