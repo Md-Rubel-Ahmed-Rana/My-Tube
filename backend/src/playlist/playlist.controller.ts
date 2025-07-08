@@ -15,6 +15,7 @@ import { UpdatePlaylistDto } from "./dto/update-playlist.dto";
 import { ModifyVideoDto } from "./dto/modify-video.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 import { ReorderPlaylistDto } from "./dto/reorder-playlist.dto";
+import { ValidateObjectIdPipe } from "src/validations/validate-object-id.pipe";
 
 @Controller("playlist")
 export class PlaylistController {
@@ -34,12 +35,12 @@ export class PlaylistController {
 
   @Get("user/:userId")
   @UseGuards(AuthGuard)
-  getAllByUser(@Param("userId") userId: string) {
+  getAllByUser(@Param("userId", ValidateObjectIdPipe) userId: string) {
     return this.playlistService.getAllByUser(userId);
   }
 
   @Get(":id")
-  getOne(@Param("id") id: string) {
+  getOne(@Param("id", ValidateObjectIdPipe) id: string) {
     return this.playlistService.getOne(id);
   }
 
@@ -50,7 +51,7 @@ export class PlaylistController {
 
   @Patch(":id/reorder")
   reorder(
-    @Param("id") playlistId: string,
+    @Param("id", ValidateObjectIdPipe) playlistId: string,
     @Body() { videoIds }: ReorderPlaylistDto
   ) {
     return this.playlistService.reorderVideos(playlistId, videoIds);
@@ -58,20 +59,23 @@ export class PlaylistController {
 
   @Patch(":id")
   @UseGuards(AuthGuard)
-  update(@Param("id") id: string, @Body() updateDto: UpdatePlaylistDto) {
+  update(
+    @Param("id", ValidateObjectIdPipe) id: string,
+    @Body() updateDto: UpdatePlaylistDto
+  ) {
     return this.playlistService.update(id, updateDto);
   }
 
   @Delete(":id")
   @UseGuards(AuthGuard)
-  remove(@Param("id") id: string) {
+  remove(@Param("id", ValidateObjectIdPipe) id: string) {
     return this.playlistService.remove(id);
   }
 
   @Patch(":id/add-video")
   @UseGuards(AuthGuard)
   addVideo(
-    @Param("id") playlistId: string,
+    @Param("id", ValidateObjectIdPipe) playlistId: string,
     @Body() { videoId }: ModifyVideoDto
   ) {
     return this.playlistService.addVideo(playlistId, videoId);
@@ -80,7 +84,7 @@ export class PlaylistController {
   @Patch(":id/remove-video")
   @UseGuards(AuthGuard)
   removeVideo(
-    @Param("id") playlistId: string,
+    @Param("id", ValidateObjectIdPipe) playlistId: string,
     @Body() { videoId }: ModifyVideoDto
   ) {
     return this.playlistService.removeVideo(playlistId, videoId);
