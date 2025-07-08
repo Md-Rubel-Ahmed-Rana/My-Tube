@@ -15,13 +15,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useGetLoggedInAdminQuery } from "@/features/admin";
+import {
+  useGetLoggedInAdminQuery,
+  useUpdateAdminPasswordMutation,
+} from "@/features/admin";
 import { IAdmin } from "@/types/admin.type";
 import AdminLogout from "./AdminLogout";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useState } from "react";
 import UpdateAdminProfileImageModal from "./UpdateAdminProfileImageModal";
 import UpdateNameModal from "./UpdateNameModal";
+import ChangePasswordModal from "../common/ChangePasswordModal";
 
 const NavUser = () => {
   const { isMobile } = useSidebar();
@@ -29,6 +33,8 @@ const NavUser = () => {
   const admin = data?.data as IAdmin;
   const [isProfileImageUpdate, setIsProfileImageUpdate] = useState(false);
   const [isNameUpdate, setIsNameUpdate] = useState(false);
+  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
+  const [changePassword, { isLoading }] = useUpdateAdminPasswordMutation();
   return (
     <>
       <SidebarMenu className="p-2 border-t">
@@ -89,7 +95,10 @@ const NavUser = () => {
                   <ImageIcon className="mr-2 h-4 w-4" />
                   Change photo
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  onClick={() => setIsUpdatePassword(true)}
+                  className="cursor-pointer"
+                >
                   <KeyRound className="mr-2 h-4 w-4" />
                   Change password
                 </DropdownMenuItem>
@@ -115,6 +124,15 @@ const NavUser = () => {
           name={admin?.name}
           open={isNameUpdate}
           setOpen={setIsNameUpdate}
+        />
+      )}
+      {isUpdatePassword && (
+        <ChangePasswordModal
+          id={admin?.id || admin?._id}
+          isUpdating={isLoading}
+          reduxMutation={changePassword}
+          open={isUpdatePassword}
+          setOpen={setIsUpdatePassword}
         />
       )}
     </>
