@@ -10,7 +10,7 @@ const adminApi = apiSlice.injectEndpoints({
         url: "/admin/login",
         body: data,
       }),
-      invalidatesTags: ["user"],
+      invalidatesTags: ["admin"],
     }),
     createAdmin: builder.mutation({
       query: (data: ICreateAdmin) => ({
@@ -18,7 +18,7 @@ const adminApi = apiSlice.injectEndpoints({
         url: "/admin",
         body: data,
       }),
-      invalidatesTags: ["user", "admin"],
+      invalidatesTags: ["admin"],
     }),
     getLoggedInAdmin: builder.query({
       query: () => ({
@@ -34,6 +34,14 @@ const adminApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["admin"],
     }),
+    updateAdminProfileImage: builder.mutation({
+      query: ({ formData }: { formData: FormData }) => ({
+        method: "PATCH",
+        url: `admin/photo`,
+        body: formData,
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -42,4 +50,5 @@ export const {
   useGetLoggedInAdminQuery,
   useGetAllAdminsQuery,
   useCreateAdminMutation,
+  useUpdateAdminProfileImageMutation,
 } = adminApi;
