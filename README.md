@@ -13,14 +13,16 @@ A full-featured YouTube-like video platform built using **Next.js**, **NestJS**,
 
 ## 🚀 Features
 
-- 🧑‍💻 User registration & authentication (JWT)
-- 🎥 Upload, stream & manage videos via Cloudinary
-- 💬 Comment on videos
-- ❤️ Like & unlike videos
-- 🔍 Search & filter videos
-- 📺 Watch history & subscriptions
-- 🛠️ Admin dashboard for video & user management
-- 📱 Fully responsive design with Shadcn UI & Tailwind CSS
+- Modern YouTube‑style UI built with Next.js and Shadcn‑UI for a clean, responsive video platform
+- Server‑side NestJS backend powering video streaming and API endpoints, enabling robust and scalable operations
+- Video uploads via Cloudinary, handling storage, encoding, and delivery with ease
+- User authentication & authorization, likely JWT‑based, enabling secure user sessions and access control
+- MongoDB with Mongoose, managing video metadata, users, comments, likes, and more
+- ElasticSearch integration for fast, efficient searching across videos and metadata
+- Redux Toolkit state management handling global app state like user profile, video lists
+- Responsive design with Tailwind CSS, ensuring the site adapts smoothly across devices
+- Rich features mimic YouTube — including video playback, like/dislike, search, and potentially comments and subscriptions
+- Full‑stack TypeScript implementation, delivering type safety and cohesion across frontend and backend
 
 ---
 
