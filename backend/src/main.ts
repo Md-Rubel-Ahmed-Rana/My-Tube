@@ -3,6 +3,9 @@ import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import * as morgan from "morgan";
 import * as cookieParser from "cookie-parser";
+import { SocketIoService } from "./socket/socket-io.service";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +20,29 @@ async function bootstrap() {
   app.use(morgan("dev"));
   app.use(cookieParser());
 
-  await app.listen(port);
-  console.log(`My Tube Server is running on http://localhost:${port}`);
+  const expressApp = app.getHttpAdapter().getInstance();
+  const server = createServer(expressApp);
+
+  const io = new SocketIOServer(server, {
+    cors: { origin: "*" },
+  });
+
+  io.on("connection", (socket) => {
+    console.log(`Socket connected to: ${socket.id}`);
+
+    socket.on("join", (userId: string) => {
+      console.log(`User joined room: ${userId}`);
+      socket.join(userId);
+    });
+  });
+
+  const socketIoService = app.get(SocketIoService);
+  socketIoService.setSocketServer(io);
+
+  await app.init();
+
+  server.listen(port, () => {
+    console.log(`My Tube Server is running on http://localhost:${port}`);
+  });
 }
 bootstrap();

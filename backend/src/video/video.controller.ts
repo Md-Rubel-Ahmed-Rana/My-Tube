@@ -24,6 +24,7 @@ import { QueryVideoDto } from "./dto/query-video.dto";
 import { Types } from "mongoose";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { PublicAuthGuard } from "src/auth/public-auth.guard";
+import { videoUploadConfig } from "src/config/multer.config";
 
 @Controller("video")
 export class VideoController {
@@ -77,10 +78,13 @@ export class VideoController {
   @Post("upload")
   @UseGuards(AuthGuard)
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "video", maxCount: 1 },
-      { name: "thumbnail", maxCount: 1 },
-    ])
+    FileFieldsInterceptor(
+      [
+        { name: "video", maxCount: 1 },
+        { name: "thumbnail", maxCount: 1 },
+      ],
+      videoUploadConfig
+    )
   )
   async upload(
     @UploadedFiles()
