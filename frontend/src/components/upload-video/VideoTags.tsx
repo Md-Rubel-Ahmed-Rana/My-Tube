@@ -50,14 +50,22 @@ const VideoTags = ({ form, isLoading }: Props) => {
       control={form.control}
       name="tags"
       render={() => (
-        <FormItem>
+        <FormItem className="border">
           <FormLabel>Tags</FormLabel>
           <div className="flex items-center gap-2">
             <FormControl>
               <Input
+                type="text"
+                autoComplete="off"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onFocus={(e) => {
+                  e.currentTarget.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                }}
                 placeholder="e.g. music, tutorial"
                 disabled={isLoading}
               />
