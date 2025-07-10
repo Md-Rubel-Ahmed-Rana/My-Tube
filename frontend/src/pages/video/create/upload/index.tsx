@@ -1,5 +1,5 @@
 import SEOHead from "@/components/common/SEOHead";
-import VideoUploader from "@/components/upload-video/VideoUploader";
+import UploadVideo from "@/components/upload-video/UploadVideo";
 import RootLayout from "@/layout/RootLayout";
 import { ReactElement } from "react";
 
@@ -7,7 +7,7 @@ const VideoMetadataPage = () => {
   return (
     <>
       <SEOHead title="Video Upload | MyTube" />
-      <VideoUploader />
+      <UploadVideo />
     </>
   );
 };
