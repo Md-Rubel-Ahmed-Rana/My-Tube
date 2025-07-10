@@ -7,6 +7,7 @@ import { Video, VideoSchema } from "./video.schema";
 import { ChannelService } from "src/channel/channel.service";
 import { ChannelModule } from "src/channel/channel.module";
 import { AdminVideoController } from "./admin-video.controller";
+import { SocketIoService } from "src/socket/socket-io.service";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { AdminVideoController } from "./admin-video.controller";
     ChannelModule,
   ],
   controllers: [VideoController, AdminVideoController],
-  providers: [VideoService, ConfigService, ChannelService],
-  exports: [MongooseModule, ChannelService],
+  providers: [VideoService, ConfigService, ChannelService, SocketIoService],
+  exports: [MongooseModule, ChannelService, SocketIoService],
 })
 export class VideoModule {}
