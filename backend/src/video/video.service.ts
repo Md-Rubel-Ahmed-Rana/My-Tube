@@ -23,6 +23,9 @@ import { ChannelService } from "src/channel/channel.service";
 import { GetUserDto } from "src/user/dto/get-user.dto";
 import { VideoStatus } from "./enums";
 import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
+import { SocketIoService } from "src/socket/socket-io.service";
+import { Transform } from "stream";
+import * as fs from "fs";
 
 @Injectable()
 export class VideoService {
@@ -32,7 +35,8 @@ export class VideoService {
     private channelService: ChannelService,
     @InjectModel(Video.name) private videoModel: Model<Video>,
     private eventEmitter: EventEmitter2,
-    private readonly emitter: TypedEventEmitter
+    private readonly emitter: TypedEventEmitter,
+    private socketService: SocketIoService
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -67,6 +71,70 @@ export class VideoService {
       );
       const readable = Readable.from(video.buffer);
       readable.pipe(uploadStream);
+    });
+  }
+
+  async streamUploadVideoWithSocket(
+    video: Express.Multer.File,
+    userId: string
+  ): Promise<{
+    publicId: string;
+    videoUrl: string;
+    duration: number;
+    bytes: number;
+  }> {
+    const io = this.socketService.getSocketServer();
+    const logger = this.logger;
+    const filePath = video.path;
+    const stats = fs.statSync(filePath);
+    const totalSize = stats.size;
+    let uploadedSize = 0;
+
+    return new Promise((resolve, reject) => {
+      const progressStream = new Transform({
+        transform(chunk, encoding, callback) {
+          uploadedSize += chunk.length;
+          const percent = Math.round((uploadedSize / totalSize) * 100);
+          logger.log(`The video is uploaded: ${percent}%`);
+          io.to(userId).emit("video-upload-progress", { percent });
+          callback(null, chunk);
+        },
+      });
+
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: "video",
+          chunk_size: 6000000,
+          folder: "my-tube/videos",
+        },
+        (error, result) => {
+          // Always delete the local file
+          fs.unlink(filePath, (unlinkErr) => {
+            if (unlinkErr)
+              logger.error("Error deleting local file:", unlinkErr);
+          });
+
+          if (error) {
+            return reject(error);
+          }
+
+          return resolve({
+            publicId: result.public_id,
+            videoUrl: result.secure_url,
+            duration: result.duration,
+            bytes: result.bytes,
+          });
+        }
+      );
+
+      fs.createReadStream(filePath)
+        .on("error", (err) => {
+          // Cleanup on read stream error
+          fs.unlink(filePath, () => {});
+          reject(err);
+        })
+        .pipe(progressStream)
+        .pipe(uploadStream);
     });
   }
 
@@ -116,7 +184,7 @@ export class VideoService {
     }
 
     const { publicId, videoUrl, duration, bytes } =
-      await this.streamUploadVideo(video);
+      await this.streamUploadVideoWithSocket(video, body.owner.toString());
 
     if (
       thumbnail &&
@@ -170,7 +238,7 @@ export class VideoService {
     return {
       statusCode: HttpStatus.CREATED,
       success: true,
-      message: "Your video uploaded successfully",
+      message: "Your video has been uploaded successfully",
       data: null,
     };
   }
