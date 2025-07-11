@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useState } from "react";
 import VideoDeleteModal from "./VideoDeleteModal";
 import VideoThumbnailUpdateModal from "./VideoThumbnailUpdateModal";
+import VideoStatuses from "./VideoStatus";
 
 type Props = {
   video: IVideo;
@@ -47,6 +48,9 @@ const MyVideoActions = ({ video }: Props) => {
             className="w-full cursor-pointer"
           >
             Change thumbnail
+          </DropdownMenuItem>
+          <DropdownMenuItem className="w-full cursor-pointer">
+            <VideoStatuses id={video?.id} status={video?.status} />
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={(e) => {

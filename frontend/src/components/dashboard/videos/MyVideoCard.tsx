@@ -28,7 +28,7 @@ const MyVideoCard = ({ video }: Props) => {
         </div>
 
         <CardContent className="flex-1 flex flex-col justify-between p-0">
-          <div>
+          <div className="space-y-1">
             <div className="flex justify-between gap-1">
               <CardTitle className="text-xl font-semibold">
                 {video.title}
@@ -40,6 +40,12 @@ const MyVideoCard = ({ video }: Props) => {
             <p className="text-sm text-muted-foreground">
               Uploaded {moment(new Date(video.createdAt)).fromNow()}
             </p>
+            <Badge
+              className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+              variant="outline"
+            >
+              {video?.status}
+            </Badge>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-muted-foreground">
