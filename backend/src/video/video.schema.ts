@@ -40,7 +40,7 @@ export class Video extends Document {
   @Prop({ default: null })
   duration: number;
 
-  @Prop({ enum: VideoStatus, default: VideoStatus.PENDING })
+  @Prop({ enum: VideoStatus, default: VideoStatus.PUBLISHED })
   status: VideoStatus;
 }
 

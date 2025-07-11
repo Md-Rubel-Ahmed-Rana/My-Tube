@@ -25,6 +25,7 @@ import { Types } from "mongoose";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { PublicAuthGuard } from "src/auth/public-auth.guard";
 import { videoUploadConfig } from "src/config/multer.config";
+import { VideoStatus } from "./enums";
 
 @Controller("video")
 export class VideoController {
@@ -132,6 +133,15 @@ export class VideoController {
   @UseGuards(AuthGuard)
   update(@Param("id") id: Types.ObjectId, @Body() body: UpdateVideoDto) {
     return this.videoService.update(id, body);
+  }
+
+  @Patch(":id/status")
+  @UseGuards(AuthGuard)
+  updateVideoStatus(
+    @Param("id") id: Types.ObjectId,
+    @Body("status") status: VideoStatus
+  ) {
+    return this.videoService.updateVideoStatus(id, status);
   }
 
   @Patch(":id/views")
