@@ -27,7 +27,7 @@ const animatedComponents = makeAnimated();
 
 const VideoMetadata = () => {
   const router = useRouter();
-  const { theme } = useTheme();
+  const { resolvedTheme: theme } = useTheme();
 
   const form = useForm<VideoMetadataSchema>({
     resolver: zodResolver(videoMetadataSchema),

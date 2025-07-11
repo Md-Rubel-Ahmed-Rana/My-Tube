@@ -57,11 +57,11 @@ const MyVideoCard = ({ video }: Props) => {
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {formatDuration(video.duration)}
+              {formatDuration(video?.duration || 0)}
             </div>
             <div className="flex items-center gap-1">
               <FileText className="w-4 h-4" />
-              {formatBytes(video.size)}
+              {formatBytes(video?.size || 0)}
             </div>
           </div>
 

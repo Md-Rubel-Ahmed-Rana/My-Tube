@@ -42,6 +42,8 @@ const UploadVideo = () => {
         router,
       }
     );
+    localStorage.removeItem("thumbnail");
+    localStorage.removeItem("video-metadata");
   };
 
   console.log({ ...data, video });
