@@ -107,8 +107,7 @@ export class VideoService {
           chunk_size: 6000000,
           folder: "my-tube/videos",
         },
-        (error, result) => {
-          // Always delete the local file
+        async (error, result) => {
           fs.unlink(filePath, (unlinkErr) => {
             if (unlinkErr)
               logger.error("Error deleting local file:", unlinkErr);
@@ -118,18 +117,32 @@ export class VideoService {
             return reject(error);
           }
 
-          return resolve({
-            publicId: result.public_id,
-            videoUrl: result.secure_url,
-            duration: result.duration,
-            bytes: result.bytes,
-          });
+          try {
+            // Refetch the full video metadata to get bytes and duration
+            const fullResult = await cloudinary.api.resource(result.public_id, {
+              resource_type: "video",
+            });
+
+            return resolve({
+              publicId: fullResult.public_id,
+              videoUrl: fullResult.secure_url,
+              duration: fullResult.duration,
+              bytes: fullResult.bytes,
+            });
+          } catch (metaError) {
+            logger.error("Error fetching full video metadata:", metaError);
+            return resolve({
+              publicId: result.public_id,
+              videoUrl: result.secure_url,
+              duration: 0,
+              bytes: 0,
+            });
+          }
         }
       );
 
       fs.createReadStream(filePath)
         .on("error", (err) => {
-          // Cleanup on read stream error
           fs.unlink(filePath, () => {});
           reject(err);
         })
@@ -551,6 +564,18 @@ export class VideoService {
       statusCode: HttpStatus.OK,
       success: true,
       message: "Video updated successfully",
+      data: null,
+    };
+  }
+
+  async updateVideoStatus(videoId: Types.ObjectId, status: VideoStatus) {
+    await this.videoModel.findByIdAndUpdate(videoId, {
+      $set: { status: status },
+    });
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: `Video status updated to '${status}' successfully`,
       data: null,
     };
   }
