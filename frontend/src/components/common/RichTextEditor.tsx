@@ -7,10 +7,7 @@ const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
   ["blockquote", "code-block"],
   [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  ["link", "formula"],
-  [{ script: "sub" }, { script: "super" }],
-  [{ indent: "-1" }, { indent: "+1" }],
-  [{ direction: "rtl" }],
+  ["link"],
   [{ color: [] }, { background: [] }],
   [{ font: [] }],
   [{ align: [] }],
@@ -32,7 +29,6 @@ const RichTextEditor = ({ value, onChange, isDisabled = false }: Props) => {
       modules={{ toolbar: toolbarOptions }}
       readOnly={isDisabled}
       className="border rounded-md"
-      placeholder="Write your video description here..."
     />
   );
 };

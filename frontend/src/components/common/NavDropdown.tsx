@@ -74,6 +74,11 @@ const NavDropdown = () => {
               My Videos
             </DropdownMenuItem>
           </Link>
+          <Link href="/video/upload" className="w-full">
+            <DropdownMenuItem className="w-full mb-2 cursor-pointer">
+              Upload video
+            </DropdownMenuItem>
+          </Link>
           <LogoutButton />
           <DropdownMenuItem className="w-full block lg:hidden">
             <ModeToggle />
