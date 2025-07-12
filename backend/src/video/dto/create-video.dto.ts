@@ -5,6 +5,8 @@ export class CreateVideoDto {
 
   description: string;
 
+  category: string;
+
   tags: string[];
 
   videoUrl: string;
