@@ -41,7 +41,7 @@ const VideoThumbnail = () => {
   };
 
   return (
-    <div className="h-[80vh] w-full flex justify-center items-center">
+    <div className="h-[80vh] w-full flex justify-center items-center p-2 lg:p-4">
       <Card className="w-full max-w-xl mx-auto bg-gray-100 dark:bg-gray-800 px-2">
         <CardHeader>
           <CardTitle>Upload Video Thumbnail</CardTitle>
