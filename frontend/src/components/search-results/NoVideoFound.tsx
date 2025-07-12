@@ -19,7 +19,7 @@ const NoVideoFound = () => {
           Try adjusting your search or be the first to upload a video on this
           topic.
         </p>
-        <Link href="/video/upload">
+        <Link href="/video/create/metadata">
           <Button size="sm" className="mt-2">
             Upload Video
           </Button>

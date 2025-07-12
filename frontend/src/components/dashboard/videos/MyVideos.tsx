@@ -28,7 +28,7 @@ const MyVideos = () => {
                 <p className="text-muted-foreground">
                   To upload your favorite video click below button
                 </p>
-                <Link href={"/video/upload"}>
+                <Link href={"/video/create/metadata"}>
                   <Button variant="ghost" className="border">
                     <Plus className="h-5 w-5" />
                     <span>Upload</span>

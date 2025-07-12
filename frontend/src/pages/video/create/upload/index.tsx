@@ -1,6 +1,7 @@
 import SEOHead from "@/components/common/SEOHead";
 import UploadVideo from "@/components/upload-video/UploadVideo";
 import RootLayout from "@/layout/RootLayout";
+import isAuthenticate from "@/middleware/ProtectRoute";
 import { ReactElement } from "react";
 
 const VideoMetadataPage = () => {
@@ -16,5 +17,4 @@ VideoMetadataPage.getLayout = function (page: ReactElement) {
   return <RootLayout>{page}</RootLayout>;
 };
 
-// export default isAuthenticate(VideoMetadataPage);
-export default VideoMetadataPage;
+export default isAuthenticate(VideoMetadataPage);

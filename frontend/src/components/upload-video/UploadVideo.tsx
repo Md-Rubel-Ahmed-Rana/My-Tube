@@ -18,6 +18,7 @@ const UploadVideo = () => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
+    formData.append("category", data.category);
     formData.append("video", video as unknown as File);
     data.tags.forEach((tag) => formData.append("tags[]", tag));
     if (data.thumbnail) {
@@ -46,14 +47,12 @@ const UploadVideo = () => {
     localStorage.removeItem("video-metadata");
   };
 
-  console.log({ ...data, video });
-
   return (
     <div>
       {isLoading ? (
         <VideoUploadProgress />
       ) : (
-        <div className="w-full flex justify-center items-center py-5 lg:py-10">
+        <div className="w-full flex justify-center items-center py-5 px-2 lg:px-4 lg:py-10">
           <Card className="w-full max-w-xl mx-auto bg-gray-200 dark:bg-gray-800">
             <CardHeader>
               <CardTitle>Upload Your Video</CardTitle>

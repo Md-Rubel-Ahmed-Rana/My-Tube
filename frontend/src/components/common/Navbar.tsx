@@ -33,7 +33,7 @@ const Navbar = () => {
           </div>
 
           <div className=" hidden lg:block">
-            <Link href={"/video/upload"}>
+            <Link href={"/video/create/metadata"}>
               <Button variant="ghost" className="border">
                 <Plus className="h-5 w-5" />
                 <span>Upload</span>
