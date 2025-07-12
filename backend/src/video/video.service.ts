@@ -117,27 +117,12 @@ export class VideoService {
             return reject(error);
           }
 
-          try {
-            // Refetch the full video metadata to get bytes and duration
-            const fullResult = await cloudinary.api.resource(result.public_id, {
-              resource_type: "video",
-            });
-
-            return resolve({
-              publicId: fullResult.public_id,
-              videoUrl: fullResult.secure_url,
-              duration: fullResult.duration,
-              bytes: fullResult.bytes,
-            });
-          } catch (metaError) {
-            logger.error("Error fetching full video metadata:", metaError);
-            return resolve({
-              publicId: result.public_id,
-              videoUrl: result.secure_url,
-              duration: 0,
-              bytes: 0,
-            });
-          }
+          return resolve({
+            publicId: result.public_id,
+            videoUrl: result.secure_url,
+            duration: result.duration,
+            bytes: result.bytes,
+          });
         }
       );
 
@@ -158,6 +143,10 @@ export class VideoService {
         HttpStatus.BAD_REQUEST
       );
     }
+    const logger = this.logger;
+
+    const filePath = thumbnail.path;
+
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -165,13 +154,27 @@ export class VideoService {
           folder: "my-tube/video-thumbnails",
         },
         async (error, result) => {
-          if (error) return reject(error);
-          resolve(result.secure_url);
+          try {
+            if (error) return reject(error);
+
+            fs.unlink(filePath, (unlinkErr) => {
+              if (unlinkErr)
+                logger.error("Error deleting local file:", unlinkErr);
+            });
+
+            resolve(result.secure_url);
+          } catch (err) {
+            reject(err);
+          }
         }
       );
 
-      const readableStream = Readable.from(thumbnail.buffer);
-      readableStream.pipe(uploadStream);
+      fs.createReadStream(filePath)
+        .on("error", (err) => {
+          fs.unlink(filePath, () => {});
+          reject(err);
+        })
+        .pipe(uploadStream);
     });
   }
 
@@ -199,12 +202,7 @@ export class VideoService {
     const { publicId, videoUrl, duration, bytes } =
       await this.streamUploadVideoWithSocket(video, body.owner.toString());
 
-    if (
-      thumbnail &&
-      typeof thumbnail === "object" &&
-      "buffer" in thumbnail &&
-      Buffer.isBuffer(thumbnail.buffer)
-    ) {
+    if (thumbnail && typeof thumbnail === "object" && "path" in thumbnail) {
       body.thumbnailUrl = await this.uploadVideoThumbnail(thumbnail);
     } else {
       body.thumbnailUrl = await this.getDefaultThumbnail(publicId);
