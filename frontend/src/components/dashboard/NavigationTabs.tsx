@@ -39,7 +39,7 @@ const NavigationTabs = () => {
           Watch later
         </Button>
       </Link>
-      <Link href={"/video/upload"}>
+      <Link href={"/video/create/metadata"}>
         <Button size={"sm"}>Upload Video</Button>
       </Link>
       {pathname === "/dashboard/playlists" && (
