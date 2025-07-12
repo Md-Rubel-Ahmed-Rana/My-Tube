@@ -125,6 +125,14 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["video"],
     }),
+    updateVideoStatus: build.mutation({
+      query: ({ id, status }: { id: string; status: string }) => ({
+        method: "PATCH",
+        url: `video/${id}/status`,
+        body: { status },
+      }),
+      invalidatesTags: ["video"],
+    }),
     // admin endpoints
     getVideosStats: build.query({
       query: () => ({
@@ -198,4 +206,5 @@ export const {
   useGetVideosByChannelQuery,
   useUpdateVideoStatusByAdminMutation,
   useDeleteVideoPermanentlyMutation,
+  useUpdateVideoStatusMutation,
 } = videoApi;

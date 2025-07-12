@@ -18,7 +18,7 @@ const MyVideoCard = ({ video }: Props) => {
   return (
     <Link href={makeVideoWatchPath(video)}>
       <Card className=" bg-gray-100 dark:bg-gray-800 flex flex-col md:flex-row gap-4 p-4 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-        <div className="relative w-full md:w-64 h-36 md:h-40 rounded-lg overflow-hidden">
+        <div className="relative w-full md:w-64 h-36 md:h-48 rounded-lg overflow-hidden">
           <Image
             src={video.thumbnailUrl}
             alt={video.title}
@@ -28,7 +28,7 @@ const MyVideoCard = ({ video }: Props) => {
         </div>
 
         <CardContent className="flex-1 flex flex-col justify-between p-0">
-          <div>
+          <div className="space-y-1">
             <div className="flex justify-between gap-1">
               <CardTitle className="text-xl font-semibold">
                 {video.title}
@@ -39,6 +39,20 @@ const MyVideoCard = ({ video }: Props) => {
             </div>
             <p className="text-sm text-muted-foreground">
               Uploaded {moment(new Date(video.createdAt)).fromNow()}
+            </p>
+            <Badge
+              className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+              variant="outline"
+            >
+              {video?.status}
+            </Badge>
+            <p className="mt-2">
+              <Badge
+                className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                variant="outline"
+              >
+                {video?.category || "category"}{" "}
+              </Badge>
             </p>
           </div>
 

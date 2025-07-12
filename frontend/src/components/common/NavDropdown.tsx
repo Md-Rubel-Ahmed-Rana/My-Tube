@@ -74,7 +74,7 @@ const NavDropdown = () => {
               My Videos
             </DropdownMenuItem>
           </Link>
-          <Link href="/video/upload" className="w-full">
+          <Link href="/video/create/metadata" className="w-full">
             <DropdownMenuItem className="w-full mb-2 cursor-pointer">
               Upload video
             </DropdownMenuItem>
