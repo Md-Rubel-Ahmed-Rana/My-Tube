@@ -222,6 +222,7 @@ export class VideoService {
       views: 0,
       owner: new Types.ObjectId(body.owner),
       slug: Slugify.generateVideoSlug(body.title, publicId),
+      category: body?.category || "",
     };
 
     const uploadedVideo: any = await this.videoModel.create(newVideoData);

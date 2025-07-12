@@ -10,6 +10,9 @@ export class Video extends Document {
   @Prop({ required: false, default: "" })
   description: string;
 
+  @Prop({ required: false, default: "" })
+  category: string;
+
   @Prop({ required: true })
   videoUrl: string;
 
