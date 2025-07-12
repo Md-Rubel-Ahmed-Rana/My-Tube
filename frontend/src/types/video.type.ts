@@ -3,6 +3,7 @@ export type IVideo = {
   id: string;
   title: string;
   description: string;
+  category: string;
   slug: string;
   status: VideoStatus;
   tags: string[];
