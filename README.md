@@ -11,6 +11,12 @@ A full-featured YouTube-like video platform built using **Next.js**, **NestJS**,
 
 ---
 
+## 📑 MyTube API Documentation
+- 📝 **Postman Documentation:** [View API Docs](https://documenter.getpostman.com/view/30109120/2sB34hFzcu)
+- 🌐 **Base URL:** `https://api-my-tube.onrender.com/api/v1`
+
+---
+
 ## 🚀 Features
 
 - Modern YouTube‑style UI built with Next.js and Shadcn‑UI for a clean, responsive video platform
