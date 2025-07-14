@@ -16,6 +16,7 @@ import { ModifyVideoDto } from "./dto/modify-video.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 import { ReorderPlaylistDto } from "./dto/reorder-playlist.dto";
 import { ValidateObjectIdPipe } from "src/validations/validate-object-id.pipe";
+import { Types } from "mongoose";
 
 @Controller("playlist")
 export class PlaylistController {
@@ -37,6 +38,14 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   getAllByUser(@Param("userId", ValidateObjectIdPipe) userId: string) {
     return this.playlistService.getAllByUser(userId);
+  }
+
+  @Get("public/:userId")
+  @UseGuards(AuthGuard)
+  getChannelPublicPlaylists(
+    @Param("userId", ValidateObjectIdPipe) userId: string
+  ) {
+    return this.playlistService.getChannelPublicPlaylists(userId);
   }
 
   @Get(":id")
@@ -88,5 +97,13 @@ export class PlaylistController {
     @Body() { videoId }: ModifyVideoDto
   ) {
     return this.playlistService.removeVideo(playlistId, videoId);
+  }
+  @Patch(":id/status")
+  @UseGuards(AuthGuard)
+  updatePlaylistStatus(
+    @Param("id", ValidateObjectIdPipe) playlistId: Types.ObjectId,
+    @Body() { status }: UpdatePlaylistDto
+  ) {
+    return this.playlistService.updatePlaylistStatus(playlistId, status);
   }
 }
