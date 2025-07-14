@@ -16,6 +16,7 @@ import { AdminModule } from "./admin/admin.module";
 import { UserActivityModule } from "./user-activity/user-activity.module";
 import { CoreModule } from "./core/core.module";
 import { WatchLaterModule } from './watch-later/watch-later.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { WatchLaterModule } from './watch-later/watch-later.module';
     AdminModule,
     UserActivityModule,
     WatchLaterModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

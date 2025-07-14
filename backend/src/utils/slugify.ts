@@ -33,4 +33,9 @@ export class Slugify {
     const uuid = this.uuidPart(2, "");
     return `${usernameSlug}-${nameSlug}-${uuid}`;
   }
+  static generateCategorySlug(name: string): string {
+    const nameSlug = slugify(name, this.slugOptions);
+    const uuid = this.uuidPart(2, "");
+    return `${nameSlug}-${uuid}`;
+  }
 }
