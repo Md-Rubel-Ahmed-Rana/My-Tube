@@ -47,6 +47,23 @@ export class PlaylistService {
     };
   }
 
+  async getChannelPublicPlaylists(channelId: string) {
+    const playlists = await this.playlistModel
+      .find({ user: channelId, status: PlaylistStatus.PUBLIC })
+      .populate([
+        {
+          path: "videos",
+          select: "title slug",
+        },
+      ]);
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlists fetched successfully",
+      data: playlists,
+    };
+  }
+
   async getOne(id: string) {
     const playlist = await this.playlistModel.findById(id).populate([
       {
@@ -335,6 +352,16 @@ export class PlaylistService {
       message: "Playlists analytics retrieved successfully",
       success: true,
       data: playlists[0],
+    };
+  }
+
+  async updatePlaylistStatus(id: Types.ObjectId, status: PlaylistStatus) {
+    await this.playlistModel.findByIdAndUpdate(id, { $set: { status } });
+    return {
+      statusCode: HttpStatus.OK,
+      message: `Playlist status updated to ${status} successfully`,
+      success: true,
+      data: null,
     };
   }
 }
