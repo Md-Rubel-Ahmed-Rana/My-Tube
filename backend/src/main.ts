@@ -6,6 +6,7 @@ import * as cookieParser from "cookie-parser";
 import { SocketIoService } from "./socket/socket-io.service";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { MongoExceptionFilter } from "./common/filters/mongo-exception.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +17,7 @@ async function bootstrap() {
     origin: ["http://localhost:3000", "https://my-tubes.vercel.app"],
     credentials: true,
   });
+  app.useGlobalFilters(new MongoExceptionFilter());
   app.setGlobalPrefix("/api/v1");
   app.use(morgan("dev"));
   app.use(cookieParser());
