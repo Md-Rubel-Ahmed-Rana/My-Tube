@@ -15,6 +15,8 @@ import { z } from "zod";
 import { ICategory } from "@/types/category.type";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { useUpdateCategoryMutation } from "@/features/category";
+import { handleApiMutation } from "@/utils/handleApiMutation";
 
 const UpdateCategorySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -31,6 +33,7 @@ type Props = {
 };
 
 const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
+  const [update, { isLoading }] = useUpdateCategoryMutation();
   const {
     register,
     handleSubmit,
@@ -45,7 +48,7 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
     },
   });
 
-  const handleUpdateCategory = (data: UpdateCategoryFormData) => {
+  const handleUpdateCategory = async (data: UpdateCategoryFormData) => {
     const updatedFields: Partial<UpdateCategoryFormData> = {};
 
     if (data.name !== category.name) {
@@ -65,7 +68,11 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
       return;
     }
 
-    console.log("Updated Fields:", updatedFields);
+    await handleApiMutation(
+      update,
+      { id: category?._id, data: updatedFields },
+      200
+    );
   };
 
   useEffect(() => {
@@ -89,7 +96,7 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
         >
           <div className="space-y-1">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" {...register("name")} />
+            <Input disabled={isLoading} id="name" {...register("name")} />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
@@ -97,7 +104,12 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
 
           <div className="space-y-1">
             <Label htmlFor="description">Description</Label>
-            <Textarea id="description" {...register("description")} rows={3} />
+            <Textarea
+              disabled={isLoading}
+              id="description"
+              {...register("description")}
+              rows={3}
+            />
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}
@@ -107,7 +119,12 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
 
           <div className="space-y-1">
             <Label htmlFor="priority">Priority</Label>
-            <Input id="priority" type="number" {...register("priority")} />
+            <Input
+              disabled={isLoading}
+              id="priority"
+              type="number"
+              {...register("priority")}
+            />
             {errors.priority && (
               <p className="text-red-500 text-sm">{errors.priority.message}</p>
             )}
@@ -115,10 +132,14 @@ const CategoryUpdateModal = ({ category, open, setOpen }: Props) => {
 
           <DialogFooter>
             <div className="flex justify-between items-center w-full">
-              <Button type="button" onClick={() => setOpen(false)}>
+              <Button
+                disabled={isLoading}
+                type="button"
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting || isLoading}>
                 {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </div>
