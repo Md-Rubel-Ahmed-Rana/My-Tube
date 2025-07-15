@@ -7,20 +7,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ICategory } from "@/types/category.type";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Loader2, MoreVertical } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import CategoryActions from "./CategoryActions";
 
 type Props = {
   isLoading: boolean;
@@ -107,17 +101,7 @@ const CategoryTable = ({ categories = [], isLoading }: Props) => {
                   {cat.is_active ? "Yes" : "No"}
                 </TableCell>
                 <TableCell className="dark:text-gray-200 text-gray-800">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <CategoryActions category={cat} />
                 </TableCell>
               </TableRow>
             ))
