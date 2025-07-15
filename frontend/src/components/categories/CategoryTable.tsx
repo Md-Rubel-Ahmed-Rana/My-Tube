@@ -27,7 +27,7 @@ type Props = {
   categories: ICategory[];
 };
 
-const CategoryTable = ({ categories, isLoading }: Props) => {
+const CategoryTable = ({ categories = [], isLoading }: Props) => {
   return (
     <div className="border rounded-lg">
       <Table>
@@ -76,7 +76,7 @@ const CategoryTable = ({ categories, isLoading }: Props) => {
               </TableCell>
             </TableRow>
           ) : (
-            categories.map((cat) => (
+            categories?.map((cat) => (
               <TableRow key={cat._id}>
                 <TableCell className="dark:text-gray-200 text-gray-800">
                   {cat.name}
