@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ICategorySchema } from "@/schemas/category.schema";
 import apiSlice from "../api";
 
 interface GetAllCategoriesParams {
@@ -24,7 +25,25 @@ export const categoryApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["categories"],
     }),
+    getUsedCategories: build.query({
+      query: () => ({
+        url: `/category/with-videos`,
+      }),
+      providesTags: ["categories"],
+    }),
+    createCategory: build.mutation({
+      query: ({ data }: { data: ICategorySchema }) => ({
+        url: `/category`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["categories"],
+    }),
   }),
 });
 
-export const { useGetAllCategoriesQuery } = categoryApi;
+export const {
+  useGetAllCategoriesQuery,
+  useGetUsedCategoriesQuery,
+  useCreateCategoryMutation,
+} = categoryApi;
