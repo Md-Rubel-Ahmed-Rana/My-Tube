@@ -19,6 +19,16 @@ export const adminBreadcrumbMap: Record<string, string[]> = {
   "/admin/dashboard/videos/pending": ["Manage Videos", "Pending Videos"],
   "/admin/dashboard/videos/deleted": ["Manage Videos", "Deleted Videos"],
 
+  "/admin/dashboard/categories": ["Manage Categories", "Categories"],
+  "/admin/dashboard/categories/used": [
+    "Manage Categories",
+    "Use categories in videos",
+  ],
+  "/admin/dashboard/categories/create": [
+    "Manage Categories",
+    "Create category",
+  ],
+
   "/admin/dashboard/playlists": ["Manage Playlists", "All Playlists"],
   "/admin/dashboard/playlists/stats": ["Manage Playlists", "Playlist Stats"],
   "/admin/dashboard/playlists/details": [

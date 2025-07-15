@@ -15,6 +15,9 @@ import {
   MessageCircle,
   MessageSquareText,
   MessageSquare,
+  PlusCircle,
+  FolderOpen,
+  Folder,
 } from "lucide-react";
 
 import {
@@ -100,6 +103,28 @@ const navMain = [
         title: "Video by channel",
         url: `${rootPath}/videos/channel`,
         icon: Film,
+      },
+    ],
+  },
+  {
+    title: "Manage categories",
+    icon: ListChecks,
+    isActive: false,
+    items: [
+      {
+        title: "All categories",
+        url: `${rootPath}/categories`,
+        icon: Folder,
+      },
+      {
+        title: "Used in videos",
+        url: `${rootPath}/categories/used`,
+        icon: FolderOpen,
+      },
+      {
+        title: "Create category",
+        url: `${rootPath}/categories/create`,
+        icon: PlusCircle,
       },
     ],
   },
