@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { videoTags } from "@/constants/videoTags";
-import { videoCategories } from "@/constants/videoCategories";
 import {
   videoMetadataSchema,
   VideoMetadataSchema,
@@ -22,6 +21,7 @@ import {
 import RichTextEditor from "../common/RichTextEditor";
 import CreatableSelect from "react-select/creatable";
 import makeAnimated from "react-select/animated";
+import VideoCategoryList from "./VideoCategoryList";
 
 const animatedComponents = makeAnimated();
 
@@ -41,7 +41,7 @@ const VideoMetadata = () => {
 
   const onSubmit = (data: VideoMetadataSchema) => {
     localStorage.setItem("video-metadata", JSON.stringify(data));
-    router.push("/video/create/thumbnail");
+    router.push("/video/create/playlist");
   };
 
   return (
@@ -72,17 +72,7 @@ const VideoMetadata = () => {
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <CreatableSelect
-                  isClearable
-                  options={videoCategories}
-                  onChange={(val) => field.onChange(val?.value ?? "")}
-                  value={
-                    videoCategories.find((c) => c.value === field.value) || null
-                  }
-                  placeholder="Search or add category"
-                  styles={reactSelectStyles((theme as string) || "light")}
-                  className="text-gray-800 dark:text-gray-200"
-                />
+                <VideoCategoryList field={field} />
               </FormControl>
               <FormMessage />
             </FormItem>
