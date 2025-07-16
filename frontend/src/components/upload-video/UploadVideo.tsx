@@ -25,6 +25,10 @@ const UploadVideo = () => {
       formData.append("thumbnail", data.thumbnail);
     }
 
+    if (data.playlistId) {
+      formData.append("playlistId", data.playlistId);
+    }
+
     await handleUploadVideo(formData);
   };
 
@@ -45,6 +49,7 @@ const UploadVideo = () => {
     );
     localStorage.removeItem("thumbnail");
     localStorage.removeItem("video-metadata");
+    localStorage.removeItem("playlistId");
   };
 
   return (
@@ -58,9 +63,11 @@ const UploadVideo = () => {
               <CardTitle>Upload Your Video</CardTitle>
             </CardHeader>
             <VideoUploader setVideoFile={setVideo} />
-            <Button className="mt-4 w-11/12 mx-auto" onClick={handleSubmit}>
-              Upload Video
-            </Button>
+            {video && (
+              <Button className="mt-4 w-11/12 mx-auto" onClick={handleSubmit}>
+                Upload Video
+              </Button>
+            )}
           </Card>
         </div>
       )}
