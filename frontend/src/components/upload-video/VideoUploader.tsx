@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { CardContent } from "@/components/ui/card";
 import { UploadCloud } from "lucide-react";
@@ -11,12 +11,17 @@ const MAX_SIZE = 100 * 1024 * 1024;
 
 type Props = {
   setVideoFile: (videoFile: File | null) => void;
+  setVideoPreview: (value: string | null) => void;
+  videoPreview: string | null;
 };
 
-const VideoUploader = ({ setVideoFile }: Props) => {
+const VideoUploader = ({
+  setVideoFile,
+  setVideoPreview,
+  videoPreview,
+}: Props) => {
   const { data } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
-  const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
   // connect socket.io
   useJoinRoom(user?.id || user?._id);
@@ -28,7 +33,7 @@ const VideoUploader = ({ setVideoFile }: Props) => {
       setVideoFile(file);
       setVideoPreview(URL.createObjectURL(file));
     },
-    [setVideoFile]
+    [setVideoFile, setVideoPreview]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
