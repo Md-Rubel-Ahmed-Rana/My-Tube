@@ -22,12 +22,15 @@ import RichTextEditor from "../common/RichTextEditor";
 import CreatableSelect from "react-select/creatable";
 import makeAnimated from "react-select/animated";
 import VideoCategoryList from "./VideoCategoryList";
+import useGetLocalStorageData from "@/hooks/useGetLocalStorageData";
+import { useEffect } from "react";
 
 const animatedComponents = makeAnimated();
 
 const VideoMetadata = () => {
   const router = useRouter();
   const { resolvedTheme: theme } = useTheme();
+  const data = useGetLocalStorageData();
 
   const form = useForm<VideoMetadataSchema>({
     resolver: zodResolver(videoMetadataSchema),
@@ -43,6 +46,18 @@ const VideoMetadata = () => {
     localStorage.setItem("video-metadata", JSON.stringify(data));
     router.push("/video/create/playlist");
   };
+
+  // set default values from local storage
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        title: data.title || "",
+        tags: data.tags || [],
+        description: data.description || "",
+        category: data.category || "",
+      });
+    }
+  }, [data, form]);
 
   return (
     <Form {...form}>
