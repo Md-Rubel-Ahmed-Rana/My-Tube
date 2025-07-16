@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ThumbnailImageCrop from "./ThumbnailImageCrop";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
+import { toast } from "sonner";
 
 const cn = (...classes: (string | boolean | undefined)[]) =>
   classes.filter(Boolean).join(" ");
@@ -38,6 +39,12 @@ const VideoThumbnail = () => {
   const handleContinue = () => {
     localStorage.setItem("thumbnail", imageSrc as string);
     router.push("/video/create/upload");
+  };
+
+  const handleEdit = () => {
+    toast.info(
+      "Thank you for your interest! The thumbnail editing feature is currently unavailable as we're still working on it. Stay tuned — it will be available very soon!"
+    );
   };
 
   return (
@@ -87,10 +94,11 @@ const VideoThumbnail = () => {
           </div>
 
           {imageSrc && (
-            <div className="my-3 w-full px-3">
+            <div className="my-3 w-full flex items-center justify-between">
+              <Button onClick={handleEdit}>Edit</Button>
               <Button
                 onClick={handleContinue}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white"
               >
                 Continue
               </Button>

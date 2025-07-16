@@ -1,13 +1,13 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { CardContent } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { UploadCloud } from "lucide-react";
 import { useJoinRoom } from "@/hooks/useJoinRoom";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
+import { toast } from "sonner";
 
-const MAX_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_SIZE = 100 * 1024 * 1024;
 
 type Props = {
   setVideoFile: (videoFile: File | null) => void;
@@ -16,7 +16,6 @@ type Props = {
 const VideoUploader = ({ setVideoFile }: Props) => {
   const { data } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
-  const [error, setError] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
   // connect socket.io
@@ -26,15 +25,6 @@ const VideoUploader = ({ setVideoFile }: Props) => {
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (!file) return;
-
-      if (file.size > MAX_SIZE) {
-        setError("Video must be less than 100MB.");
-        setVideoFile(null);
-        setVideoPreview(null);
-        return;
-      }
-
-      setError(null);
       setVideoFile(file);
       setVideoPreview(URL.createObjectURL(file));
     },
@@ -48,6 +38,18 @@ const VideoUploader = ({ setVideoFile }: Props) => {
     },
     multiple: false,
     maxSize: MAX_SIZE,
+    validator: (file) => {
+      if (file.size > MAX_SIZE) {
+        toast.warning("Video must be less than 100MB.");
+        setVideoFile(null);
+        setVideoPreview(null);
+        return {
+          code: "file-too-large",
+          message: "Video must be less than 100MB.",
+        };
+      }
+      return null;
+    },
   });
 
   return (
@@ -71,14 +73,6 @@ const VideoUploader = ({ setVideoFile }: Props) => {
           Only video files. Max size: 100MB.
         </p>
       </div>
-
-      {error && (
-        <Alert variant="destructive" className="mt-4">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
       {videoPreview && (
         <div className="mt-6">
           <p className="text-sm font-medium mb-2">Preview:</p>

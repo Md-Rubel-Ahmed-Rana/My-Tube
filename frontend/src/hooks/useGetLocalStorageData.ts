@@ -9,6 +9,7 @@ interface VideoMetadata {
 
 interface VideoData extends VideoMetadata {
   thumbnail: File | null;
+  playlistId: string | null;
 }
 
 const useGetLocalStorageData = () => {
@@ -18,11 +19,13 @@ const useGetLocalStorageData = () => {
     description: "",
     category: "",
     thumbnail: null,
+    playlistId: null,
   });
 
   useEffect(() => {
     const metadataFromStorage = localStorage.getItem("video-metadata");
     const thumbnailFromStorage = localStorage.getItem("thumbnail");
+    const playlistId = localStorage.getItem("playlistId");
 
     let parsedMetadata: VideoMetadata = {
       title: "",
@@ -41,9 +44,32 @@ const useGetLocalStorageData = () => {
 
     if (thumbnailFromStorage) {
       const file = base64ToFile(thumbnailFromStorage, "thumbnail.png");
-      setData({ ...parsedMetadata, thumbnail: file });
+      setData((prev) => ({
+        ...parsedMetadata,
+        thumbnail: file,
+        playlistId: prev.playlistId,
+      }));
     } else {
-      setData({ ...parsedMetadata, thumbnail: null });
+      setData((prev) => ({
+        ...parsedMetadata,
+        thumbnail: null,
+        playlistId: prev.playlistId,
+      }));
+    }
+
+    if (playlistId) {
+      const playlist = JSON.parse(playlistId);
+      setData((prev) => ({
+        ...parsedMetadata,
+        thumbnail: prev.thumbnail,
+        playlistId: playlist,
+      }));
+    } else {
+      setData((prev) => ({
+        ...parsedMetadata,
+        thumbnail: prev.thumbnail,
+        playlistId: null,
+      }));
     }
   }, []);
 
@@ -51,7 +77,7 @@ const useGetLocalStorageData = () => {
 };
 
 // Helper to convert base64 string to File
-function base64ToFile(base64: string, filename: string): File {
+const base64ToFile = (base64: string, filename: string): File => {
   const arr = base64.split(",");
   const mime = arr[0].match(/:(.*?);/)?.[1] || "";
   const bstr = atob(arr[1]);
@@ -63,6 +89,6 @@ function base64ToFile(base64: string, filename: string): File {
   }
 
   return new File([u8arr], filename, { type: mime });
-}
+};
 
 export default useGetLocalStorageData;
