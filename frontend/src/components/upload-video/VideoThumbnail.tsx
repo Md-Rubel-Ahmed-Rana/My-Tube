@@ -1,16 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ThumbnailImageCrop from "./ThumbnailImageCrop";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
+import useGetLocalStorageData from "@/hooks/useGetLocalStorageData";
 
 const cn = (...classes: (string | boolean | undefined)[]) =>
   classes.filter(Boolean).join(" ");
 
 const VideoThumbnail = () => {
+  const data = useGetLocalStorageData();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -46,6 +48,15 @@ const VideoThumbnail = () => {
       "Thank you for your interest! The thumbnail editing feature is currently unavailable as we're still working on it. Stay tuned — it will be available very soon!"
     );
   };
+
+  // set default thumbnail from local storage id exist
+  useEffect(() => {
+    if (data.thumbnail) {
+      const reader = new FileReader();
+      reader.onload = () => setImageSrc(reader.result as string);
+      reader.readAsDataURL(data.thumbnail);
+    }
+  }, [data]);
 
   return (
     <div className="h-[80vh] w-full flex justify-center items-center p-2 lg:p-4">
