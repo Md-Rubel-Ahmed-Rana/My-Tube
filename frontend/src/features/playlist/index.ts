@@ -30,7 +30,15 @@ export const playlistApi = apiSlice.injectEndpoints({
     >({
       query: ({ slug }) => ({
         url: `/playlist/slug/${slug}`,
-        method: "GET",
+      }),
+      providesTags: ["playlist"],
+    }),
+    getUserPublicPlaylists: builder.query<
+      IApiResponse<IPlaylist[]>,
+      { userId: string }
+    >({
+      query: ({ userId }) => ({
+        url: `/playlist/public/${userId}`,
       }),
       providesTags: ["playlist"],
     }),
@@ -133,4 +141,5 @@ export const {
   useGetPlaylistDetailsAdminQuery,
   useUpdatePlaylistStatusByAdminMutation,
   useDeletePlaylistPermanentlyMutation,
+  useGetUserPublicPlaylistsQuery,
 } = playlistApi;
