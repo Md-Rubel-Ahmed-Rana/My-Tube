@@ -26,7 +26,7 @@ const ChannelVideos = () => {
       <ChannelCoverImage user={user} isLoading={isChannelLoading} />
 
       <UserChannel user={user} isLoading={isChannelLoading} />
-      <ChannelTabs />
+      <ChannelTabs user={user} />
       {isLoading ? (
         <VideoLoadingSkeleton />
       ) : (
