@@ -26,6 +26,12 @@ import { TypedEventEmitter } from "src/core/typed-event-emitter.service";
 import { SocketIoService } from "src/socket/socket-io.service";
 import { Transform } from "stream";
 import * as fs from "fs";
+import axios from "axios";
+import * as FormData from "form-data";
+import { promisify } from "util";
+import { getVideoDurationInSeconds } from "get-video-duration";
+
+const unlinkAsync = promisify(fs.unlink);
 
 @Injectable()
 export class VideoService {
@@ -136,6 +142,55 @@ export class VideoService {
     });
   }
 
+  async uploadVideoWithProgress(
+    filePath: string,
+    userId: string
+  ): Promise<{
+    publicId: string;
+    videoUrl: string;
+    duration: number;
+    bytes: number;
+  }> {
+    const io = this.socketService.getSocketServer();
+    const logger = this.logger;
+
+    const form = new FormData();
+    form.append("file", fs.createReadStream(filePath));
+    form.append("upload_preset", "my_tube_unsigned");
+    form.append("folder", "my-tube/videos");
+
+    const totalLength = fs.statSync(filePath).size;
+
+    const response = await axios.post(
+      "https://api.cloudinary.com/v1_1/dv2ocmcyo/video/upload",
+      form,
+      {
+        headers: form.getHeaders(),
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded / totalLength) * 100
+          );
+          io.to(userId).emit("video-upload-progress", { percent });
+          logger.log(`Uploading: ${percent}%`);
+        },
+      }
+    );
+    const { public_id, secure_url, bytes } = response.data;
+
+    const duration = await getVideoDurationInSeconds(filePath);
+
+    await unlinkAsync(filePath);
+
+    return {
+      publicId: public_id,
+      videoUrl: secure_url,
+      duration,
+      bytes,
+    };
+  }
+
   async uploadVideoThumbnail(thumbnail: Express.Multer.File): Promise<string> {
     if (!thumbnail) {
       throw new HttpException(
@@ -189,6 +244,73 @@ export class VideoService {
       secure: true,
     });
   }
+
+  // async create(
+  //   video: Express.Multer.File,
+  //   thumbnail: Express.Multer.File,
+  //   body: CreateVideoDto
+  // ) {
+  //   if (!video) {
+  //     throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
+  //   }
+
+  //   const filePath = video.path;
+
+  //   const { publicId, duration, bytes, videoUrl } =
+  //     await this.uploadVideoWithProgress(filePath, body.owner.toString());
+
+  //   if (thumbnail && typeof thumbnail === "object" && "path" in thumbnail) {
+  //     body.thumbnailUrl = await this.uploadVideoThumbnail(thumbnail);
+  //   } else {
+  //     body.thumbnailUrl = await this.getDefaultThumbnail(publicId);
+  //   }
+
+  //   const newVideoData: CreateVideoDto = {
+  //     publicId,
+  //     videoUrl,
+  //     thumbnailUrl: body.thumbnailUrl,
+  //     duration,
+  //     size: bytes,
+  //     tags: parseField(body?.tags),
+  //     title: body.title,
+  //     description: body.description,
+  //     dislikes: [],
+  //     likes: [],
+  //     views: 0,
+  //     owner: new Types.ObjectId(body.owner),
+  //     slug: Slugify.generateVideoSlug(body.title, publicId),
+  //     category: body?.category || "",
+  //   };
+
+  //   const uploadedVideo: any = await this.videoModel.create(newVideoData);
+
+  //   const newVideo: any = await this.videoModel
+  //     .findById(uploadedVideo._id)
+  //     .populate("owner", "-password");
+
+  //   if (body?.playlistId) {
+  //     this.eventEmitter.emit("video-added-to-playlist", {
+  //       playlistId: body.playlistId,
+  //       videoId: newVideo?.id || newVideo?._id,
+  //     });
+  //   }
+
+  //   // fire event for new-video-uploaded
+  //   this.eventEmitter.emit("new-video-upload.created", {
+  //     id: newVideo?.id || newVideo?._id,
+  //     title: newVideo?.title || "",
+  //     description: newVideo?.description || "",
+  //     tags: newVideo?.tags || [],
+  //     channel: newVideo?.owner?.name || "",
+  //   });
+
+  //   return {
+  //     statusCode: HttpStatus.CREATED,
+  //     success: true,
+  //     message: "Your video has been uploaded successfully",
+  //     data: null,
+  //   };
+  // }
 
   async create(
     video: Express.Multer.File,
