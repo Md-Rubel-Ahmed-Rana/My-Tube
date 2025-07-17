@@ -58,6 +58,14 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["playlist"],
     }),
+    updatePlaylistStatus: builder.mutation({
+      query: ({ id, status }: { id: string; status: PlaylistStatus }) => ({
+        url: `/playlist/${id}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ["playlist"],
+    }),
     reorderPlaylistVideos: builder.mutation({
       query: ({ id, videoIds }: { id: string; videoIds: string[] }) => ({
         url: `/playlist/${id}/reorder`,
@@ -142,4 +150,5 @@ export const {
   useUpdatePlaylistStatusByAdminMutation,
   useDeletePlaylistPermanentlyMutation,
   useGetUserPublicPlaylistsQuery,
+  useUpdatePlaylistStatusMutation,
 } = playlistApi;
