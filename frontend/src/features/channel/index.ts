@@ -6,19 +6,19 @@ export const channelApi = apiSlice.injectEndpoints({
       query: ({ channelId }: { channelId: string }) => ({
         url: `/channels/is-subscribed/${channelId}`,
       }),
-      providesTags: ["channel", "video"],
+      providesTags: ["channel", "video", "user"],
     }),
     myChannels: build.query({
       query: () => ({
         url: `/channels/me`,
       }),
-      providesTags: ["channel", "video"],
+      providesTags: ["channel", "video", "user"],
     }),
     getTopChannels: build.query({
       query: () => ({
         url: `/channels/top`,
       }),
-      providesTags: ["channel", "video"],
+      providesTags: ["channel", "video", "user"],
     }),
     subscribeChannel: build.mutation({
       query: ({ channelId }: { channelId: string }) => ({
@@ -26,7 +26,7 @@ export const channelApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: { channel: channelId },
       }),
-      invalidatesTags: ["channel", "video"],
+      invalidatesTags: ["channel", "video", "user"],
     }),
     unsubscribeChannel: build.mutation({
       query: ({ channelId }: { channelId: string }) => ({
@@ -34,14 +34,14 @@ export const channelApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: { channel: channelId },
       }),
-      invalidatesTags: ["channel", "video"],
+      invalidatesTags: ["channel", "video", "user"],
     }),
     // admin endpoints
     getChannelsStats: build.query({
       query: () => ({
         url: `/admin/channels/stats`,
       }),
-      providesTags: ["channel", "video"],
+      providesTags: ["channel", "video", "user"],
     }),
   }),
 });
