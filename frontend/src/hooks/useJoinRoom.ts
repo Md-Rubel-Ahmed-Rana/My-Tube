@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { io, Socket } from "socket.io-client";
+import { toast } from "sonner";
 const server = process.env.NEXT_PUBLIC_ROOT_API as string;
 
 export const useJoinRoom = (userId: string) => {
@@ -11,7 +12,7 @@ export const useJoinRoom = (userId: string) => {
     if (!router.isReady) return;
 
     if (!userId) {
-      console.warn("No userId found in route params.");
+      toast.info("No userId found in route params.");
       return;
     }
 
@@ -19,7 +20,7 @@ export const useJoinRoom = (userId: string) => {
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("Socket connected with ID:", socket.id);
+      toast.info(`Socket connected with ID: ${userId}`);
       socket.emit("join", userId);
     });
 

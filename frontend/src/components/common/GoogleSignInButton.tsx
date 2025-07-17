@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { baseApi } from "@/features/api";
+import { toast } from "sonner";
 
 type Props = {
   isDisabled?: boolean;
@@ -14,8 +15,8 @@ const GoogleSignInButton = ({ isDisabled = false }: Props) => {
     setLoading(true);
     try {
       window.open(`${baseApi}/auth/google`, "_self");
-    } catch (error) {
-      console.error("Google Sign-In Error:", error);
+    } catch {
+      toast.error("Google Sign-In Error");
     } finally {
       setLoading(false);
     }

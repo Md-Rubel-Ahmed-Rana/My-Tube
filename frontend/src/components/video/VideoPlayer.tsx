@@ -31,8 +31,6 @@ const VideoPlayer = ({
       router.push(shuffleNextPath);
     } else if (nextPath && !shouldLoop) {
       router.push(nextPath);
-    } else {
-      console.log("Reached end of playlist.");
     }
   };
 

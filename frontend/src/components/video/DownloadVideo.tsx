@@ -89,7 +89,6 @@ const DownloadVideo = ({ video, from }: Props) => {
         toast.warning("Download canceled.");
       } else {
         toast.error("Failed to download video.");
-        console.error("Download error:", error);
       }
     } finally {
       setIsLoading(false);

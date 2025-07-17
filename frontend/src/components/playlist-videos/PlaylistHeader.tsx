@@ -27,7 +27,9 @@ const PlaylistHeader = ({
   isShuffle,
   setIsShuffle,
 }: Props) => {
-  const { query } = useRouter();
+  const { query, asPath, isReady } = useRouter();
+  const isOwnerRoute = isReady && asPath?.startsWith("/playlist/watch/");
+
   const slug = query?.videoslug as string;
   const { data } = useGetSingleVideoBySlugQuery({ slug });
   const video = data?.data as IVideo;
@@ -102,14 +104,16 @@ const PlaylistHeader = ({
           </Tooltip>
         </div>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button onClick={() => setIsDeletePlayList(true)} size="icon">
-              <Trash2 className="text-red-500" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Delete the playlist</TooltipContent>
-        </Tooltip>
+        {isOwnerRoute && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={() => setIsDeletePlayList(true)} size="icon">
+                <Trash2 className="text-red-500" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Delete the playlist</TooltipContent>
+          </Tooltip>
+        )}
       </div>
       {isDeletePlayList && (
         <PlaylistDeleteModal

@@ -11,7 +11,7 @@ const ChannelTabs = ({ user }: Props) => {
   const pathname = usePathname();
 
   const isActive = (matchPath: string) =>
-    pathname.startsWith(matchPath)
+    pathname?.startsWith(matchPath)
       ? "!bg-blue-600 !text-white !hover:bg-blue-700"
       : "";
 
