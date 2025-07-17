@@ -182,7 +182,7 @@ const SideNavItems = () => {
       <SidebarMenu>
         {navMain.map((item) => {
           const isSectionActive = item.items?.some((subItem) =>
-            pathname.startsWith(subItem.url)
+            pathname?.startsWith(subItem.url)
           );
 
           return (

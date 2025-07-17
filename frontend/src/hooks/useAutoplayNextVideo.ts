@@ -9,7 +9,7 @@ export const useAutoplayNextVideo = () => {
   const playlistSlug = query.playlistslug as string;
   const currentVideoSlug = query.videoslug as string;
 
-  const isPlaylistWatchRoute = pathname.startsWith("/playlist/watch");
+  const isPlaylistWatchRoute = pathname?.startsWith("/playlist/watch");
 
   const { data } = useGetPlaylistVideosBySlugQuery({ slug: playlistSlug });
   const playlist = data?.data as IPlaylist;

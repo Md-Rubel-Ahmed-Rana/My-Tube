@@ -14,8 +14,9 @@ const SortableVideoCard = ({ video, playlistId }: Props) => {
   const { attributes, setNodeRef, transform, transition } = useSortable({
     id: video.id,
   });
-  const { query, push } = useRouter();
+  const { query, push, asPath, isReady } = useRouter();
   const playlistslug = query?.playlistslug as string;
+  const isOwnerRoute = isReady && asPath?.startsWith("/playlist/watch/");
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -23,12 +24,18 @@ const SortableVideoCard = ({ video, playlistId }: Props) => {
   };
 
   const handleCardClick = () => {
-    console.log("click on video card");
-    push(
-      `/playlist/watch/${playlistslug}/video/${
+    if (isOwnerRoute) {
+      push(
+        `/playlist/watch/${playlistslug}/video/${
+          video?.slug
+        }?title=${encodeURIComponent(video?.title)}`
+      );
+    } else {
+      const path = `/channel/playlists/watch/${playlistslug}/video/${
         video?.slug
-      }?title=${encodeURIComponent(video?.title)}`
-    );
+      }?title=${encodeURIComponent(video?.title)}`;
+      push(path);
+    }
   };
 
   return (

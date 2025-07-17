@@ -29,8 +29,7 @@ const ShareVideo = ({ url, className, from }: Props) => {
           title: "Check out this video on MyTube!",
           url: url || fullUrl,
         });
-      } catch (error) {
-        console.error("Error sharing:", error);
+      } catch {
         toast.error("Failed to share the video.");
       }
     } else {

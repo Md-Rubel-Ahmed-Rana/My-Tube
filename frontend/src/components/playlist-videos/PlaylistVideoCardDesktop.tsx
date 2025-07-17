@@ -19,7 +19,9 @@ type Props = {
 };
 
 const PlaylistVideoCardDesktop = ({ video, playlistId }: Props) => {
-  const { query } = useRouter();
+  const { query, asPath, isReady } = useRouter();
+  const isOwnerRoute = isReady && asPath?.startsWith("/playlist/watch/");
+
   const videoslug = query?.videoslug as string;
   const [isRemoveVideo, setIsRemoveVideo] = useState(false);
   const { listeners } = useSortable({ id: video.id });
@@ -34,9 +36,12 @@ const PlaylistVideoCardDesktop = ({ video, playlistId }: Props) => {
         }  hover:shadow-md transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2 border-0`}
       >
         <div className="flex justify-between items-center w-full gap-3">
-          <div {...listeners} className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="w-4 h-4 text-gray-400" />
-          </div>
+          {isOwnerRoute && (
+            <div {...listeners} className="cursor-grab active:cursor-grabbing">
+              <GripVertical className="w-4 h-4 text-gray-400" />
+            </div>
+          )}
+
           <div className="w-2/6">
             <div className="relative h-14">
               <Image
@@ -69,21 +74,25 @@ const PlaylistVideoCardDesktop = ({ video, playlistId }: Props) => {
                     Playing
                   </span>
                 ) : (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          setIsRemoveVideo(true);
-                        }}
-                        className="cursor-pointer"
-                      >
-                        <Trash2 size={16} className="text-red-400" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>Remove video</TooltipContent>
-                  </Tooltip>
+                  <>
+                    {isOwnerRoute ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setIsRemoveVideo(true);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <Trash2 size={16} className="text-red-400" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Remove video</TooltipContent>
+                      </Tooltip>
+                    ) : null}
+                  </>
                 )}
               </div>
             </div>

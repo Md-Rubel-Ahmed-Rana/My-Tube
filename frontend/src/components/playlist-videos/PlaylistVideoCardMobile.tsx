@@ -19,7 +19,8 @@ type Props = {
 };
 
 const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
-  const { query } = useRouter();
+  const { query, asPath, isReady } = useRouter();
+  const isOwnerRoute = isReady && asPath?.startsWith("/playlist/watch/");
   const videoslug = query?.videoslug as string;
   const [isRemoveVideo, setIsRemoveVideo] = useState(false);
   const { listeners } = useSortable({ id: video.id });
@@ -34,9 +35,12 @@ const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
         }  hover:shadow-lg transition-shadow duration-300 cursor-pointer rounded-md overflow-hidden w-full p-2`}
       >
         <div className="flex justify-between items-center w-full gap-3">
-          <div {...listeners} className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="w-4 h-4 text-gray-400" />
-          </div>
+          {isOwnerRoute && (
+            <div {...listeners} className="cursor-grab active:cursor-grabbing">
+              <GripVertical className="w-4 h-4 text-gray-400" />
+            </div>
+          )}
+
           <div className="w-[30%]">
             <div className="relative h-14">
               <Image
@@ -69,21 +73,25 @@ const PlaylistVideoCardMobile = ({ video, playlistId }: Props) => {
                   Playing
                 </span>
               ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setIsRemoveVideo(true);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <Trash2 size={16} className="text-red-400" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Remove video</TooltipContent>
-                </Tooltip>
+                <>
+                  {isOwnerRoute ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setIsRemoveVideo(true);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <Trash2 size={16} className="text-red-400" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Remove video</TooltipContent>
+                    </Tooltip>
+                  ) : null}
+                </>
               )}
             </div>
           </CardContent>

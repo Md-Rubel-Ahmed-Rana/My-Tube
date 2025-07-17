@@ -45,7 +45,7 @@ const PlaylistCard = ({ playlist }: Props) => {
 
         {playlist.videos.length > 0 ? (
           <Link
-            href={`/playlist/watch/${playlist.slug}/video/${
+            href={`/channel/playlists/watch/${playlist?.slug}/video/${
               playlist.videos[0]?.slug
             }?title=${encodeURIComponent(playlist.videos[0]?.title)}`}
           >

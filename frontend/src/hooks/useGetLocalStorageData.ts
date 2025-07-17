@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface VideoMetadata {
   title: string;
@@ -37,8 +38,8 @@ const useGetLocalStorageData = () => {
     if (metadataFromStorage) {
       try {
         parsedMetadata = JSON.parse(metadataFromStorage);
-      } catch (error) {
-        console.error("Failed to parse video metadata:", error);
+      } catch {
+        toast.error("Failed to parse video metadata");
       }
     }
 
