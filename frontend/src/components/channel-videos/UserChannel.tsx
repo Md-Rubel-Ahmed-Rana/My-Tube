@@ -37,9 +37,6 @@ const UserChannel = ({ isLoading, user }: Props) => {
                 <span>{user?.subscribers || 0} Subscribers</span>
               </div>
               <SubscriptionButton channelId={user?.id || user?._id} />
-              {/* <div className="flex items-center gap-3 mt-2 text-sm text-gray-700 dark:text-gray-300">
-                <span>{user?.subscribers || 0} Subscribers</span>
-              </div> */}
             </div>
           </>
         )}
