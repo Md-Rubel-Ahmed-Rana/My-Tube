@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { videoTags } from "@/constants/videoTags";
-import { videoCategories } from "@/constants/videoCategories";
 import {
   videoMetadataSchema,
   VideoMetadataSchema,
@@ -27,6 +26,7 @@ import { videoEditSchema } from "@/schemas/video.schema";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import { useUpdateVideoMutation } from "@/features/videos";
 import { z } from "zod";
+import VideoCategoryList from "../upload-video/VideoCategoryList";
 
 const animatedComponents = makeAnimated();
 
@@ -94,16 +94,7 @@ const VideoEditForm = ({ video }: Props) => {
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <CreatableSelect
-                  isClearable
-                  options={videoCategories}
-                  onChange={(val) => field.onChange(val?.value ?? "")}
-                  value={
-                    videoCategories.find((c) => c.value === field.value) || null
-                  }
-                  placeholder="Search or add category"
-                  styles={reactSelectStyles(theme as string)}
-                />
+                <VideoCategoryList field={field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -9,8 +9,7 @@ const LogoutButton = () => {
       await logout({}).unwrap();
       toast.success("Logged out successfully");
       window.location.replace("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch {
       toast.error("Failed to log out");
     }
   };

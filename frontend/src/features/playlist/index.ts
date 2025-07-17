@@ -30,7 +30,15 @@ export const playlistApi = apiSlice.injectEndpoints({
     >({
       query: ({ slug }) => ({
         url: `/playlist/slug/${slug}`,
-        method: "GET",
+      }),
+      providesTags: ["playlist"],
+    }),
+    getUserPublicPlaylists: builder.query<
+      IApiResponse<IPlaylist[]>,
+      { userId: string }
+    >({
+      query: ({ userId }) => ({
+        url: `/playlist/public/${userId}`,
       }),
       providesTags: ["playlist"],
     }),
@@ -47,6 +55,14 @@ export const playlistApi = apiSlice.injectEndpoints({
         url: `/playlist/${id}`,
         method: "PATCH",
         body: { name },
+      }),
+      invalidatesTags: ["playlist"],
+    }),
+    updatePlaylistStatus: builder.mutation({
+      query: ({ id, status }: { id: string; status: PlaylistStatus }) => ({
+        url: `/playlist/${id}/status`,
+        method: "PATCH",
+        body: { status },
       }),
       invalidatesTags: ["playlist"],
     }),
@@ -133,4 +149,6 @@ export const {
   useGetPlaylistDetailsAdminQuery,
   useUpdatePlaylistStatusByAdminMutation,
   useDeletePlaylistPermanentlyMutation,
+  useGetUserPublicPlaylistsQuery,
+  useUpdatePlaylistStatusMutation,
 } = playlistApi;

@@ -8,6 +8,7 @@ import { useGetUserBySlugQuery } from "@/features/user";
 import { IUser } from "@/types/user.type";
 import ChannelCoverImage from "./ChannelCoverImage";
 import UserChannel from "./UserChannel";
+import ChannelTabs from "./ChannelTabs";
 
 const ChannelVideos = () => {
   const { query } = useRouter();
@@ -23,7 +24,9 @@ const ChannelVideos = () => {
   return (
     <div className="p-2 lg:p-4 flex flex-col gap-3">
       <ChannelCoverImage user={user} isLoading={isChannelLoading} />
+
       <UserChannel user={user} isLoading={isChannelLoading} />
+      <ChannelTabs user={user} />
       {isLoading ? (
         <VideoLoadingSkeleton />
       ) : (

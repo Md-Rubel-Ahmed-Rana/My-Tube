@@ -11,9 +11,9 @@ const ChannelCoverImage = ({ user, isLoading }: Props) => {
   return (
     <>
       {isLoading ? (
-        <Skeleton className="lg:h-[60vh] h-[30vh] w-full bg-gray-300 dark:bg-gray-700 rounded-none" />
+        <Skeleton className="lg:h-[40vh] h-[30vh] w-full bg-gray-300 dark:bg-gray-700 rounded-none" />
       ) : (
-        <div className="lg:h-[60vh] h-[30vh] w-full relative">
+        <div className="lg:h-[40vh] h-[30vh] w-full relative">
           <img
             src={user?.coverImage || "/ChannelCoverImage.jpg"}
             alt="channel cover image"
