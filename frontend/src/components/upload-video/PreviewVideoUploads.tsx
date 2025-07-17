@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";
 import { useGetPlaylistsByOwnerQuery } from "@/features/playlist";
+import { useJoinRoom } from "@/hooks/useJoinRoom";
 
 type Props = {
   setIsPreviewMode: (value: boolean) => void;
@@ -24,6 +25,8 @@ const PreviewVideoUploads = ({
 }: Props) => {
   const { data: userData } = useGetLoggedInUserQuery({});
   const user = userData?.data as IUser;
+  // join user to socket room
+  useJoinRoom(user?.id || user?._id);
   const { data } = useGetPlaylistsByOwnerQuery({
     userId: user?.id || "",
   });

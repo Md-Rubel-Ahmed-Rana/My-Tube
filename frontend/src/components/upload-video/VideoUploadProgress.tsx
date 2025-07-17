@@ -30,7 +30,7 @@ const VideoUploadProgress = () => {
   }, [socketRef]);
 
   return (
-    <Card className="max-w-md mx-auto mt-6 shadow-md border p-2 lg:p-4">
+    <Card className="max-w-md mx-auto mt-6 shadow-md border bg-gray-200 dark:bg-gray-800 p-2 lg:p-4">
       <CardContent className="py-6 space-y-4 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center space-y-3">
           <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
