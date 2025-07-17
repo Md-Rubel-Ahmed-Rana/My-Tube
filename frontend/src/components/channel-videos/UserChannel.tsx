@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IUser } from "@/types/user.type";
 import UserChannelSkeleton from "@/skeletons/UserChannelSkeleton";
+import SubscriptionButton from "../video/SubscriptionButton";
 
 type Props = {
   user: IUser;
@@ -26,16 +27,19 @@ const UserChannel = ({ isLoading, user }: Props) => {
             </div>
 
             {/* Channel Text Info */}
-            <div className="flex-1">
+            <div className="flex-1 space-y-1">
               <h1 className="text-xl font-bold mt-2 sm:mt-0">
                 {user?.name || ""}
               </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                @{user?.username || ""}
-              </p>
-              <div className="flex items-center gap-3 mt-2 text-sm text-gray-700 dark:text-gray-300">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <p>@{user?.username || ""}</p>
+                <span className="w-2 h-2 rounded-full bg-gray-500 dark:bg-gray-600" />
                 <span>{user?.subscribers || 0} Subscribers</span>
               </div>
+              <SubscriptionButton channelId={user?.id || user?._id} />
+              {/* <div className="flex items-center gap-3 mt-2 text-sm text-gray-700 dark:text-gray-300">
+                <span>{user?.subscribers || 0} Subscribers</span>
+              </div> */}
             </div>
           </>
         )}
