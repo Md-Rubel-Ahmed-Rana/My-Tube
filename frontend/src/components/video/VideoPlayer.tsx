@@ -9,6 +9,7 @@ import { useEffect, useRef } from "react";
 import { useAutoplayNextVideo } from "@/hooks/useAutoplayNextVideo";
 import { useRouter } from "next/router";
 import { useShuffleAutoplayNextVideo } from "@/hooks/useShuffleAutoplayNextVideo";
+import NextPrevVideo from "../playlist-videos/NextPrevVideo";
 
 type Props = {
   video: IVideo;
@@ -82,6 +83,7 @@ const VideoPlayer = ({
                 default
               />
             </MediaProvider>
+            <NextPrevVideo />
           </MediaPlayer>
         </div>
       </CardContent>
