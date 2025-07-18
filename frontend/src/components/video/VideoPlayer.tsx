@@ -61,7 +61,7 @@ const VideoPlayer = ({
             src={video?.videoUrl}
             controls
             aspectRatio="16/9"
-            className="rounded-lg p-0 overflow-hidden lg:h-[80vh] h-auto"
+            className="rounded-lg relative p-0 overflow-hidden h-full"
             autoPlay
             onPlay={handlePlay}
             playsInline
@@ -82,8 +82,8 @@ const VideoPlayer = ({
                 lang="en"
                 default
               />
+              <NextPrevVideo />
             </MediaProvider>
-            <NextPrevVideo />
           </MediaPlayer>
         </div>
       </CardContent>
