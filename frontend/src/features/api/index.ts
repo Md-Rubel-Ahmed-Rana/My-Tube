@@ -18,6 +18,7 @@ const apiSlice = createApi({
     "admin",
     "watch-later",
     "categories",
+    "elasticsearch",
   ],
   endpoints: () => ({}),
 });

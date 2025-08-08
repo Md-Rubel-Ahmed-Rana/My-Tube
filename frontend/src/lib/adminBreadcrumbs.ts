@@ -50,4 +50,10 @@ export const adminBreadcrumbMap: Record<string, string[]> = {
   "/admin/dashboard/comments/user": ["Manage Comments", "Comments by User"],
   "/admin/dashboard/comments/status": ["Manage Comments", "Comments by Status"],
   "/admin/dashboard/comments/blocked": ["Manage Comments", "Blocked Comments"],
+
+  "/admin/dashboard/elasticsearch/documents": ["Elastic Search", "Documents"],
+  "/admin/dashboard/elasticsearch/add-docs": [
+    "Elastic Search",
+    "Add Full Docs",
+  ],
 };

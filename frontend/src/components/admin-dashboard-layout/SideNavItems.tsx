@@ -18,6 +18,9 @@ import {
   PlusCircle,
   FolderOpen,
   Folder,
+  Search,
+  FilePlus,
+  Files,
 } from "lucide-react";
 
 import {
@@ -169,6 +172,23 @@ const navMain = [
         title: "Comments by user",
         url: `${rootPath}/comments/user`,
         icon: UserRound,
+      },
+    ],
+  },
+  {
+    title: "Elastic Search",
+    icon: Search,
+    isActive: false,
+    items: [
+      {
+        title: "All Indexed Docs",
+        url: `${rootPath}/elasticsearch/documents`,
+        icon: Files,
+      },
+      {
+        title: "Index Documents",
+        url: `${rootPath}/elasticsearch/add-docs`,
+        icon: FilePlus,
       },
     ],
   },
