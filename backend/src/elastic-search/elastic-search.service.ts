@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, Logger } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from "@nestjs/common";
 import { Client } from "@elastic/elasticsearch";
 import { CreateElasticSearchDto } from "./dto/create-elastic-search.dto";
 import { ConfigService } from "@nestjs/config";
@@ -226,6 +231,9 @@ export class ElasticSearchService {
   }
 
   async search(keyword: string) {
+    if (!keyword) {
+      throw new BadRequestException("Search keyword is required!");
+    }
     this.logger.log(`Searching videos with keyword: '${keyword}'`);
 
     const response = await this.client.search({
@@ -243,7 +251,7 @@ export class ElasticSearchService {
             {
               wildcard: {
                 title: {
-                  value: `*${keyword.toLowerCase()}*`,
+                  value: `*${keyword?.toLowerCase() || ""}*`,
                   boost: 0.3,
                 },
               },
