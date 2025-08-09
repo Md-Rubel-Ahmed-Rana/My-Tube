@@ -4,7 +4,7 @@ const elasticsearchApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getElasticSearchDocuments: builder.query({
       query: () => ({
-        url: `/elastic-search`,
+        url: `/elastic-search/all?limit=1000`,
         method: "GET",
       }),
       providesTags: ["elasticsearch"],
