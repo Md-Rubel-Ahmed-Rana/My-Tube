@@ -3,7 +3,7 @@ import { useGetElasticSearchDocumentsQuery } from "@/features/elasticsearch";
 const AllIndexedDocuments = () => {
   const { data, isLoading } = useGetElasticSearchDocumentsQuery({});
 
-  console.log({ isLoading, data });
+  console.log(data?.data);
 
   return (
     <div className="flex justify-center items-center">
