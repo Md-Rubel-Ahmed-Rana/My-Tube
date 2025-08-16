@@ -29,6 +29,12 @@ export class WatchLaterController {
     return this.watchLaterService.create({ ...dto, user: req?.user?.id });
   }
 
+  @Delete("delete/:id")
+  @UseGuards(AuthGuard)
+  deleteWatchLater(@Param("id") id: string) {
+    return this.watchLaterService.deleteWatchLater(id);
+  }
+
   @Delete(":videoId")
   @UseGuards(AuthGuard)
   removeFromWatchLater(@Param("videoId") videoId: string, @Req() req: any) {

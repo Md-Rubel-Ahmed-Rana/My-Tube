@@ -118,4 +118,15 @@ export class WatchLaterService {
       },
     };
   }
+
+  async deleteWatchLater(id: string) {
+    await this.watchLaterModel.findByIdAndDelete(id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Watch later video deleted successfully",
+      data: null,
+    };
+  }
 }
