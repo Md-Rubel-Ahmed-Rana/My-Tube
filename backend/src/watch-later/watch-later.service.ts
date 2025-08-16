@@ -91,4 +91,42 @@ export class WatchLaterService {
       data: !!exists,
     };
   }
+
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    const [videos, total] = await Promise.all([
+      this.watchLaterModel
+        .find({})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate("user", "name")
+        .populate("video", "title"),
+      this.watchLaterModel.countDocuments({}),
+    ]);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Watch later videos retrieved successfully",
+      data: {
+        total,
+        page,
+        limit,
+        videos,
+      },
+    };
+  }
+
+  async deleteWatchLater(id: string) {
+    await this.watchLaterModel.findByIdAndDelete(id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Watch later video deleted successfully",
+      data: null,
+    };
+  }
 }

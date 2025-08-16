@@ -39,7 +39,6 @@ export class AuthGuard implements CanActivate {
       } else {
         this.logger.error(`JWT error. Error: ${error?.message}`);
       }
-      this.logout(response);
       throw new UnauthorizedException();
     }
     return true;
