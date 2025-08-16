@@ -21,6 +21,7 @@ import {
   Search,
   FilePlus,
   Files,
+  Clock,
 } from "lucide-react";
 
 import {
@@ -145,6 +146,18 @@ const navMain = [
         title: "Playlist details",
         url: `${rootPath}/playlists/details`,
         icon: VideoIcon,
+      },
+    ],
+  },
+  {
+    title: "Watch later videos",
+    icon: Clock,
+    isActive: false,
+    items: [
+      {
+        title: "All videos",
+        url: `${rootPath}/watch-later/videos`,
+        icon: Video,
       },
     ],
   },

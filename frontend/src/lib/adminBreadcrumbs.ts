@@ -56,4 +56,5 @@ export const adminBreadcrumbMap: Record<string, string[]> = {
     "Elastic Search",
     "Add Full Docs",
   ],
+  "/admin/dashboard/watch-later/videos": ["Watch Later", "Videos"],
 };
