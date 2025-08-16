@@ -4,6 +4,7 @@ import RootLayout from "@/layout/RootLayout";
 import { ReactElement } from "react";
 
 export default function HomePage() {
+  console.log("Log to test husky");
   return (
     <>
       <SEOHead />
