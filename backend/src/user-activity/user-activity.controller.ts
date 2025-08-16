@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req } from "@nestjs/common";
+import { Controller, Get, UseGuards, Req, Param, Delete } from "@nestjs/common";
 import { UserActivityService } from "./user-activity.service";
 import { AuthGuard } from "src/auth/auth.guard";
 
@@ -16,6 +16,12 @@ export class UserActivityController {
   @Get("all")
   getAll() {
     return this.userActivityService.getAll();
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(":id")
+  delete(@Param("id") id: string) {
+    return this.userActivityService.delete(id);
   }
 
   @UseGuards(AuthGuard)

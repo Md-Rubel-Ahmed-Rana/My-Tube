@@ -152,6 +152,18 @@ export class UserActivityService {
     };
   }
 
+  // rest api to delete an activity by admin
+  async delete(id: string) {
+    await this.userActivityModel.findByIdAndDelete(id);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "User activity deleted successfully",
+      data: null,
+    };
+  }
+
   // it will perform when user register via event-fire
   async performWatchHistory(userId: string, video: UpdateWatchHistory) {
     if (userId) {
