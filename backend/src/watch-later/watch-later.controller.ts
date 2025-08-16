@@ -7,6 +7,7 @@ import {
   Req,
   UseGuards,
   Get,
+  Query,
 } from "@nestjs/common";
 import { WatchLaterService } from "./watch-later.service";
 import { CreateWatchLaterDto } from "./dto/create-watch-later.dto";
@@ -15,6 +16,12 @@ import { AuthGuard } from "src/auth/auth.guard";
 @Controller("watch-later")
 export class WatchLaterController {
   constructor(private readonly watchLaterService: WatchLaterService) {}
+
+  @Get()
+  @UseGuards(AuthGuard)
+  findAll(@Query("page") page: number = 1, @Query("limit") limit: number = 10) {
+    return this.watchLaterService.findAll(Number(page), Number(limit));
+  }
 
   @Post()
   @UseGuards(AuthGuard)
