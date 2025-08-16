@@ -2,6 +2,12 @@ import apiSlice from "../api";
 
 const watchLaterApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
+    getAllWatchLater: build.query({
+      query: () => ({
+        url: "watch-later",
+      }),
+      providesTags: ["watch-later"],
+    }),
     getUserWatchLater: build.query({
       query: () => ({
         url: "watch-later",
@@ -30,4 +36,5 @@ export const {
   useGetUserWatchLaterQuery,
   useAddToWatchLaterMutation,
   useRemoveVideoFromWatchLaterMutation,
+  useGetAllWatchLaterQuery,
 } = watchLaterApi;
