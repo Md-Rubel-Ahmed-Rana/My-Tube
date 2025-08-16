@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash2 } from "lucide-react";
+import DeleteWatchLater from "./DeleteWatchLater";
 
 type Props = {
   videos: IWatchLater[];
@@ -52,7 +52,8 @@ const WatchLaterTable = ({ videos = [] }: Props) => {
               {new Date(item.createdAt).toLocaleDateString()}
             </TableCell>
             <TableCell className="text-gray-800 dark:text-gray-200">
-              <Trash2 className="w-4 h-4" color="red" />
+              {/* <Trash2 className="w-4 h-4" color="red" /> */}
+              <DeleteWatchLater video={item} />
             </TableCell>
           </TableRow>
         ))}
