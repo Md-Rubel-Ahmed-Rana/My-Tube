@@ -11,14 +11,17 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
+import { useDeleteWatchLaterMutation } from "@/features/watch-later";
+import { handleApiMutation } from "@/utils/handleApiMutation";
 
 type Props = {
-  video: IWatchLater;
+  item: IWatchLater;
 };
 
-const DeleteWatchLater = ({ video }: Props) => {
-  const handleDelete = () => {
-    console.log(video.id);
+const DeleteWatchLater = ({ item }: Props) => {
+  const [remove, { isLoading }] = useDeleteWatchLaterMutation();
+  const handleDelete = async () => {
+    await handleApiMutation(remove, { id: item?.id }, 200);
   };
   return (
     <AlertDialog>
@@ -33,18 +36,19 @@ const DeleteWatchLater = ({ video }: Props) => {
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-800 dark:text-gray-200">
             Are you sure you want to remove{" "}
-            <span className="font-semibold">{video.video?.title}</span> from
+            <span className="font-semibold">{item.video?.title}</span> from
             Watch Later list? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className="bg-red-600 hover:bg-red-700 border"
             onClick={handleDelete}
+            disabled={isLoading}
           >
-            Delete
+            {isLoading ? "Deleting" : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

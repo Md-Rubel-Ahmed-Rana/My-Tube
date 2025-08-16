@@ -29,6 +29,13 @@ const watchLaterApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["watch-later"],
     }),
+    deleteWatchLater: build.mutation({
+      query: ({ id }: { id: string }) => ({
+        url: `watch-later/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["watch-later"],
+    }),
   }),
 });
 
@@ -37,4 +44,5 @@ export const {
   useAddToWatchLaterMutation,
   useRemoveVideoFromWatchLaterMutation,
   useGetAllWatchLaterQuery,
+  useDeleteWatchLaterMutation,
 } = watchLaterApi;

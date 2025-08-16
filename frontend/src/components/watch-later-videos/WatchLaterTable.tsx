@@ -37,23 +37,22 @@ const WatchLaterTable = ({ videos = [] }: Props) => {
       </TableHeader>
       <TableBody>
         {videos.map((item, idx) => (
-          <TableRow key={item.id}>
+          <TableRow key={item?.id}>
             <TableCell className="font-medium text-gray-800 dark:text-gray-200">
               {idx + 1}
             </TableCell>
             <TableCell className="text-gray-800 dark:text-gray-200">
-              {item.user?.name}
+              {item?.user?.name || "User name not found"}
             </TableCell>
             <TableCell className="font-semibold text-gray-800 dark:text-gray-200 max-w-[300px] w-full truncate">
-              {item.video?.title}
+              {item?.video?.title || "Video title not found"}
             </TableCell>
 
             <TableCell className="text-gray-800 dark:text-gray-200">
               {new Date(item.createdAt).toLocaleDateString()}
             </TableCell>
             <TableCell className="text-gray-800 dark:text-gray-200">
-              {/* <Trash2 className="w-4 h-4" color="red" /> */}
-              <DeleteWatchLater video={item} />
+              <DeleteWatchLater item={item} />
             </TableCell>
           </TableRow>
         ))}
