@@ -13,6 +13,12 @@ export class UserActivityController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("all")
+  getAll() {
+    return this.userActivityService.getAll();
+  }
+
+  @UseGuards(AuthGuard)
   @Get("watch-history")
   getUserWatchHistory(@Req() req: { user: { id: string } }) {
     return this.userActivityService.getUserWatchHistory(req?.user?.id);

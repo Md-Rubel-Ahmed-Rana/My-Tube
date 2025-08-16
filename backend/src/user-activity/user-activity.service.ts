@@ -138,6 +138,20 @@ export class UserActivityService {
     };
   }
 
+  // rest api to get all activities by admin
+  async getAll() {
+    const result = await this.userActivityModel
+      .find({})
+      .populate("user", "name");
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "All the users activities retrieved successfully",
+      data: result,
+    };
+  }
+
   // it will perform when user register via event-fire
   async performWatchHistory(userId: string, video: UpdateWatchHistory) {
     if (userId) {
