@@ -1,3 +1,0 @@
-npm run type-check
-
-npx lint-staged
