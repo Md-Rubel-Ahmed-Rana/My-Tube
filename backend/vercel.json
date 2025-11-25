@@ -1,10 +1,7 @@
 {
   "functions": {
-    "backend/dist/api/**/*.js": {
-      "includeFiles": "backend/node_modules/**"
-    },
-    "backend/dist/**/*.js": {
-      "includeFiles": "backend/node_modules/**"
+    ".output/**": {
+      "includeFiles": "node_modules/**"
     }
   }
 }
