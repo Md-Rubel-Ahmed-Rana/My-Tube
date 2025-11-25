@@ -1,6 +1,6 @@
 {
   "functions": {
-    ".output/**": {
+    ".output/server/**/*.js": {
       "includeFiles": "node_modules/**"
     }
   }
