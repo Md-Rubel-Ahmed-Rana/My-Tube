@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   Logger,
+  OnModuleInit,
 } from "@nestjs/common";
 import { Client } from "@elastic/elasticsearch";
 import { CreateElasticSearchDto } from "./dto/create-elastic-search.dto";
@@ -11,14 +12,14 @@ import { VideoService } from "src/video/video.service";
 import { Types } from "mongoose";
 
 @Injectable()
-export class ElasticSearchService {
+export class ElasticSearchService implements OnModuleInit {
   private client: Client;
   private index = "my-tube-videos";
   private readonly logger = new Logger(ElasticSearchService.name);
 
   constructor(
     private config: ConfigService,
-    private readonly videoService: VideoService
+    private readonly videoService: VideoService,
   ) {
     this.client = new Client({
       node: this.config.get<string>("ELASTIC_SEARCH_URL"),
@@ -28,77 +29,109 @@ export class ElasticSearchService {
     });
 
     this.logger.log("ElasticSearch client initialized.");
-    this.createIndexIfNotExists();
   }
 
-  async createIndexIfNotExists() {
-    const exists = await this.client.indices.exists({ index: this.index });
+  /**
+   * Run after module init (safe lifecycle hook)
+   */
+  async onModuleInit() {
+    await this.safeCreateIndex();
+  }
 
-    if (!exists) {
-      this.logger.warn(`Index '${this.index}' does not exist. Creating now...`);
-      await this.client.indices.create({
+  /**
+   * Wrapper with crash protection
+   */
+  private async safeCreateIndex() {
+    try {
+      await this.createIndexIfNotExists();
+    } catch (error) {
+      this.logger.error(
+        "ElasticSearch index setup failed. Continuing without ES...",
+        error?.message,
+      );
+    }
+  }
+
+  /**
+   * Main index creation logic
+   */
+  async createIndexIfNotExists() {
+    try {
+      const exists = await this.client.indices.exists({
         index: this.index,
-        body: {
-          settings: {
-            analysis: {
-              filter: {
-                edge_ngram_filter: {
-                  type: "edge_ngram",
-                  min_gram: 2,
-                  max_gram: 20,
-                },
-              },
-              analyzer: {
-                edge_ngram_analyzer: {
-                  tokenizer: "standard",
-                  filter: ["lowercase", "edge_ngram_filter"],
-                },
-                lowercase_analyzer: {
-                  tokenizer: "standard",
-                  filter: ["lowercase"],
-                },
-              },
-            },
-          },
-          mappings: {
-            properties: {
-              id: { type: "keyword" },
-              title: {
-                type: "text",
-                analyzer: "edge_ngram_analyzer",
-                search_analyzer: "lowercase_analyzer",
-              },
-              channel: {
-                type: "text",
-                analyzer: "edge_ngram_analyzer",
-                search_analyzer: "lowercase_analyzer",
-              },
-              description: {
-                type: "text",
-                analyzer: "edge_ngram_analyzer",
-                search_analyzer: "lowercase_analyzer",
-              },
-              tags: {
-                type: "text",
-                analyzer: "edge_ngram_analyzer",
-                search_analyzer: "lowercase_analyzer",
-              },
-            },
-          },
-        } as Record<string, any>,
       });
 
-      this.logger.log(`Index '${this.index}' created successfully.`);
-    } else {
-      this.logger.log(`Index '${this.index}' already exists.`);
-    }
+      if (!exists) {
+        this.logger.warn(
+          `Index '${this.index}' does not exist. Creating now...`,
+        );
 
-    return {
-      statusCode: HttpStatus.CREATED,
-      success: true,
-      message: "Elastic Search index created successfully!",
-      data: null,
-    };
+        await this.client.indices.create({
+          index: this.index,
+          body: {
+            settings: {
+              analysis: {
+                filter: {
+                  edge_ngram_filter: {
+                    type: "edge_ngram",
+                    min_gram: 2,
+                    max_gram: 20,
+                  },
+                },
+                analyzer: {
+                  edge_ngram_analyzer: {
+                    tokenizer: "standard",
+                    filter: ["lowercase", "edge_ngram_filter"],
+                  },
+                  lowercase_analyzer: {
+                    tokenizer: "standard",
+                    filter: ["lowercase"],
+                  },
+                },
+              },
+            },
+            mappings: {
+              properties: {
+                id: { type: "keyword" },
+                title: {
+                  type: "text",
+                  analyzer: "edge_ngram_analyzer",
+                  search_analyzer: "lowercase_analyzer",
+                },
+                channel: {
+                  type: "text",
+                  analyzer: "edge_ngram_analyzer",
+                  search_analyzer: "lowercase_analyzer",
+                },
+                description: {
+                  type: "text",
+                  analyzer: "edge_ngram_analyzer",
+                  search_analyzer: "lowercase_analyzer",
+                },
+                tags: {
+                  type: "text",
+                  analyzer: "edge_ngram_analyzer",
+                  search_analyzer: "lowercase_analyzer",
+                },
+              },
+            },
+          } as Record<string, any>,
+        });
+
+        this.logger.log(`Index '${this.index}' created successfully.`);
+      } else {
+        this.logger.log(`Index '${this.index}' already exists.`);
+      }
+    } catch (error) {
+      /**
+       * Catch ALL ES errors here
+       * Prevent server crash
+       */
+      this.logger.error(
+        "ElasticSearch error during index creation",
+        error?.message,
+      );
+    }
   }
 
   async addFullDbDocs() {
@@ -106,7 +139,7 @@ export class ElasticSearchService {
       await this.videoService.getElasticVideoDocs();
 
     this.logger.log(
-      `Fetched ${docs.length} documents from database for indexing.`
+      `Fetched ${docs.length} documents from database for indexing.`,
     );
 
     const response = await this.client.helpers.bulk({
@@ -219,7 +252,7 @@ export class ElasticSearchService {
     });
 
     this.logger.log(
-      `All documents from index '${this.index}' deleted successfully.`
+      `All documents from index '${this.index}' deleted successfully.`,
     );
 
     return {
@@ -269,7 +302,7 @@ export class ElasticSearchService {
     });
 
     this.logger.log(
-      `Fetching full video data from DB for ${videoIds.length} IDs.`
+      `Fetching full video data from DB for ${videoIds.length} IDs.`,
     );
 
     const videos = await this.videoService.getVideosByIds(videoIds);
