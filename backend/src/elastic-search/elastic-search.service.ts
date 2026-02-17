@@ -346,17 +346,17 @@ export class ElasticSearchService implements OnModuleInit {
 
   private async databaseFallbackSearch(keyword: string) {
     try {
-      const videos = await this.videoService.searchVideo(keyword);
+      const result = await this.videoService.searchVideo(keyword);
 
       this.logger.log(
-        `DB fallback returned ${videos?.data?.length || 0} results.`,
+        `DB fallback returned ${result?.data?.length || 0} results.`,
       );
 
       return {
         statusCode: HttpStatus.OK,
         success: true,
         message: "Videos search results found! (DB fallback)",
-        data: videos,
+        data: result?.data || [],
       };
     } catch (dbError) {
       this.logger.error("Database fallback search failed!", dbError?.message);
