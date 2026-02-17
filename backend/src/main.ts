@@ -7,6 +7,7 @@ import { SocketIoService } from "./socket/socket-io.service";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { MongoExceptionFilter } from "./common/filters/mongo-exception.filter";
+import { RequestMethod } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +19,12 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalFilters(new MongoExceptionFilter());
-  app.setGlobalPrefix("/api/v1");
+  app.setGlobalPrefix("/api/v1", {
+    exclude: [
+      { path: "/", method: RequestMethod.GET },
+      { path: "/health", method: RequestMethod.GET },
+    ],
+  });
   app.use(morgan("dev"));
   app.use(cookieParser());
 
