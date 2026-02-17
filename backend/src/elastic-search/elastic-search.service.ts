@@ -267,51 +267,106 @@ export class ElasticSearchService implements OnModuleInit {
     if (!keyword) {
       throw new BadRequestException("Search keyword is required!");
     }
+
     this.logger.log(`Searching videos with keyword: '${keyword}'`);
 
-    const response = await this.client.search({
-      index: this.index,
-      query: {
-        bool: {
-          should: [
-            {
-              multi_match: {
-                query: keyword,
-                fields: ["title^5", "tags^3", "description", "channel"],
-                fuzziness: "AUTO",
-              },
-            },
-            {
-              wildcard: {
-                title: {
-                  value: `*${keyword?.toLowerCase() || ""}*`,
-                  boost: 0.3,
+    try {
+      /**
+       * -----------------------------
+       * ElasticSearch Search Attempt
+       * -----------------------------
+       */
+      const response = await this.client.search({
+        index: this.index,
+        query: {
+          bool: {
+            should: [
+              {
+                multi_match: {
+                  query: keyword,
+                  fields: ["title^5", "tags^3", "description", "channel"],
+                  fuzziness: "AUTO",
                 },
               },
-            },
-          ],
+              {
+                wildcard: {
+                  title: {
+                    value: `*${keyword.toLowerCase()}*`,
+                    boost: 0.3,
+                  },
+                },
+              },
+            ],
+          },
         },
-      },
-    });
+      });
 
-    const hits = response.hits.hits;
-    this.logger.log(`Search query returned ${hits.length} hits.`);
+      const hits = response.hits.hits;
 
-    const videoIds = hits.map((video: any) => {
-      return new Types.ObjectId((video?._id || video?._source?.id) as string);
-    });
+      this.logger.log(`ES returned ${hits.length} hits.`);
 
-    this.logger.log(
-      `Fetching full video data from DB for ${videoIds.length} IDs.`,
-    );
+      /**
+       * Map ES IDs → Mongo ObjectIds
+       */
+      const videoIds = hits.map((video: any) => {
+        return new Types.ObjectId((video?._id || video?._source?.id) as string);
+      });
 
-    const videos = await this.videoService.getVideosByIds(videoIds);
+      if (!videoIds.length) {
+        this.logger.warn("No ES hits found. Falling back to DB search...");
 
-    return {
-      statusCode: HttpStatus.OK,
-      success: true,
-      message: "Videos search results found!",
-      data: videos,
-    };
+        return await this.databaseFallbackSearch(keyword);
+      }
+
+      /**
+       * Fetch full videos from DB
+       */
+      const videos = await this.videoService.getVideosByIds(videoIds);
+
+      return {
+        statusCode: HttpStatus.OK,
+        success: true,
+        message: "Videos search results found!",
+        data: videos,
+      };
+    } catch (error) {
+      /**
+       * -----------------------------
+       * ES Failed → Silent Fallback
+       * -----------------------------
+       */
+      this.logger.error(
+        "ElasticSearch search failed. Falling back to DB...",
+        error?.message,
+      );
+
+      return await this.databaseFallbackSearch(keyword);
+    }
+  }
+
+  private async databaseFallbackSearch(keyword: string) {
+    try {
+      const videos = await this.videoService.searchVideo(keyword);
+
+      this.logger.log(
+        `DB fallback returned ${videos?.data?.length || 0} results.`,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        success: true,
+        message: "Videos search results found! (DB fallback)",
+        data: videos,
+      };
+    } catch (dbError) {
+      this.logger.error("Database fallback search failed!", dbError?.message);
+
+      return {
+        statusCode: HttpStatus.OK,
+        success: false,
+        message: "Search failed from both ElasticSearch and DB.",
+        data: [],
+      };
+    }
   }
 }
