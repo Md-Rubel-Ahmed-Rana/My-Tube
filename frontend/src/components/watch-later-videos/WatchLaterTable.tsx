@@ -36,7 +36,7 @@ const WatchLaterTable = ({ videos = [] }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {videos.map((item, idx) => (
+        {videos?.map((item, idx) => (
           <TableRow key={item?.id}>
             <TableCell className="font-medium text-gray-800 dark:text-gray-200">
               {idx + 1}

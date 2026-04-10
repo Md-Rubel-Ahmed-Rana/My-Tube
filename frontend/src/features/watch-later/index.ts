@@ -10,7 +10,7 @@ const watchLaterApi = apiSlice.injectEndpoints({
     }),
     getUserWatchLater: build.query({
       query: () => ({
-        url: "watch-later",
+        url: "watch-later/user",
       }),
       providesTags: ["watch-later"],
     }),

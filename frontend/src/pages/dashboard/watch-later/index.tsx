@@ -1,6 +1,7 @@
 import SEOHead from "@/components/common/SEOHead";
 import UserDashboardLayout from "@/components/dashboard/UserDashboardLayout";
 import WatchLaterVideos from "@/components/dashboard/watch-later";
+import isAuthenticate from "@/middleware/ProtectRoute";
 
 const WatchLaterVideosPage = () => {
   return (
@@ -13,5 +14,4 @@ const WatchLaterVideosPage = () => {
   );
 };
 
-// export default isAuthenticate(WatchLaterVideosPage);
-export default WatchLaterVideosPage;
+export default isAuthenticate(WatchLaterVideosPage);
