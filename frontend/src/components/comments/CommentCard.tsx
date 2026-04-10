@@ -29,11 +29,11 @@ const CommentCard = ({ comment }: Props) => {
             <Avatar className="w-10 lg:w-12 h-10 lg:h-12 rounded-full border">
               <AvatarImage src={user?.photo || ""} />
               <AvatarFallback className="bg-gray-200 dark:bg-gray-700">
-                {user.name?.slice(0, 2).toUpperCase()}
+                {user?.name ? user?.name?.slice(0, 2).toUpperCase() : "N/A"}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="font-medium">{user.name}</p>
+              <p className="font-medium">{user?.name || "N/A"}</p>
               <span className="text-sm text-muted-foreground">
                 {moment(createdAt).fromNow()}
               </span>
