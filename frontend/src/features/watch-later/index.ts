@@ -36,6 +36,11 @@ const watchLaterApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["watch-later"],
     }),
+    checkVideoInWatchLater: build.query({
+      query: ({ videoId }: { videoId: string }) => ({
+        url: `watch-later/${videoId}/check`,
+      }),
+    }),
   }),
 });
 
@@ -45,4 +50,5 @@ export const {
   useRemoveVideoFromWatchLaterMutation,
   useGetAllWatchLaterQuery,
   useDeleteWatchLaterMutation,
+  useCheckVideoInWatchLaterQuery,
 } = watchLaterApi;

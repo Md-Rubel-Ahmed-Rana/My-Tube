@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetUserWatchLaterQuery } from "@/features/watch-later";
 import { IVideo } from "@/types/video.type";
 import VideoCard from "./VideoCard";
@@ -8,8 +7,8 @@ import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 const WatchLaterVideos = () => {
   const { open } = useSidebar();
   const { data, isLoading } = useGetUserWatchLaterQuery({});
-  const videos: IVideo[] = data?.data?.videos
-    ? data?.data?.videos?.map((video: any) => video?.video)
+  const videos: IVideo[] = data?.data
+    ? data?.data?.map((video: any) => video?.video)
     : [];
 
   return (

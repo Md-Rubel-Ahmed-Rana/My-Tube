@@ -11,6 +11,7 @@ import { useState } from "react";
 import { IVideo } from "@/types/video.type";
 import ShareVideo from "../video/ShareVideo";
 import WatchLaterAction from "./WatchLaterAction";
+import { useCheckVideoInWatchLaterQuery } from "@/features/watch-later";
 
 type Props = {
   video: IVideo;
@@ -18,6 +19,13 @@ type Props = {
 
 const VideoActions = ({ video }: Props) => {
   const [isAddPlaylist, setIsAddPlaylist] = useState(false);
+  const { data: checkData } = useCheckVideoInWatchLaterQuery({
+    videoId: video.id,
+  });
+
+  const isInWatchLater =
+    checkData?.data === true &&
+    checkData?.message === "Video is in watch later";
 
   const asPath = `/video/watch/${video.publicId}/${
     video.id
@@ -39,7 +47,7 @@ const VideoActions = ({ video }: Props) => {
           align="end"
           className="w-48 bg-gray-200 dark:bg-gray-700"
         >
-          <WatchLaterAction videoId={video?.id} />
+          {!isInWatchLater && <WatchLaterAction videoId={video?.id} />}
 
           <DropdownMenuItem
             className="cursor-pointer mb-2 bg-gray-200 dark:bg-gray-700 w-full hover:bg-gray-300 dark:hover:bg-gray-600"
