@@ -41,7 +41,7 @@ export class WatchLaterController {
     return this.watchLaterService.remove(req.user.id, videoId);
   }
 
-  @Get()
+  @Get("user")
   @UseGuards(AuthGuard)
   getUserWatchLater(@Req() req: any) {
     return this.watchLaterService.findAllByUser(req?.user?.id);
