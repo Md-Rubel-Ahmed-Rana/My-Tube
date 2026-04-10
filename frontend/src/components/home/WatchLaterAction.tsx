@@ -14,10 +14,11 @@ const WatchLaterAction = ({ videoId }: Props) => {
   const { data } = useGetLoggedInUserQuery({});
   const user = data?.data as IUser;
   const [add, { isLoading }] = useAddToWatchLaterMutation();
+
   const handleAddToWatchLater = async () => {
     if (!user?.id || !user?._id) {
       toast.info(
-        "You are not logged in user. Please login to add video to watch later"
+        "You are not logged in user. Please login to add video to watch later",
       );
       return;
     }
