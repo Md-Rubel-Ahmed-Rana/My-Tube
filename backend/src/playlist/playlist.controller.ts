@@ -26,7 +26,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   create(
     @Req() req: { user: { id: string } },
-    @Body() createPlaylistDto: CreatePlaylistDto
+    @Body() createPlaylistDto: CreatePlaylistDto,
   ) {
     return this.playlistService.create({
       ...createPlaylistDto,
@@ -34,16 +34,16 @@ export class PlaylistController {
     });
   }
 
-  @Get("user/:userId")
+  @Get("user")
   @UseGuards(AuthGuard)
-  getAllByUser(@Param("userId", ValidateObjectIdPipe) userId: string) {
-    return this.playlistService.getAllByUser(userId);
+  getAllByUser(@Req() req: { user: { id: string } }) {
+    return this.playlistService.getAllByUser(req?.user?.id);
   }
 
   @Get("public/:userId")
   @UseGuards(AuthGuard)
   getChannelPublicPlaylists(
-    @Param("userId", ValidateObjectIdPipe) userId: string
+    @Param("userId", ValidateObjectIdPipe) userId: string,
   ) {
     return this.playlistService.getChannelPublicPlaylists(userId);
   }
@@ -61,7 +61,7 @@ export class PlaylistController {
   @Patch(":id/reorder")
   reorder(
     @Param("id", ValidateObjectIdPipe) playlistId: string,
-    @Body() { videoIds }: ReorderPlaylistDto
+    @Body() { videoIds }: ReorderPlaylistDto,
   ) {
     return this.playlistService.reorderVideos(playlistId, videoIds);
   }
@@ -70,7 +70,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   update(
     @Param("id", ValidateObjectIdPipe) id: string,
-    @Body() updateDto: UpdatePlaylistDto
+    @Body() updateDto: UpdatePlaylistDto,
   ) {
     return this.playlistService.update(id, updateDto);
   }
@@ -85,7 +85,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   addVideo(
     @Param("id", ValidateObjectIdPipe) playlistId: string,
-    @Body() { videoId }: ModifyVideoDto
+    @Body() { videoId }: ModifyVideoDto,
   ) {
     return this.playlistService.addVideo(playlistId, videoId);
   }
@@ -94,7 +94,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   removeVideo(
     @Param("id", ValidateObjectIdPipe) playlistId: string,
-    @Body() { videoId }: ModifyVideoDto
+    @Body() { videoId }: ModifyVideoDto,
   ) {
     return this.playlistService.removeVideo(playlistId, videoId);
   }
@@ -102,7 +102,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard)
   updatePlaylistStatus(
     @Param("id", ValidateObjectIdPipe) playlistId: Types.ObjectId,
-    @Body() { status }: UpdatePlaylistDto
+    @Body() { status }: UpdatePlaylistDto,
   ) {
     return this.playlistService.updatePlaylistStatus(playlistId, status);
   }

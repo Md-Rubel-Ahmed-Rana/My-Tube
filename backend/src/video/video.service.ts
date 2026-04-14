@@ -12,7 +12,7 @@ import { Readable } from "stream";
 import { CreateVideoDto } from "./dto/create-video.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Video } from "./video.schema";
-import { Model, Types } from "mongoose";
+import { Model, PipelineStage, Types } from "mongoose";
 import { parseField } from "src/utils/parseField";
 import { UpdateVideoDto } from "./dto/update-video.dto";
 import { EventEmitter2 } from "@nestjs/event-emitter";
@@ -27,7 +27,7 @@ import { SocketIoService } from "src/socket/socket-io.service";
 import { Transform } from "stream";
 import * as fs from "fs";
 import axios from "axios";
-import * as FormData from "form-data";
+import FormData from "form-data";
 import { promisify } from "util";
 import { getVideoDurationInSeconds } from "get-video-duration";
 
@@ -42,7 +42,7 @@ export class VideoService {
     @InjectModel(Video.name) private videoModel: Model<Video>,
     private eventEmitter: EventEmitter2,
     private readonly emitter: TypedEventEmitter,
-    private socketService: SocketIoService
+    private socketService: SocketIoService,
   ) {
     cloudinary.config({
       cloud_name: this.config.get("CLOUDINARY_NAME"),
@@ -73,7 +73,7 @@ export class VideoService {
             duration: result.duration,
             bytes: result.bytes,
           });
-        }
+        },
       );
       const readable = Readable.from(video.buffer);
       readable.pipe(uploadStream);
@@ -82,7 +82,7 @@ export class VideoService {
 
   async streamUploadVideoWithSocket(
     video: Express.Multer.File,
-    userId: string
+    userId: string,
   ): Promise<{
     publicId: string;
     videoUrl: string;
@@ -129,7 +129,7 @@ export class VideoService {
             duration: result.duration,
             bytes: result.bytes,
           });
-        }
+        },
       );
 
       fs.createReadStream(filePath)
@@ -144,7 +144,7 @@ export class VideoService {
 
   async uploadVideoWithProgress(
     filePath: string,
-    userId: string
+    userId: string,
   ): Promise<{
     publicId: string;
     videoUrl: string;
@@ -170,12 +170,12 @@ export class VideoService {
         maxBodyLength: Infinity,
         onUploadProgress: (progressEvent) => {
           const percent = Math.round(
-            (progressEvent.loaded / totalLength) * 100
+            (progressEvent.loaded / totalLength) * 100,
           );
           io.to(userId).emit("video-upload-progress", { percent });
           logger.log(`Uploading: ${percent}%`);
         },
-      }
+      },
     );
     const { public_id, secure_url, bytes } = response.data;
 
@@ -195,7 +195,7 @@ export class VideoService {
     if (!thumbnail) {
       throw new HttpException(
         "Thumbnail file is missing",
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
     const logger = this.logger;
@@ -221,7 +221,7 @@ export class VideoService {
           } catch (err) {
             reject(err);
           }
-        }
+        },
       );
 
       fs.createReadStream(filePath)
@@ -315,7 +315,7 @@ export class VideoService {
   async create(
     video: Express.Multer.File,
     thumbnail: Express.Multer.File,
-    body: CreateVideoDto
+    body: CreateVideoDto,
   ) {
     if (!video) {
       throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
@@ -391,7 +391,7 @@ export class VideoService {
 
   async getVideosByIds(ids: (Types.ObjectId | string)[]) {
     const objectIds = ids.map((id) =>
-      typeof id === "string" ? new Types.ObjectId(id) : id
+      typeof id === "string" ? new Types.ObjectId(id) : id,
     );
 
     const videos = await this.videoModel
@@ -415,8 +415,8 @@ export class VideoService {
           video.title,
           video.description,
           video.tags,
-          (video.owner?.name as string) || ""
-        )
+          (video.owner?.name as string) || "",
+        ),
     );
   }
 
@@ -433,14 +433,14 @@ export class VideoService {
     };
   }
 
-  async performBestVideosQuery(userId?: string) {
+  async performBestVideosQueryOld(userId?: string) {
     let personalizedVideos: any[] = [];
 
     if (userId) {
       const result = await this.channelService.getChannels(userId);
 
       const subscribedChannels = (result?.data as GetUserDto[])?.map(
-        (c) => c.id || c._id
+        (c) => c.id || c._id,
       );
 
       if (subscribedChannels.length) {
@@ -448,9 +448,32 @@ export class VideoService {
           .find({ owner: { $in: subscribedChannels } })
           .sort({ createdAt: -1 })
           .limit(20)
-          .populate("owner", "-password");
+          .populate("owner", "-password")
+          .populate({
+            path: "watchLaterStatus",
+            match: { user: userId },
+            select: "_id user video",
+          })
+          .lean();
 
-        personalizedVideos.push(...subscribedVideos);
+        const currentUserId = userId.toString();
+
+        const videosWithStatus = subscribedVideos.map((video: any) => {
+          const ownerId =
+            video.owner &&
+            typeof video.owner === "object" &&
+            "_id" in video.owner
+              ? video.owner._id.toString()
+              : video.owner?.toString();
+
+          return {
+            ...video,
+            isVideoOnWatchLater:
+              ownerId === currentUserId || Boolean(video.watchLaterStatus),
+          };
+        });
+
+        personalizedVideos.push(...videosWithStatus);
       }
     }
 
@@ -487,11 +510,264 @@ export class VideoService {
     };
   }
 
+  async performBestVideosQuery(userId?: string) {
+    const currentUserObjectId = userId ? new Types.ObjectId(userId) : null;
+
+    const buildWatchLaterStages = (
+      currentUserObjectId: Types.ObjectId | null,
+    ): any => {
+      if (!currentUserObjectId) {
+        return [
+          {
+            $addFields: {
+              isVideoOnWatchLater: false,
+            },
+          },
+        ];
+      }
+
+      return [
+        {
+          $lookup: {
+            from: "watchlaters",
+            let: { videoId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$user", currentUserObjectId] },
+                      { $eq: ["$video", "$$videoId"] },
+                    ],
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 1,
+                },
+              },
+            ],
+            as: "watchLaterStatus",
+          },
+        },
+        {
+          $addFields: {
+            isVideoOnWatchLater: {
+              $or: [
+                { $eq: ["$owner", currentUserObjectId] },
+                { $gt: [{ $size: "$watchLaterStatus" }, 0] },
+              ],
+            },
+          },
+        },
+      ];
+    };
+
+    const ownerLookupStage: PipelineStage.Lookup = {
+      $lookup: {
+        from: "users",
+        let: { ownerId: "$owner" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ["$_id", "$$ownerId"],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              username: 1,
+              photo: 1,
+              slug: 1,
+            },
+          },
+        ],
+        as: "owner",
+      },
+    };
+
+    const ownerUnwindStage: PipelineStage.Unwind = {
+      $unwind: {
+        path: "$owner",
+        preserveNullAndEmptyArrays: true,
+      },
+    };
+
+    const metricsStage: PipelineStage.AddFields = {
+      $addFields: {
+        likesCount: { $size: { $ifNull: ["$likes", []] } },
+        dislikesCount: { $size: { $ifNull: ["$dislikes", []] } },
+      },
+    };
+
+    const baseProjectStage: PipelineStage.Project = {
+      $project: {
+        _id: 1,
+        title: 1,
+        videoUrl: 1,
+        thumbnailUrl: 1,
+        slug: 1,
+        owner: 1,
+        views: 1,
+        duration: 1,
+        createdAt: 1,
+        isVideoOnWatchLater: 1,
+        likesCount: 1,
+        dislikesCount: 1,
+        sourcePriority: 1,
+      },
+    };
+
+    const personalizedFacet: any = currentUserObjectId
+      ? [
+          {
+            $lookup: {
+              from: "channels",
+              let: { videoOwnerId: "$owner" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$user", currentUserObjectId] },
+                        { $in: ["$$videoOwnerId", "$channels"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                  },
+                },
+              ],
+              as: "subscriptionMatch",
+            },
+          },
+          {
+            $match: {
+              $expr: {
+                $gt: [{ $size: "$subscriptionMatch" }, 0],
+              },
+            },
+          },
+          ...buildWatchLaterStages(currentUserObjectId),
+          {
+            $addFields: {
+              sourcePriority: 1,
+            },
+          },
+          { $sort: { createdAt: -1 } },
+          { $limit: 20 },
+          ownerLookupStage,
+          ownerUnwindStage,
+          metricsStage,
+          baseProjectStage,
+        ]
+      : [
+          {
+            $match: {
+              _id: { $exists: false },
+            },
+          },
+        ];
+
+    const pipeline: PipelineStage[] = [
+      {
+        $match: {
+          status: VideoStatus.PUBLISHED,
+        },
+      },
+      {
+        $facet: {
+          personalized: personalizedFacet,
+          trending: [
+            ...buildWatchLaterStages(currentUserObjectId),
+            {
+              $addFields: {
+                sourcePriority: 2,
+              },
+            },
+            { $sort: { views: -1, createdAt: -1 } },
+            { $limit: 10 },
+            ownerLookupStage,
+            ownerUnwindStage,
+            metricsStage,
+            baseProjectStage,
+          ],
+          latest: [
+            ...buildWatchLaterStages(currentUserObjectId),
+            {
+              $addFields: {
+                sourcePriority: 3,
+              },
+            },
+            { $sort: { createdAt: -1 } },
+            { $limit: 10 },
+            ownerLookupStage,
+            ownerUnwindStage,
+            metricsStage,
+            baseProjectStage,
+          ],
+        },
+      },
+      {
+        $project: {
+          allVideos: {
+            $concatArrays: ["$personalized", "$trending", "$latest"],
+          },
+        },
+      },
+      { $unwind: "$allVideos" },
+      {
+        $replaceRoot: {
+          newRoot: "$allVideos",
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          doc: { $first: "$$ROOT" },
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: "$doc",
+        },
+      },
+      {
+        $sort: {
+          sourcePriority: 1,
+          createdAt: -1,
+          views: -1,
+        },
+      },
+      {
+        $project: {
+          sourcePriority: 0,
+        },
+      },
+    ];
+
+    const finalFeed = await this.videoModel.aggregate(pipeline);
+
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Personalized video feed retrieved",
+      data: finalFeed,
+    };
+  }
+
   async findAll(
     searchText: string,
     filters: Record<string, string>,
     limit = 10,
-    page = 1
+    page = 1,
   ) {
     const query: any = {};
 
@@ -615,7 +891,7 @@ export class VideoService {
       .populate("owner", "-password");
 
     const subscriptions = await this.channelService.getTotalSubscriptions(
-      video.owner?.id
+      video.owner?.id,
     );
 
     return {
@@ -640,7 +916,7 @@ export class VideoService {
       .populate("owner", "-password");
 
     const subscriptions = await this.channelService.getTotalSubscriptions(
-      video.owner?.id
+      video.owner?.id,
     );
 
     // event fire to decrease like on user activity
@@ -713,7 +989,7 @@ export class VideoService {
     this.eventEmitter.emit("video.deleted", video?.publicId);
     this.eventEmitter.emit(
       "thumbnail.deleted",
-      extractPublicId(video?.thumbnailUrl)
+      extractPublicId(video?.thumbnailUrl),
     );
     this.eventEmitter.emit("video-elastic.deleted", {
       id: video?.id || video?._id,
@@ -745,21 +1021,21 @@ export class VideoService {
     const likerIdStr = liker.toString();
 
     const hasLiked = video.likes.some(
-      (userId) => userId.toString() === likerIdStr
+      (userId) => userId.toString() === likerIdStr,
     );
     const hasDisliked = video.dislikes.some(
-      (userId) => userId.toString() === likerIdStr
+      (userId) => userId.toString() === likerIdStr,
     );
 
     if (hasLiked) {
       video.likes = video.likes.filter(
-        (userId) => userId.toString() !== likerIdStr
+        (userId) => userId.toString() !== likerIdStr,
       );
     } else {
       video.likes.push(liker);
       if (hasDisliked) {
         video.dislikes = video.dislikes.filter(
-          (userId) => userId.toString() !== likerIdStr
+          (userId) => userId.toString() !== likerIdStr,
         );
       }
     }
@@ -788,21 +1064,21 @@ export class VideoService {
     const likerIdStr = liker.toString();
 
     const hasDisliked = video.dislikes.some(
-      (userId) => userId.toString() === likerIdStr
+      (userId) => userId.toString() === likerIdStr,
     );
     const hasLiked = video.likes.some(
-      (userId) => userId.toString() === likerIdStr
+      (userId) => userId.toString() === likerIdStr,
     );
 
     if (hasDisliked) {
       video.dislikes = video.dislikes.filter(
-        (userId) => userId.toString() !== likerIdStr
+        (userId) => userId.toString() !== likerIdStr,
       );
     } else {
       video.dislikes.push(liker);
       if (hasLiked) {
         video.likes = video.likes.filter(
-          (userId) => userId.toString() !== likerIdStr
+          (userId) => userId.toString() !== likerIdStr,
         );
       }
     }
@@ -843,7 +1119,7 @@ export class VideoService {
             if (!video) {
               throw new HttpException(
                 "Video was not found!",
-                HttpStatus.NOT_FOUND
+                HttpStatus.NOT_FOUND,
               );
             }
 
@@ -869,11 +1145,11 @@ export class VideoService {
             reject(
               new HttpException(
                 "Failed to update video thumbnail",
-                HttpStatus.INTERNAL_SERVER_ERROR
-              )
+                HttpStatus.INTERNAL_SERVER_ERROR,
+              ),
             );
           }
-        }
+        },
       );
 
       const readableStream = Readable.from(file.buffer);
@@ -912,7 +1188,7 @@ export class VideoService {
     const invalidIds = ids.filter((id) => !Types.ObjectId.isValid(id));
     if (invalidIds.length > 0) {
       throw new BadRequestException(
-        `Invalid ObjectId(s): ${invalidIds.join(", ")}`
+        `Invalid ObjectId(s): ${invalidIds.join(", ")}`,
       );
     }
 

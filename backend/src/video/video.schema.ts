@@ -2,7 +2,12 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { VideoStatus } from "./enums";
 
-@Schema({ timestamps: true, versionKey: false, toJSON: { virtuals: true } })
+@Schema({
+  timestamps: true,
+  versionKey: false,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+})
 export class Video extends Document {
   @Prop({ required: true })
   title: string;
@@ -51,3 +56,10 @@ export class Video extends Document {
 }
 
 export const VideoSchema = SchemaFactory.createForClass(Video);
+
+VideoSchema.virtual("watchLaterStatus", {
+  ref: "WatchLater",
+  localField: "_id",
+  foreignField: "video",
+  justOne: true,
+});
