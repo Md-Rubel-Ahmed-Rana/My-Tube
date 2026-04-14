@@ -14,6 +14,13 @@ export const playlistApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["playlist"],
     }),
+    getPlaylistDropdownByOwner: builder.query({
+      query: () => ({
+        url: `/playlist/dropdown`,
+        method: "GET",
+      }),
+      providesTags: ["playlist"],
+    }),
     getSinglePlaylistVideos: builder.query<
       IApiResponse<IPlaylist>,
       { id: string }
@@ -151,4 +158,5 @@ export const {
   useDeletePlaylistPermanentlyMutation,
   useGetUserPublicPlaylistsQuery,
   useUpdatePlaylistStatusMutation,
+  useGetPlaylistDropdownByOwnerQuery,
 } = playlistApi;
