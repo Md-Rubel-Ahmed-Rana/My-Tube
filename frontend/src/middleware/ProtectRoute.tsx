@@ -40,6 +40,9 @@ const isAuthenticate = (WrappedComponent: any) => {
       );
     }
 
+    if (user && user?.role === "admin") {
+      return router.back();
+    }
     return user ? <WrappedComponent {...props} /> : null;
   };
 

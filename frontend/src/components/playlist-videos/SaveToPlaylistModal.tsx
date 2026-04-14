@@ -12,13 +12,12 @@ import { Video } from "lucide-react";
 import { handleApiMutation } from "@/utils/handleApiMutation";
 import {
   useAddVideoToPlaylistMutation,
-  useGetPlaylistsByOwnerQuery,
+  useGetPlaylistDropdownByOwnerQuery,
 } from "@/features/playlist";
-import { useGetLoggedInUserQuery } from "@/features/auth";
-import { IUser } from "@/types/user.type";
 import { useState } from "react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
+import { IPlaylistDropdown } from "@/types/playlist.type";
 
 type Props = {
   videoId: string;
@@ -27,13 +26,10 @@ type Props = {
 };
 
 const SaveToPlaylistModal = ({ videoId, open, setOpen }: Props) => {
-  const { data: userDta } = useGetLoggedInUserQuery({});
-  const user = userDta?.data as IUser;
-  const { data, isLoading: isPlaylistLoading } = useGetPlaylistsByOwnerQuery({
-    userId: user?.id || "",
-  });
+  const { data, isLoading: isPlaylistLoading } =
+    useGetPlaylistDropdownByOwnerQuery({});
 
-  const playlists = data?.data || [];
+  const playlists = (data?.data || []) as IPlaylistDropdown[];
   const [playlistId, setPlaylistId] = useState<string>("");
   const [addVideo, { isLoading }] = useAddVideoToPlaylistMutation();
 

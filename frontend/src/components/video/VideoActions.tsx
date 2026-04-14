@@ -34,7 +34,7 @@ const VideoActions = ({ video }: Props) => {
       </div>
 
       <div className="w-full lg:w-auto">
-        <ShareVideo />
+        <ShareVideo title={video?.title} />
       </div>
 
       <div className="w-full lg:w-auto">
