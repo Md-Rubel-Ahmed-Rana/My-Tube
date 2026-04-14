@@ -25,7 +25,7 @@ export class OAuth2Strategy extends PassportStrategy(Strategy, "oauth2") {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       const user = {
@@ -36,10 +36,10 @@ export class OAuth2Strategy extends PassportStrategy(Strategy, "oauth2") {
       };
 
       return user;
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         "Error fetching Google user info:",
-        error.response?.data || error.message
+        error?.response?.data || error?.message,
       );
       throw error;
     }

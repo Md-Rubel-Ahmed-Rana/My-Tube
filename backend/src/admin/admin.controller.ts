@@ -20,6 +20,7 @@ import { AuthGuard } from "src/auth/auth.guard";
 import { Response } from "express";
 import { cookieOptions } from "src/utils/cookieOptions";
 import { UpdatePasswordDto } from "./dto/update-password.dto";
+import { Types } from "mongoose";
 
 @Controller("admin")
 export class AdminController {
@@ -36,14 +37,14 @@ export class AdminController {
   }
   @Get("auth")
   @UseGuards(AuthGuard)
-  auth(@Req() req: { user: { id: string } }) {
+  auth(@Req() req: { user: { id: Types.ObjectId } }) {
     return this.adminService.findOne(req.user.id);
   }
 
   @Post("login")
   async login(
     @Body() credentials: { email: string; password: string },
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
     const token = await this.adminService.login(credentials);
     res.cookie("my_tube_access_token", token, cookieOptions);
@@ -57,22 +58,25 @@ export class AdminController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
+  findOne(@Param("id") id: Types.ObjectId) {
     return this.adminService.findOne(id);
   }
 
   @Patch(":id")
   @UseGuards(AuthGuard)
-  update(@Param("id") id: string, @Body() updateAdminDto: UpdateAdminDto) {
+  update(
+    @Param("id") id: Types.ObjectId,
+    @Body() updateAdminDto: UpdateAdminDto,
+  ) {
     return this.adminService.update(id, updateAdminDto);
   }
 
   @Patch(":id/password")
   @UseGuards(AuthGuard)
   updatePassword(
-    @Param("id") id: string,
+    @Param("id") id: Types.ObjectId,
     @Body() updateAdminDto: UpdatePasswordDto,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
     res.clearCookie("my_tube_access_token", cookieOptions);
     return this.adminService.updatePassword(id, updateAdminDto);
@@ -83,7 +87,7 @@ export class AdminController {
   @UseInterceptors(FileInterceptor("photo"))
   updateProfilePhoto(
     @UploadedFile() file: Express.Multer.File,
-    @Param("id") id: string
+    @Param("id") id: Types.ObjectId,
   ) {
     return this.adminService.updateProfilePhoto(id, file);
   }

@@ -10,7 +10,7 @@ import { UpdateAdminDto } from "./dto/update-admin.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Admin } from "./admin.schema";
 import { v2 as cloudinary } from "cloudinary";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -25,7 +25,7 @@ export class AdminService {
     @InjectModel(Admin.name) private adminModel: Model<Admin>,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
   async create(createAdminDto: CreateAdminDto) {
     createAdminDto.password = await bcrypt.hash(createAdminDto.password, 12);
@@ -49,7 +49,7 @@ export class AdminService {
     }
     const isMatched = await bcrypt.compare(
       credentials.password,
-      admin.password
+      admin.password,
     );
 
     if (!isMatched) {
@@ -62,7 +62,7 @@ export class AdminService {
         email: admin?.email,
         role: admin?.role,
       },
-      { secret: this.configService.get<string>("JWT_SECRET") }
+      { secret: this.configService.get<string>("JWT_SECRET") },
     );
 
     return `Bearer ${token}`;
@@ -78,7 +78,11 @@ export class AdminService {
     };
   }
 
-  async findOne(id: string) {
+  async getAdminExist(id: Types.ObjectId) {
+    return await this.adminModel.findById(id);
+  }
+
+  async findOne(id: Types.ObjectId) {
     const admin = await this.adminModel.findById(id).select("-password");
     return {
       statusCode: HttpStatus.OK,
@@ -88,7 +92,7 @@ export class AdminService {
     };
   }
 
-  async update(id: string, updateAdminDto: UpdateAdminDto) {
+  async update(id: Types.ObjectId, updateAdminDto: UpdateAdminDto) {
     await this.adminModel.findByIdAndUpdate(id, {
       $set: { ...updateAdminDto },
     });
@@ -100,7 +104,7 @@ export class AdminService {
     };
   }
 
-  async updateProfilePhoto(id: string, file: Express.Multer.File) {
+  async updateProfilePhoto(id: Types.ObjectId, file: Express.Multer.File) {
     if (!file) {
       throw new HttpException("File is missing", HttpStatus.BAD_REQUEST);
     }
@@ -119,7 +123,7 @@ export class AdminService {
             if (!user) {
               throw new HttpException(
                 "User was not found!",
-                HttpStatus.NOT_FOUND
+                HttpStatus.NOT_FOUND,
               );
             }
             await this.adminModel.findByIdAndUpdate(id, {
@@ -144,11 +148,11 @@ export class AdminService {
             reject(
               new HttpException(
                 "Failed to update admin photo",
-                HttpStatus.INTERNAL_SERVER_ERROR
-              )
+                HttpStatus.INTERNAL_SERVER_ERROR,
+              ),
             );
           }
-        }
+        },
       );
 
       const readableStream = Readable.from(file.buffer);
@@ -156,7 +160,7 @@ export class AdminService {
     });
   }
 
-  async updatePassword(id: string, data: UpdatePasswordDto) {
+  async updatePassword(id: Types.ObjectId, data: UpdatePasswordDto) {
     const admin = await this.adminModel.findById(id);
     if (!admin) {
       throw new NotFoundException("Admin was not found");
@@ -164,7 +168,7 @@ export class AdminService {
     const isMatched = await bcrypt.compare(data.oldPassword, admin.password);
     if (!isMatched) {
       throw new BadRequestException(
-        "Incorrect password, Please provide your correct old password"
+        "Incorrect password, Please provide your correct old password",
       );
     }
     const newPassword = await bcrypt.hash(data.newPassword, 12);

@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 import { Types } from "mongoose";
 import { GoogleLoginDto } from "./dto/google-login.dto";
 import { OAuth2Client } from "google-auth-library";
+import { AdminService } from "src/admin/admin.service";
 
 @Injectable()
 export class AuthService {
@@ -14,8 +15,9 @@ export class AuthService {
 
   constructor(
     private readonly userService: UserService,
+    private readonly adminService: AdminService,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
@@ -39,17 +41,17 @@ export class AuthService {
         id: user?.id || user?._id,
         email: user?.email,
       },
-      { secret: this.configService.get<string>("JWT_SECRET") }
+      { secret: this.configService.get<string>("JWT_SECRET") },
     );
 
     return `Bearer ${token}`;
   }
 
   private async getOrCreateUserAndGenerateToken(
-    credentials: GoogleLoginDto
+    credentials: GoogleLoginDto,
   ): Promise<string> {
     const isExist = await this.userService.getUserByEmailForGoogleLogin(
-      credentials.email
+      credentials.email,
     );
 
     const user = isExist?._id
@@ -61,7 +63,7 @@ export class AuthService {
         id: user?.id || user?._id,
         email: user?.email,
       },
-      { secret: this.configService.get<string>("JWT_SECRET") }
+      { secret: this.configService.get<string>("JWT_SECRET") },
     );
 
     return `Bearer ${token}`;
@@ -96,6 +98,10 @@ export class AuthService {
   }
 
   async auth(id: Types.ObjectId) {
+    const admin = await this.adminService.getAdminExist(id);
+    if (admin && admin?.id) {
+      return await this.adminService.findOne(id);
+    }
     return await this.userService.findById(id);
   }
 }
