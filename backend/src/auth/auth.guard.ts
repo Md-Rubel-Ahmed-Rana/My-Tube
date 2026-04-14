@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
   private cookieName = "my_tube_access_token";
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,6 +30,11 @@ export class AuthGuard implements CanActivate {
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>("JWT_SECRET"),
+      });
+
+      console.log({
+        from: "[AuthGuard]: Auth user payload",
+        payload,
       });
 
       request["user"] = payload;
