@@ -16,12 +16,12 @@ import { PlaylistStatus } from "./enums";
 @Injectable()
 export class PlaylistService {
   constructor(
-    @InjectModel(Playlist.name) private playlistModel: Model<Playlist>
+    @InjectModel(Playlist.name) private playlistModel: Model<Playlist>,
   ) {}
 
   async create(createPlaylistDto: CreatePlaylistDto) {
     createPlaylistDto.slug = Slugify.generatePlaylistSlug(
-      createPlaylistDto.name
+      createPlaylistDto.name,
     );
     const playlist = await this.playlistModel.create(createPlaylistDto);
     return {
@@ -44,6 +44,21 @@ export class PlaylistService {
       success: true,
       message: "Playlists fetched successfully",
       data: playlists,
+    };
+  }
+
+  async getDropdownPlaylist(userId: string) {
+    const playlists = await this.playlistModel
+      .find({ user: userId })
+      .select("name");
+    return {
+      statusCode: HttpStatus.OK,
+      success: true,
+      message: "Playlists for dropdown fetched successfully",
+      data: playlists.map((playlist) => ({
+        id: playlist?.id || playlist?._id,
+        name: playlist?.name,
+      })),
     };
   }
 
@@ -142,7 +157,7 @@ export class PlaylistService {
     const playlist = await this.playlistModel.findByIdAndUpdate(
       playlistId,
       { $addToSet: { videos: videoId } },
-      { new: true }
+      { new: true },
     );
     return {
       statusCode: HttpStatus.OK,
@@ -156,7 +171,7 @@ export class PlaylistService {
     const playlist = await this.playlistModel.findByIdAndUpdate(
       playlistId,
       { $pull: { videos: videoId } },
-      { new: true }
+      { new: true },
     );
     return {
       statusCode: HttpStatus.OK,
@@ -170,7 +185,7 @@ export class PlaylistService {
     const playlist = await this.playlistModel.findByIdAndUpdate(
       playlistId,
       { videos: videoIds },
-      { new: true }
+      { new: true },
     );
 
     return {
