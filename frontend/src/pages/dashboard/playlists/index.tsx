@@ -1,6 +1,7 @@
 import SEOHead from "@/components/common/SEOHead";
 import Playlists from "@/components/dashboard/playlist";
 import UserDashboardLayout from "@/components/dashboard/UserDashboardLayout";
+import isAuthenticate from "@/middleware/ProtectRoute";
 
 const PlaylistsPage = () => {
   return (
@@ -12,5 +13,4 @@ const PlaylistsPage = () => {
     </>
   );
 };
-// export default isAuthenticate(PlaylistsPage);
-export default PlaylistsPage;
+export default isAuthenticate(PlaylistsPage);
