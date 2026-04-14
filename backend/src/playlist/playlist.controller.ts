@@ -39,6 +39,11 @@ export class PlaylistController {
   getAllByUser(@Req() req: { user: { id: string } }) {
     return this.playlistService.getAllByUser(req?.user?.id);
   }
+  @Get("dropdown")
+  @UseGuards(AuthGuard)
+  getDropdownPlaylist(@Req() req: { user: { id: string } }) {
+    return this.playlistService.getDropdownPlaylist(req?.user?.id);
+  }
 
   @Get("public/:userId")
   @UseGuards(AuthGuard)
