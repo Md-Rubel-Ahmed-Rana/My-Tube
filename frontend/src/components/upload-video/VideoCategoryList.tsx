@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetAllCategoriesQuery } from "@/features/category";
 import { ICategory } from "@/types/category.type";
 import {
@@ -54,7 +53,7 @@ const VideoCategoryList = ({ field }: Props) => {
                 className="cursor-pointer text-gray-800 dark:text-gray-200"
                 onSelect={(currentValue) => {
                   field.onChange(
-                    currentValue === field.value ? "" : currentValue
+                    currentValue === field.value ? "" : currentValue,
                   );
                   setOpen(false);
                 }}
@@ -68,7 +67,7 @@ const VideoCategoryList = ({ field }: Props) => {
                 <CheckIcon
                   className={cn(
                     "ml-auto h-4 w-4",
-                    cat.name === field.value ? "opacity-100" : "opacity-0"
+                    cat.name === field.value ? "opacity-100" : "opacity-0",
                   )}
                 />
               </CommandItem>

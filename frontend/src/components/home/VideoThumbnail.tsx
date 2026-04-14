@@ -1,4 +1,4 @@
-import { IFeedVideo, IVideo } from "@/types/video.type";
+import { IFeedVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { formatDuration } from "@/utils/formatDuration";

@@ -91,7 +91,7 @@ const videoApi = apiSlice.injectEndpoints({
       providesTags: ["video"],
     }),
     getChannelVideos: build.query<
-      IApiResponse<IVideo[] | []>,
+      IApiResponse<IVideo[] | IFeedVideo[] | []>,
       { channelId: string }
     >({
       query: ({ channelId }) => ({
@@ -100,7 +100,7 @@ const videoApi = apiSlice.injectEndpoints({
       providesTags: ["video"],
     }),
     searchVideos: build.query<
-      IApiResponse<IVideo[] | []>,
+      IApiResponse<IVideo[] | IFeedVideo[] | []>,
       { searchText: string }
     >({
       query: ({ searchText }) => ({

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetChannelVideosQuery } from "@/features/videos";
 import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
-import { IVideo } from "@/types/video.type";
+import { IFeedVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import VideoCard from "../home/VideoCard";
 import { useGetUserBySlugQuery } from "@/features/user";
@@ -19,7 +18,7 @@ const ChannelVideos = () => {
   const { data, isLoading } = useGetChannelVideosQuery({
     channelId: user?.id || user?._id,
   });
-  const videos = (data?.data || []) as IVideo[];
+  const videos = (data?.data || []) as IFeedVideo[];
 
   return (
     <div className="p-2 lg:p-4 flex flex-col gap-3">
@@ -32,7 +31,7 @@ const ChannelVideos = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {videos?.map((video) => (
-            <VideoCard key={video?.id} video={video} />
+            <VideoCard key={video?._id} video={video} />
           ))}
         </div>
       )}

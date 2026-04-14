@@ -8,7 +8,7 @@ export const playlistApi = apiSlice.injectEndpoints({
       IApiResponse<IPlaylist[] | []>,
       { userId: string }
     >({
-      query: ({ userId }: { userId?: string }) => ({
+      query: () => ({
         url: `/playlist/user`,
         method: "GET",
       }),

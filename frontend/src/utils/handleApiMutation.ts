@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRouter } from "next/router";
 import { toast } from "sonner";
 
@@ -14,20 +13,20 @@ export const handleApiMutation = async <TPayload>(
     isRedirect?: boolean;
     path?: string;
     router?: NextRouter;
-  } = {}
+  } = {},
 ) => {
   try {
     const res = await mutationTrigger(payload);
     if (res?.data?.statusCode === successStatusCode) {
       toast.success(
-        res?.data?.message || customMessages.success || "Operation succeeded"
+        res?.data?.message || customMessages.success || "Operation succeeded",
       );
       if (redirect?.isRedirect) {
         redirect?.router?.push(redirect?.path || "/");
       }
     } else {
       toast.error(
-        res?.error?.data.message || customMessages.error || "Operation failed"
+        res?.error?.data.message || customMessages.error || "Operation failed",
       );
     }
   } catch (err: any) {
@@ -35,7 +34,7 @@ export const handleApiMutation = async <TPayload>(
       err?.data?.message ||
         err?.error ||
         customMessages.error ||
-        "Something went wrong"
+        "Something went wrong",
     );
   }
 };

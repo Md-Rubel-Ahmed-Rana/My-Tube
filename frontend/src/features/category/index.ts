@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ICategorySchema } from "@/schemas/category.schema";
 import apiSlice from "../api";
 

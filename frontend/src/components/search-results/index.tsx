@@ -2,7 +2,7 @@ import { useSearchVideosQuery } from "@/features/videos";
 import VideoLoadingSkeleton from "@/skeletons/VideoLoading.skeleton";
 import { useRouter } from "next/router";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { IVideo } from "@/types/video.type";
+import { IFeedVideo } from "@/types/video.type";
 import { Info } from "lucide-react";
 import VideoContainer from "./VideoContainer";
 import NoVideoFound from "./NoVideoFound";
@@ -13,10 +13,10 @@ const SearchResult = () => {
 
   const { data, isLoading, isFetching } = useSearchVideosQuery(
     { searchText: search_query },
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: true },
   );
 
-  const videos = (data?.data || []) as IVideo[];
+  const videos = (data?.data || []) as IFeedVideo[];
 
   const shouldShowSkeleton = isLoading || isFetching;
 
