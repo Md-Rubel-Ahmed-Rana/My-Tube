@@ -16,17 +16,17 @@ export class ValidateObjectIdPipe implements PipeTransform {
 
   constructor(@Inject(REQUEST) private readonly request: Request) {}
 
-  transform(value: string) {
+  transform(value: any) {
     if (!isValidObjectId(value)) {
       const method = this.request.method;
       const url = this.request.originalUrl;
 
       this.logger.warn(
-        `Invalid ObjectId received. Method: [${method}] | URL: ${url} | Value: ${value}`
+        `Invalid ObjectId received. Method: [${method}] | URL: ${url} | Value: ${value}`,
       );
 
       throw new BadRequestException(
-        `The provided ID "${value}" is not valid. Please check and try again.`
+        `The provided ID "${value}" is not valid. Please check and try again.`,
       );
     }
 

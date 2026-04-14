@@ -15,7 +15,7 @@ export class PublicAuthGuard implements CanActivate {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,6 +26,10 @@ export class PublicAuthGuard implements CanActivate {
       try {
         const payload = await this.jwtService.verifyAsync(token, {
           secret: this.configService.get<string>("JWT_SECRET"),
+        });
+        console.log({
+          from: "[PublicAuthGuard]: Auth user payload",
+          payload,
         });
         request["user"] = payload;
       } catch (error: any) {
