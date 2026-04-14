@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -59,7 +58,7 @@ const ChangePasswordModal = ({
         success: "Your password has been updated successfully",
         error: "Failed to update password",
       },
-      { isRedirect: true, path: redirectTo, router }
+      { isRedirect: true, path: redirectTo, router },
     );
     reset();
     setOpen(false);
@@ -69,7 +68,7 @@ const ChangePasswordModal = ({
     label: string,
     field: keyof FormData,
     show: boolean,
-    setShow: React.Dispatch<React.SetStateAction<boolean>>
+    setShow: React.Dispatch<React.SetStateAction<boolean>>,
   ) => (
     <div className="relative max-w-sm">
       <Input
@@ -103,19 +102,19 @@ const ChangePasswordModal = ({
             "Old Password",
             "oldPassword",
             showOld,
-            setShowOld
+            setShowOld,
           )}
           {renderPasswordInput(
             "New Password",
             "newPassword",
             showNew,
-            setShowNew
+            setShowNew,
           )}
           {renderPasswordInput(
             "Confirm New Password",
             "confirmPassword",
             showConfirm,
-            setShowConfirm
+            setShowConfirm,
           )}
 
           <DialogFooter className="flex justify-between w-full mt-4">

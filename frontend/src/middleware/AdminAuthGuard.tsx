@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import AuthenticatingAccess from "@/components/common/AuthenticatingAccess";
 import { useRouter } from "next/router";
 import { LockIcon } from "lucide-react";

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -42,7 +41,7 @@ const ThumbnailImageCrop = ({
     const croppedImage = await getCroppedImg(
       imageSrc,
       croppedAreaPixels,
-      rotation
+      rotation,
     );
 
     setImageSrc(croppedImage);
@@ -51,7 +50,7 @@ const ThumbnailImageCrop = ({
 
   const adjustZoom = (delta: number) => {
     setZoom((z) =>
-      Math.min(3, Math.max(1, parseFloat((z + delta).toFixed(2))))
+      Math.min(3, Math.max(1, parseFloat((z + delta).toFixed(2)))),
     );
   };
 

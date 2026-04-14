@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Download, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,7 +48,7 @@ const DownloadVideo = ({ video, from }: Props) => {
       const reader = response.body.getReader();
       readerRef.current = reader;
 
-      const chunks: Uint8Array[] = [];
+      const chunks: any = [];
 
       let fullyDownloaded = true;
 

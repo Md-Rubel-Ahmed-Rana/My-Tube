@@ -20,6 +20,21 @@ export type IVideo = {
   updatedAt: Date;
 };
 
+export type IFeedVideo = {
+  _id: string;
+  title: string;
+  slug: string;
+  videoUrl: string;
+  thumbnailUrl: string;
+  owner: IUser;
+  views: number;
+  likesCount: number;
+  dislikesCount: number;
+  duration: number;
+  createdAt: Date;
+  isVideoOnWatchLater: boolean;
+};
+
 export type IEditVideo = {
   title: string;
   description: string;

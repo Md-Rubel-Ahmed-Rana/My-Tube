@@ -1,4 +1,9 @@
-import { IEditVideo, IVideo, VideoStatus } from "@/types/video.type";
+import {
+  IEditVideo,
+  IFeedVideo,
+  IVideo,
+  VideoStatus,
+} from "@/types/video.type";
 import apiSlice from "../api";
 import { IApiResponse } from "@/types/common";
 
@@ -79,14 +84,14 @@ const videoApi = apiSlice.injectEndpoints({
       }),
       providesTags: ["video"],
     }),
-    getHomeFeedVideos: build.query<IApiResponse<IVideo[] | []>, void>({
+    getHomeFeedVideos: build.query<IApiResponse<IFeedVideo[] | []>, void>({
       query: () => ({
         url: `video/feed`,
       }),
       providesTags: ["video"],
     }),
     getChannelVideos: build.query<
-      IApiResponse<IVideo[] | []>,
+      IApiResponse<IVideo[] | IFeedVideo[] | []>,
       { channelId: string }
     >({
       query: ({ channelId }) => ({
@@ -95,7 +100,7 @@ const videoApi = apiSlice.injectEndpoints({
       providesTags: ["video"],
     }),
     searchVideos: build.query<
-      IApiResponse<IVideo[] | []>,
+      IApiResponse<IVideo[] | IFeedVideo[] | []>,
       { searchText: string }
     >({
       query: ({ searchText }) => ({

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetUserPublicPlaylistsQuery } from "@/features/playlist";
 import { useGetUserBySlugQuery } from "@/features/user";
 import { IUser } from "@/types/user.type";

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ILogin, IRegister } from "@/types/auth.type";
 import apiSlice, { baseApi } from "../api";
 import axios from "axios";
@@ -61,7 +60,7 @@ export const userLogin = async (user: {
     toast.error(
       result?.data.error?.message ||
         result?.error?.data?.message ||
-        "Failed to login"
+        "Failed to login",
     );
   }
 };
@@ -77,7 +76,7 @@ export const initializeGoogleOneTap = async () => {
           { idToken },
           {
             withCredentials: true,
-          }
+          },
         );
         window.location.replace("/dashboard/videos");
       } catch {

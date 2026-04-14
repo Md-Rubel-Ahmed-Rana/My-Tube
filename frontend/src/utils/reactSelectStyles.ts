@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const reactSelectStyles = (theme: string) => {
   return {
     control: (base: any) => ({

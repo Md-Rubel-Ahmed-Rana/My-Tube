@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -42,7 +41,7 @@ const PreviewVideoUploads = ({
     path:
       | "/video/create/metadata"
       | "/video/create/playlist"
-      | "/video/create/thumbnail"
+      | "/video/create/thumbnail",
   ) => {
     router.push(path);
   };
