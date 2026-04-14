@@ -31,11 +31,13 @@ const SaveVideo = ({ video }: Props) => {
         <TooltipContent>Save to playlist</TooltipContent>
       </Tooltip>
 
-      <SaveToPlaylistModal
-        open={isOpen}
-        setOpen={setIsOpen}
-        videoId={video?.id}
-      />
+      {isOpen && (
+        <SaveToPlaylistModal
+          open={isOpen}
+          setOpen={setIsOpen}
+          videoId={video?.id}
+        />
+      )}
     </>
   );
 };

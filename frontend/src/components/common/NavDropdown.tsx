@@ -8,10 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetLoggedInUserQuery } from "@/features/auth";
-import { useGetLoggedInAdminQuery } from "@/features/admin";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import { IUser } from "@/types/user.type";
-import { IAdmin } from "@/types/admin.type";
 import Spinner from "./Spinner";
 import LogoutButton from "./LogoutButton";
 import { ModeToggle } from "./ModeToggle";
@@ -21,27 +19,23 @@ const NavDropdown = () => {
   const { data: userData, isLoading: isUserLoading } = useGetLoggedInUserQuery(
     {},
   );
-  const { data: adminData, isLoading: isAdminLoading } =
-    useGetLoggedInAdminQuery({});
 
   const user = userData?.data as IUser;
-  const admin = adminData?.data as IAdmin;
 
-  const isLoading = isUserLoading || isAdminLoading;
+  const isLoading = isUserLoading;
 
-  // === Loading Spinner ===
   if (isLoading) {
     return <Spinner />;
   }
 
   // === Admin Shortcut Avatar ===
-  if (admin?.email) {
+  if (user && user?.role === "admin") {
     return (
       <Link href="/admin/dashboard">
         <Avatar className="h-8 lg:h-10 w-8 lg:w-10 cursor-pointer">
-          <AvatarImage src={admin.photo} alt="Admin image" />
+          <AvatarImage src={user?.photo} alt="Admin image" />
           <AvatarFallback>
-            {formatNameForImageFallback(admin?.name)}
+            {formatNameForImageFallback(user?.name)}
           </AvatarFallback>
         </Avatar>
       </Link>
@@ -54,7 +48,7 @@ const NavDropdown = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="h-8 lg:h-10 w-8 lg:w-10 cursor-pointer">
-            <AvatarImage src={user.photo} alt="User image" />
+            <AvatarImage src={user?.photo} alt="User image" />
             <AvatarFallback>
               {formatNameForImageFallback(user.name)}
             </AvatarFallback>

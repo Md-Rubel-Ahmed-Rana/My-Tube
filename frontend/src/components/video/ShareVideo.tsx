@@ -9,12 +9,13 @@ import {
 import { toast } from "sonner";
 
 type Props = {
+  title: string;
   url?: string;
   className?: string;
   from?: "home" | "playlist" | "channel";
 };
 
-const ShareVideo = ({ url, className, from }: Props) => {
+const ShareVideo = ({ url, className, from, title }: Props) => {
   const router = useRouter();
 
   const fullUrl =
@@ -26,7 +27,7 @@ const ShareVideo = ({ url, className, from }: Props) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Check out this video on MyTube!",
+          title: title,
           url: url || fullUrl,
         });
       } catch {
