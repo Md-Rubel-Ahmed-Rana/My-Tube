@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { IVideo } from "@/types/video.type";
+import { IFeedVideo } from "@/types/video.type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, ThumbsUp, Clock } from "lucide-react";
+import { Eye, ThumbsUp, Clock, ThumbsDown } from "lucide-react";
 import moment from "moment";
 import { formatNameForImageFallback } from "@/utils/formatNameForImageFallback";
 import VideoActions from "./VideoActions";
@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
-  video: IVideo;
+  video: IFeedVideo;
 };
 
 const VideoCard = ({ video }: Props) => {
@@ -31,7 +31,7 @@ const VideoCard = ({ video }: Props) => {
       },
       {
         threshold: [1.0],
-      }
+      },
     );
 
     const current = cardContainerRef.current;
@@ -54,7 +54,7 @@ const VideoCard = ({ video }: Props) => {
           onClick={handleNavigate}
           className="text-base font-semibold truncate w-full"
         >
-          {video.title}
+          {video?.title || "Unknown"}
         </h2>
         <div className="flex justify-between items-center gap-2">
           <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ const VideoCard = ({ video }: Props) => {
               <Link
                 href={`/channel/${video?.owner?.slug}?name=${video?.owner?.name}`}
               >
-                {video.owner.name}
+                {video?.owner?.name}
               </Link>
             </p>
           </div>
@@ -84,7 +84,9 @@ const VideoCard = ({ video }: Props) => {
             <Eye className="w-4 h-4" />
             <span>{video.views}</span>
             <ThumbsUp className="w-4 h-4 ml-3" />
-            <span>{video.likes.length}</span>
+            <span>{video?.likesCount || 0}</span>
+            <ThumbsDown className="w-4 h-4 ml-3" />
+            <span>{video?.dislikesCount || 0}</span>
           </div>
 
           <div className="flex items-center gap-1">

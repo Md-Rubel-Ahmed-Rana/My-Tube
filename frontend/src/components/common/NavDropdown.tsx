@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,7 +19,7 @@ import { Menu } from "lucide-react";
 
 const NavDropdown = () => {
   const { data: userData, isLoading: isUserLoading } = useGetLoggedInUserQuery(
-    {}
+    {},
   );
   const { data: adminData, isLoading: isAdminLoading } =
     useGetLoggedInAdminQuery({});
@@ -43,7 +41,7 @@ const NavDropdown = () => {
         <Avatar className="h-8 lg:h-10 w-8 lg:w-10 cursor-pointer">
           <AvatarImage src={admin.photo} alt="Admin image" />
           <AvatarFallback>
-            {formatNameForImageFallback(admin.name)}
+            {formatNameForImageFallback(admin?.name)}
           </AvatarFallback>
         </Avatar>
       </Link>

@@ -8,27 +8,21 @@ import { EllipsisVertical, ListPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SaveToPlaylistModal from "../playlist-videos/SaveToPlaylistModal";
 import { useState } from "react";
-import { IVideo } from "@/types/video.type";
 import ShareVideo from "../video/ShareVideo";
 import WatchLaterAction from "./WatchLaterAction";
-import { useCheckVideoInWatchLaterQuery } from "@/features/watch-later";
+import { IFeedVideo } from "@/types/video.type";
 
 type Props = {
-  video: IVideo;
+  video: IFeedVideo;
 };
 
 const VideoActions = ({ video }: Props) => {
   const [isAddPlaylist, setIsAddPlaylist] = useState(false);
-  const { data: checkData } = useCheckVideoInWatchLaterQuery({
-    videoId: video.id,
-  });
 
-  const isInWatchLater =
-    checkData?.data === true &&
-    checkData?.message === "Video is in watch later";
+  const isInWatchLater = video?.isVideoOnWatchLater || false;
 
-  const asPath = `/video/watch/${video.publicId}/${
-    video.id
+  const asPath = `/video/watch/${video.slug}/${
+    video._id
   }?title=${encodeURIComponent(video.title)}`;
 
   const fullUrl =
@@ -47,7 +41,7 @@ const VideoActions = ({ video }: Props) => {
           align="end"
           className="w-48 bg-gray-200 dark:bg-gray-700"
         >
-          {!isInWatchLater && <WatchLaterAction videoId={video?.id} />}
+          {!isInWatchLater && <WatchLaterAction videoId={video?._id} />}
 
           <DropdownMenuItem
             className="cursor-pointer mb-2 bg-gray-200 dark:bg-gray-700 w-full hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -69,11 +63,13 @@ const VideoActions = ({ video }: Props) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <SaveToPlaylistModal
-        open={isAddPlaylist}
-        setOpen={setIsAddPlaylist}
-        videoId={video?.id}
-      />
+      {isAddPlaylist && (
+        <SaveToPlaylistModal
+          open={isAddPlaylist}
+          setOpen={setIsAddPlaylist}
+          videoId={video?._id}
+        />
+      )}
     </>
   );
 };

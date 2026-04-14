@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import AuthenticatingAccess from "@/components/common/AuthenticatingAccess";
 import { useGetLoggedInUserQuery } from "@/features/auth";
 import { IUser } from "@/types/user.type";

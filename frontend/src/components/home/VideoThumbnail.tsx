@@ -1,4 +1,4 @@
-import { IVideo } from "@/types/video.type";
+import { IFeedVideo, IVideo } from "@/types/video.type";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { formatDuration } from "@/utils/formatDuration";
@@ -13,7 +13,7 @@ import type { MediaPlayerInstance } from "@vidstack/react";
 import { makeVideoWatchPath } from "@/utils/makeVideoWatchPath";
 
 type Props = {
-  video: IVideo;
+  video: IFeedVideo;
   isInView: boolean;
 };
 
@@ -66,8 +66,8 @@ const VideoThumbnail = ({ video, isInView }: Props) => {
       className="relative w-full h-52 cursor-pointer rounded-md overflow-hidden"
     >
       <Image
-        src={video.thumbnailUrl}
-        alt={video.title}
+        src={video?.thumbnailUrl}
+        alt={video?.title}
         fill
         className={`object-cover transition-opacity duration-300 ${
           shouldPlay ? "opacity-0" : "opacity-100"
@@ -76,14 +76,14 @@ const VideoThumbnail = ({ video, isInView }: Props) => {
 
       {/* Duration Tag */}
       <span className="absolute bottom-2 right-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded-md z-50">
-        {formatDuration(shouldPlay ? remainingTime : video.duration)}
+        {formatDuration(shouldPlay ? remainingTime : video?.duration)}
       </span>
 
       {shouldPlay && (
         <div className="absolute inset-0 z-20 pointer-events-none">
           <MediaPlayer
             ref={playerRef}
-            src={video.videoUrl}
+            src={video?.videoUrl}
             autoPlay
             muted={mute}
             loop
