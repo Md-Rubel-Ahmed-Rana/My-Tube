@@ -1,6 +1,7 @@
 import Channels from "@/components/dashboard/channels";
 import SEOHead from "@/components/common/SEOHead";
 import UserDashboardLayout from "@/components/dashboard/UserDashboardLayout";
+import isAuthenticate from "@/middleware/ProtectRoute";
 
 const ChannelsPage = () => {
   return (
@@ -13,5 +14,4 @@ const ChannelsPage = () => {
   );
 };
 
-// export default isAuthenticate(ChannelsPage);
-export default ChannelsPage;
+export default isAuthenticate(ChannelsPage);

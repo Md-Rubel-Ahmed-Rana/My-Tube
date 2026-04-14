@@ -12,6 +12,10 @@ export type IPlaylist = {
   createdAt: Date;
   updatedAt: Date;
 };
+export type IPlaylistDropdown = {
+  id: string;
+  name: string;
+};
 
 export enum PlaylistStatus {
   PUBLIC = "public",
