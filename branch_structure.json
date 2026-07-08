@@ -1,0 +1,33 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "backend-prod",
+    "frontend-prod",
+    "main",
+    "origin",
+    "public-playlist-page-and-view-design",
+    "vercel/react-server-components-cve-vu-pahxzs",
+    "video-upload-preview-page-design",
+    "watch-later-videos-on-admin-dashboard"
+  ],
+  "parent": {
+    "backend-prod": "main",
+    "frontend-prod": "main",
+    "main": null,
+    "origin": "main",
+    "public-playlist-page-and-view-design": "main",
+    "vercel/react-server-components-cve-vu-pahxzs": "main",
+    "video-upload-preview-page-design": "main",
+    "watch-later-videos-on-admin-dashboard": "main"
+  },
+  "order": [
+    "main",
+    "backend-prod",
+    "frontend-prod",
+    "origin",
+    "public-playlist-page-and-view-design",
+    "vercel/react-server-components-cve-vu-pahxzs",
+    "video-upload-preview-page-design",
+    "watch-later-videos-on-admin-dashboard"
+  ]
+}
