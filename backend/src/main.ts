@@ -12,10 +12,14 @@ import { RequestMethod } from "@nestjs/common";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = app.get(ConfigService).get<number>("PORT") || 4000;
+  const rawCorsOrigin =
+    app.get(ConfigService).get<string>("CORS_ORIGIN") || "*";
+
+  const corsOrigin = rawCorsOrigin.split(",").map((origin) => origin.trim());
 
   // middlewares
   app.enableCors({
-    origin: ["http://localhost:3000", "https://my-tubes.vercel.app"],
+    origin: corsOrigin,
     credentials: true,
   });
   app.useGlobalFilters(new MongoExceptionFilter());
@@ -32,7 +36,7 @@ async function bootstrap() {
   const server = createServer(expressApp);
 
   const io = new SocketIOServer(server, {
-    cors: { origin: "*" },
+    cors: { origin: corsOrigin, credentials: true },
   });
 
   io.on("connection", (socket) => {
